@@ -331,14 +331,14 @@ I don't want to maintain different code base that has the same logic.
 
      On the server side, hibernate works, but GWT can't do reflection so hibernate is useless there.
 
+### Contact me:
+
+email: ivanceras[at]gmail.com
+
 
 ### Support me:
 
 Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
-
-### Contact me:
-
-email: ivanceras[at]gmail.com
 
 
 [![Click here to lend your support to: Ivanceras ORM and make a donation at pledgie.com !](https://pledgie.com/campaigns/26665.png?skin_name=chrome)](https://pledgie.com/campaigns/26665)
