@@ -209,7 +209,9 @@ In your controller, you can use the generated classes like this:
 
 ````java  
     
-    
+    /**
+    * Getting the userId using username or Email
+    */
     public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
 		DAO_Users user = em.getOne(DAO_Users.class, 
 				new Filter(users.username, Filter.EQUAL, usernameOrEmail)
@@ -220,7 +222,12 @@ In your controller, you can use the generated classes like this:
 		}
 		return null;
 	}
-    
+````
+
+````java    
+    /**
+    * Getting the list of Products created by a certain user
+    */ 
     	public DAO_Product[] listUserProducts(EntityManager em, String username, int page, int itemsPerPage) throws DatabaseException {
 		UUID userId = getUserId(em, username);
 		System.err.println("UserId: "+userId);
@@ -275,10 +282,12 @@ In your controller, you can use the generated classes like this:
    * There is also Column.java (in com.company.meta) which list down all the column names(distinct) used in your database tables, very useful for autotyping in the IDE and also compile time error checking.
    * There is also Table.java (in com.company.meta) which list down the table names in your database. 
 
-Using as a service
+Using as a service.
+Exposing the Product to API/services, you need to map the DAO to the model
 
 ````java
 
+    
     @Override
 	public Product[] listProducts(String username, int page, int itemsPerPage) throws ServiceException {
 		EntityManager em = null;
