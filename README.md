@@ -228,6 +228,7 @@ In your controller, you can use the generated classes like this:
     /**
     * Getting the list of Products created by a certain user
     */ 
+
     	public DAO_Product[] listUserProducts(EntityManager em, String username, int page, int itemsPerPage) throws DatabaseException {
 		UUID userId = getUserId(em, username);
 		System.err.println("UserId: "+userId);
