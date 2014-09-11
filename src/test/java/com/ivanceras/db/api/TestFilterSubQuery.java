@@ -18,7 +18,7 @@ public class TestFilterSubQuery {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		DBConfig config = TestCommons.getDaxDBConfig();
+		DBConfig config = TestCommons.getDBConfig();
 		db = new DB_PostgreSQL(config);
 		em = new SynchronousEntityManager(db);
 		em.startPrintSqls();

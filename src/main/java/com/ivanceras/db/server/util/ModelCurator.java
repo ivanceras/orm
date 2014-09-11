@@ -22,16 +22,17 @@ public class ModelCurator {
 		for(ModelDef m : modelList){
 
 			this.model = m;
-			//			System.err.println("before: "+model);
+			System.err.println("before: "+model);
 			correct1to1Detail();
 			removeUnnecessaryHasOneToSelf();
 			removeUnnecessaryHasManyToSelf();
 			crossOutLinkerTables();
-			//			System.err.println("-------------");
-			//			System.err.println("after: "+model);
-			//			System.err.println("");
-			//			System.err.println("");
-			//			System.err.println("");
+			System.err.println("-------------");
+			System.err.println("after: "+model);
+			System.err.println("");
+			System.err.println("");
+			System.err.println("");
+
 		}
 		return modelList;
 	}
@@ -55,8 +56,8 @@ public class ModelCurator {
 				for(int i = 0; i < hasManyModelHasOne.length; i++){
 					if(model.getTableName().equals(hasManyModelHasOne[i])){//if this table is being refered by the hasManyTable
 						//check to see if the referenced colum if the primary key of this table
-						boolean inModelsPrimary = CStringUtils.inArray(model.getPrimaryAttributes(), hasManyModelHasOneReferencedColumn[i]);
-						boolean inHasManyPrimary = CStringUtils.inArray(hasManyModel.getPrimaryAttributes(), hasManyModelHasOneLocalColumn[i]);
+						boolean inModelsPrimary = CStringUtils.inArray(model.getPrimaryAttributes(), hasManyModelHasOneLocalColumn[i]);
+						boolean inHasManyPrimary = CStringUtils.inArray(hasManyModel.getPrimaryAttributes(), hasManyModelHasOneReferencedColumn[i]);
 
 						if (inModelsPrimary && model.getPrimaryAttributes().length == 1
 								&& inHasManyPrimary && hasManyModel.getPrimaryAttributes().length == 1){

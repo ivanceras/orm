@@ -3,7 +3,9 @@
  ******************************************************************************/
 package com.ivanceras.db.shared;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,7 +17,7 @@ public class DAO{
 	protected DAO[] daoList = null;
 	private Map<String, ColumnPair> renamedColumns;// the query used when this dao is retrieved, used for casting the DAO's when there are conflicting columns in the set of joined tables
 	
-	private String[] ignoreColumn; //when inserting new records, other columns will be set by the database (i.e created, updated)
+	private List<String> ignoreColumn = new ArrayList<String>(); //when inserting new records, other columns will be set by the database (i.e created, updated)
 	
 	private String[] defaultColumnValues; //when updating column, some colums will be automatically set by the database (i.e updated)
 	
@@ -66,7 +68,7 @@ public class DAO{
 	}
 
 	public String[] get_IgnoreColumn() {
-		return ignoreColumn;
+		return ignoreColumn.toArray(new String[ignoreColumn.size()]);
 	}
 
 	public String getModelName(){
@@ -102,8 +104,10 @@ public class DAO{
 		this.defaultColumnValues = defaultColumnValues;
 	}
 
-	public void set_IgnoreColumn(String[] ignoreColumn) {
-		this.ignoreColumn = ignoreColumn;
+	public void add_IgnoreColumn(String... ignoreColumn) {
+		for(String igc : ignoreColumn){
+			this.ignoreColumn.add(igc);
+		}
 	}
 
 	public void setProperties(Map<String, Object> properties){

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='db'>
+<module rename-to='orm'>
 	<inherits name='com.ivanceras.commons.Commons'/>
 	<source path='shared' />
 	<source path='api' />

@@ -7,12 +7,7 @@ public class TestCommons {
 	
 	public static DBConfig getDBConfig(){
 		DBConfig config = new DBConfig("postgresql", 
-				"localhost", "5432", "appd", "adcookie", "Xxie$cndhE");
-		return config;
-	}
-	public static DBConfig getDaxDBConfig(){
-		DBConfig config = new DBConfig("postgresql", 
-				"daxdb", "5432", "daxdb", "supercookie", "sup3rc00k13");
+				"localhost", "5432", "appd", "user", "pwd");
 		return config;
 	}
 	

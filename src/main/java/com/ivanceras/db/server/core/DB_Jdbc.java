@@ -692,7 +692,6 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	void logSQL(Statement pstmt, String sql, Object[] parameters, boolean error){
 		if(debugSql || error){
-			System.out.println("SQL: "+sql);
 			System.out.println("ACTUAL: "+pstmt.toString());
 		}
 		if (returnsSqlStatements()) {

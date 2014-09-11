@@ -26,7 +26,9 @@ But this exists because all other ORM i came across does not fit all my requirem
     * a Model which has 1:M relationship with another model, will have a field arry of the other model
     
 ####    Example:
-    	Product, ProductAvailability, ProductCategory, Category 
+    	Product, ProductAvailability, ProductCategory, Category
+    	* Product has 1 ProductAvailabilty
+    	* ProductCategory is a linker table for Product and Category, so Product has many Categories
     	
 ````sql
     CREATE TABLE product
@@ -90,16 +92,10 @@ But this exists because all other ORM i came across does not fit all my requirem
 ````
 #### Note
     * Some fields are omitted to provide more readability
-      * organization_id uuid,
-      * client_id uuid,
-      * created timestamp with time zone DEFAULT now(),
-      * createdby uuid,
-      * updated timestamp with time zone DEFAULT now(),
-      * updatedby uuid,
-      * name character varying,
-      * description character varying,
-      * help text,
-      * active boolean DEFAULT true
+      * organization_id, client_id, created, createdby, updated, updatedby, description, help, active
+
+### The generated Models
+   
 
 ````java
 
@@ -254,6 +250,15 @@ In your controller, you can use the generated classes like this:
 	}
 
 ````
+ * EntityManager takes care of the inserting, updating and retrieving of records.
+ * Most commonly used methods are:
+     * em.getOne
+     * em.getAll
+     * em.insert
+     * em.update
+     * em.retrieveRecords(Query)
+ * Query class is used to cleanly express a more complex arguments for retrieving records which would pollute EntityManager API when using an exhausetive list of comma seperated method arguments
+
 #### Note
 
    * DAO_Product.class is a generated class based on table product

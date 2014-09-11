@@ -6,6 +6,7 @@ package com.ivanceras.db.api;
 import static com.ivanceras.fluent.sql.SQL.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -330,6 +331,7 @@ public abstract class DB_Rdbms{
 		String[] columns = model.getAttributes();
 		String[] correctedColumns = new String[columns.length];
 		String[] ignoredColumns = dao.get_IgnoreColumn();
+		System.out.println("ignored columns: "+Arrays.asList(ignoredColumns));
 		String[] defaultedColumValues = dao.get_DefaultedColumnValues();
 		for(int i = 0; i < columns.length; i++){
 			correctedColumns[i] = getDBElementName(model,columns[i]);

@@ -4,7 +4,9 @@
 package com.ivanceras.db.api;
 
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
@@ -20,7 +22,7 @@ public class SynchronousEntityManager implements EntityManager{
 	/**
 	 * Globally enable/disable record changelog. Enable by default
 	 */
-	private ContextProvider context;
+	private ContextProvider contextProvider;
 
 	static SynchronousEntityManager singleton;
 
@@ -30,6 +32,8 @@ public class SynchronousEntityManager implements EntityManager{
 	 * else(read-only query) have to get a read-only database connection which would be faster.
 	 */
 	boolean isTransactionBased = false;
+
+	private HashMap<String, Object> context;
 
 	/**
 	 * Use this carefully, use only when writing scripts to export data between two database sources
@@ -148,12 +152,12 @@ public class SynchronousEntityManager implements EntityManager{
 
 	private int deleteRecord(ModelDef model, Filter... filters) throws DatabaseException{
 		DAO[] affectedRecords = null;
-		if(context != null && context.isEnableRecordChangelog()){
+		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
 			affectedRecords = getAffectedRecords(model, filters);
 		}
 		int ret = db.delete(model, filters);
-		if(context != null && context.isEnableRecordChangelog()){
-			context.recordDeleteChange(model, affectedRecords);
+		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
+			contextProvider.recordDeleteChange(model, affectedRecords);
 		}
 		return ret;
 	}
@@ -353,13 +357,14 @@ public class SynchronousEntityManager implements EntityManager{
 	public <T extends DAO> T insert(DAO dao, boolean excludePrimaryKeys)  throws DatabaseException{
 		ModelDef model = db.getModelMetaDataDefinition().getDefinition(dao.getModelName());
 		if(excludePrimaryKeys){
-			dao.set_IgnoreColumn( model.getPrimaryAttributes());
+			dao.add_IgnoreColumn( model.getPrimaryAttributes());
 		}
 		return insertRecord(dao, model, true);
 	} 
 	@Override
 	public <T extends DAO> T insert(DAO dao)  throws DatabaseException{
-		return insertRecord(dao, db.getModelMetaDataDefinition().getDefinition(dao.getModelName()), true);
+		ModelDef model = db.getModelMetaDataDefinition().getDefinition(dao.getModelName());
+		return insertRecord(dao, model, true);
 	} 
 
 	/**
@@ -379,8 +384,8 @@ public class SynchronousEntityManager implements EntityManager{
 	@SuppressWarnings("unchecked")
 	protected <T extends DAO> T insertRecord(DAO dao, ModelDef model, boolean autoCast) throws DatabaseException{
 		DAO ret = db.insert(dao, null, model, null);
-		if(context != null && context.isEnableRecordChangelog() && context.isEnableInsertChangelog()){
-			context.recordInsertChange(dao);
+		if(contextProvider != null && contextProvider.isEnableRecordChangelog() && contextProvider.isEnableInsertChangelog()){
+			contextProvider.recordInsertChange(dao);
 		}
 		if(autoCast){
 			Class<? extends DAO> clazz = getDaoClass(dao.getModelName());
@@ -465,7 +470,7 @@ public class SynchronousEntityManager implements EntityManager{
 
 	@Override
 	public void setContextProvider(ContextProvider context) {
-		this.context = context;
+		this.contextProvider = context;
 	}
 
 	@Override
@@ -499,7 +504,7 @@ public class SynchronousEntityManager implements EntityManager{
 
 	private <T extends DAO> T updateRecord(DAO dao, ModelDef model, Filter[] filters) throws DatabaseException{
 		DAO[] affectedRecords = null;
-		if(context != null && context.isEnableRecordChangelog()){
+		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
 			affectedRecords = getAffectedRecords(model, filters);
 			System.err.println("There are "+affectedRecords.length+" affected record(s)");
 			for(DAO ar : affectedRecords){
@@ -508,8 +513,8 @@ public class SynchronousEntityManager implements EntityManager{
 		}
 		DAO ret = db.update(dao, model, filters);
 		Class<? extends DAO> clazz = getDaoClass(dao.getModelName());
-		if(context != null && context.isEnableRecordChangelog()){
-			context.recordUpdateChange(dao, affectedRecords);
+		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
+			contextProvider.recordUpdateChange(dao, affectedRecords);
 		}
 		return cast(clazz, ret);
 	}
@@ -530,6 +535,21 @@ public class SynchronousEntityManager implements EntityManager{
 	public void writeToOutputStream(Long blob_data, OutputStream out)
 			throws DatabaseException {
 		db.writeToOutputStream(blob_data, out);
+	}
+
+	@Override
+	public void setContext(String key, Object value) {
+		context.put(key, value);
+	}
+
+	@Override
+	public Map<String, Object> getContext() {
+		return this.context;
+	}
+
+	@Override
+	public Object getContext(String key) {
+		return this.context.get(key);
 	}
 
 }

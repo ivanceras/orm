@@ -1,7 +1,9 @@
 package com.ivanceras.db.api;
 
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
@@ -115,6 +117,12 @@ public interface EntityManager{
 	public long writeToBlob(String filename) throws DatabaseException;
 
 	public void writeToOutputStream(Long blob_data, OutputStream out) throws DatabaseException;
+
+	public void setContext(String key, Object value);
+	
+	public Map<String, Object> getContext();
+	
+	public Object getContext(String key);
 
 	
 }
