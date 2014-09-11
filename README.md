@@ -87,7 +87,15 @@ But this exists because all other ORM i came across does not fit all my requirem
           ON UPDATE NO ACTION ON DELETE NO ACTION
     );
     
-       
+    CREATE TABLE users
+    (
+      user_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+      username character varying,
+      password character varying,
+      email character varying,
+      CONSTRAINT users_pkey PRIMARY KEY (user_id)
+    );
+           
 
 ````
 #### Note
@@ -101,15 +109,10 @@ But this exists because all other ORM i came across does not fit all my requirem
 
     public class Product{
     
-        	private java.util.UUID organizationId;
-        	private java.util.UUID clientId;
         	private java.util.Date created;
         	private java.util.UUID createdby;
-        	private java.util.Date updated;
-        	private java.util.UUID updatedby;
         	private String name;
         	private String description;
-        	private String help;
         	private Boolean active;
         	private java.util.UUID productId;
         	private java.util.UUID parentProductId;
@@ -136,12 +139,6 @@ But this exists because all other ORM i came across does not fit all my requirem
     
     public class ProductAvailability{
 
-        	private java.util.UUID organizationId;
-        	private java.util.UUID clientId;
-        	private java.util.Date created;
-        	private java.util.UUID createdby;
-        	private java.util.Date updated;
-        	private java.util.UUID updatedby;
         	private java.util.UUID productId;
         	private Boolean available;
         	private Boolean alwaysAvailable;
@@ -161,15 +158,8 @@ But this exists because all other ORM i came across does not fit all my requirem
         
     public class Category{
     
-        	private java.util.UUID organizationId;
-        	private java.util.UUID clientId;
-        	private java.util.Date created;
-        	private java.util.UUID createdby;
-        	private java.util.Date updated;
-        	private java.util.UUID updatedby;
         	private String name;
         	private String description;
-        	private String help;
         	private Boolean active;
         	private java.util.UUID categoryId;
         
@@ -185,12 +175,8 @@ But this exists because all other ORM i came across does not fit all my requirem
         
     public class ProductCategory{
         
-        	private java.util.UUID organizationId;
-        	private java.util.UUID clientId;
         	private java.util.Date created;
         	private java.util.UUID createdby;
-        	private java.util.Date updated;
-        	private java.util.UUID updatedby;
         	private java.util.UUID productId;
         	private java.util.UUID categoryId;
         
@@ -201,6 +187,21 @@ But this exists because all other ORM i came across does not fit all my requirem
         	//setters and getters
         .....
     }
+    
+    
+    public class Users{
+
+        	private String name;
+        	private Boolean active;
+        	private java.util.UUID userId;
+        	private String username;
+        	private String password;
+        	private String email;
+        	
+        	//setters and getters
+        .....
+    }
+    
 ````
 
 ##Usage:
