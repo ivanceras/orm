@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>com.ivanceras</groupId>
-		<artifactId>ivanceras</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 
@@ -27,9 +27,7 @@
 	<repositories>
 		<repository>
 			<id>datanucleus-repo</id>
-			<url>
-	http://www.datanucleus.org/downloads/maven2/
-	</url>
+			<url>http://www.datanucleus.org/downloads/maven2/</url>
 		</repository>
 	</repositories>
 
@@ -73,10 +71,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.1-901.jdbc4</version>
+			<version>9.3-1102-jdbc41</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
