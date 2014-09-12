@@ -214,9 +214,9 @@ In your controller, you can use the generated classes like this:
     */
     public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
 		DAO_Users user = em.getOne(DAO_Users.class, 
-				new Filter(users.username, Filter.EQUAL, usernameOrEmail)
-		.or(new Filter(users.email, Filter.EQUAL, usernameOrEmail))
-				);
+				            new Filter(users.username, Filter.EQUAL, usernameOrEmail)
+				           .or(new Filter(users.email, Filter.EQUAL, usernameOrEmail))
+				        );
 		if(user != null){
 			return user.getUserId();
 		}
