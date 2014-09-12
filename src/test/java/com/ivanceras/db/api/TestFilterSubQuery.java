@@ -16,7 +16,7 @@ public class TestFilterSubQuery {
 	private static EntityManager em;
 	private static IDatabase db;
 
-	@BeforeClass
+//	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DBConfig config = TestCommons.getDBConfig();
 		db = new DB_PostgreSQL(config);
@@ -24,21 +24,21 @@ public class TestFilterSubQuery {
 		em.startPrintSqls();
 	}
 
-	@AfterClass
+//	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		em.resetDB();
 	}
 
 	
-	@Before
+//	@Before
 	public void setUp() throws Exception {
 	}
 
-	@After
+//	@After
 	public void tearDown() throws Exception {
 	}
 	
-	@Test
+//	@Test
 	public void test() throws DatabaseException{
 		ModelDef option = new ModelDef("Option");
 		option.setNamespace("dax");

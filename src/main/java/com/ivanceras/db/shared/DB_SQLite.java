@@ -10,6 +10,7 @@ import java.util.Map;
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.Aggregate;
+import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.DB_Rdbms;
 import com.ivanceras.db.api.DeclaredQuery;
 import com.ivanceras.db.api.IDatabase;
@@ -30,7 +31,7 @@ import com.ivanceras.fluent.sql.SQL;
  * @author lee
  *
  */
-public abstract class DB_SQLite extends DB_Rdbms implements IDatabase {
+public class DB_SQLite extends DB_Rdbms implements IDatabase {
 
 	@Override
 	public void beginTransaction() throws DatabaseException {
@@ -372,6 +373,40 @@ public abstract class DB_SQLite extends DB_Rdbms implements IDatabase {
 		else{
 			return record;
 		}
+	}
+
+	@Override
+	public DAO[] select(ModelMetaData meta, Query query)
+			throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DAO update(DAO dao, ModelDef model, Filter[] filters)
+			throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T extends DAO> T[] select(SQL sql,
+			Map<String, ColumnPair> renamedColumns) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DAO insert(DAO dao, ModelMetaData meta, ModelDef model, Query query)
+			throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void search(Query query, String keyword) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

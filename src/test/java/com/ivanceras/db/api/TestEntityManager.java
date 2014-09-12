@@ -18,19 +18,19 @@ public class TestEntityManager {
 	private SynchronousEntityManager em;
 	private ModelDef model;
 	
-	@BeforeClass
+//	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DBConfig config = TestCommons.getDBConfig();
 		db = new DB_PostgreSQL(config);
 	}
 
-	@AfterClass
+//	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
 
 
 
-	@Before
+//	@Before
 	public void setUp() throws Exception {
 		em = new SynchronousEntityManager(db);
 		model = TestCommons.getUserModel();
@@ -43,12 +43,12 @@ public class TestEntityManager {
 		em.createModel(model);
 	}
 
-	@After
+//	@After
 	public void tearDown() throws Exception {
 		em = null;
 	}
 	
-	@Test
+//	@Test
 	public void testInsert() throws DatabaseException{
 		DAO dao = new DAO("User");
 		dao.set_Value("name", "lee");

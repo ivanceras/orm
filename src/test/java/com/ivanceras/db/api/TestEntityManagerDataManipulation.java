@@ -28,17 +28,17 @@ public class TestEntityManagerDataManipulation {
 	private DAO dao;
 	private ModelMetaData meta;
 	
-	@BeforeClass
+//	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DBConfig config = TestCommons.getDBConfig();
 		db = new DB_PostgreSQL(config);
 	}
 
-	@AfterClass
+//	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@Before
+//	@Before
 	public void setUp() throws Exception {
 		meta = new ModelMetaData();
 		db.setModelMetaDataDefinition(meta);
@@ -62,12 +62,12 @@ public class TestEntityManagerDataManipulation {
 		
 	}
 
-	@After
+//	@After
 	public void tearDown() throws Exception {
 		em.resetDB();
 	}
 
-	@Test
+//	@Test
 	public void testRetrieveData() throws DatabaseException {
 		Query query = new Query(model);
 		DAO[] daoList = em.retrieveRecords(query, false);
@@ -88,7 +88,7 @@ public class TestEntityManagerDataManipulation {
 		assertEquals(0, daoList.length);
 	}
 	
-	@Test
+//	@Test
 	public void testSearch() throws DatabaseException{
 		Query q1 = null;
 		DAO[] result = em.search(q1, "lee");

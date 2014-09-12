@@ -26,7 +26,7 @@ public class DAOUtilsTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void test2() {
 		
 		ModelDef model = new ModelDef("series");

@@ -8,7 +8,7 @@ import com.ivanceras.db.shared.exception.DAOArrayException;
 
 public class TestDAOArray {
 
-	@Test
+//	@Test
 	public void test() {
 		DAO dao1 = new DAO("User");
 		dao1.set_Value("firstName", "Lee");
