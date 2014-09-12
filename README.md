@@ -229,7 +229,7 @@ In your controller, you can use the generated classes like this:
     * Getting the list of Products created by a certain user
     */ 
 
-    	public DAO_Product[] listUserProducts(EntityManager em, String username, int page, int itemsPerPage) throws DatabaseException {
+    public DAO_Product[] listUserProducts(EntityManager em, String username, int page, int itemsPerPage) throws DatabaseException{
 		UUID userId = getUserId(em, username);
 		System.err.println("UserId: "+userId);
 		Query query = new Query(em, );
@@ -259,6 +259,7 @@ In your controller, you can use the generated classes like this:
 	}
 
 ````
+
  * EntityManager takes care of the inserting, updating and retrieving of records.
  * Most commonly used methods are:
      * em.getOne
