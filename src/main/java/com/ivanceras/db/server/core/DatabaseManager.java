@@ -29,18 +29,18 @@ public class DatabaseManager {
 			db = new DB_PostgreSQL(config);
 			return db;
 		}
-		else if(dbType.equals(HIVE )){ /** hive support */
-			db = new DB_Hive(config); 
-			return db;
-		}
-		else if(dbType.equals(CASSANDRA)){ /** tentative support for Cassandra */
-			db = new DB_Cassandra(config); 
-			return db;
-		}
-		else if(dbType.equals(DYNAMO)){ /** tentative support for Cassandra */
-			db = new DB_Dynamo(config); 
-			return db;
-		}
+		//		else if(dbType.equals(HIVE )){ /** hive support */
+		//			db = new DB_Hive(config); 
+		//			return db;
+		//		}
+		//		else if(dbType.equals(CASSANDRA)){ /** tentative support for Cassandra */
+		//			db = new DB_Cassandra(config); 
+		//			return db;
+		//		}
+		//		else if(dbType.equals(DYNAMO)){ /** tentative support for Cassandra */
+		//			db = new DB_Dynamo(config); 
+		//			return db;
+		//		}
 		//		else if(dbType.equals(ORACLE)){ /** tentative support for Oracle */
 		//			db = new DB_Oracle(config, overwriteFile); 
 		//			return db;

@@ -409,7 +409,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		return dbConfig;
 	}
 
-	protected Connection getDBConnection(String dbUrl, String dbUser,
+	public Connection getDBConnection(String dbUrl, String dbUser,
 			String dbPassword) throws DBConnectionException {
 		Connection c = null;
 		try {
@@ -535,6 +535,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	 */
 	public Statement getPreparedStatement(String sql,
 			Object[] parameters, boolean returnValues) throws DatabaseException {
+		System.out.println("sql: "+sql);
 		Statement stmt = null;
 		try {
 			if(supportPreparedStatement()){
