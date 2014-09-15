@@ -56,19 +56,27 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>0.11.0</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-core</artifactId>
-			<version>1.0.3</version>
-		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.hive</groupId> -->
+		<!-- <artifactId>hive-jdbc</artifactId> -->
+		<!-- <version>0.11.0</version> -->
+		<!-- </dependency> -->
+
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.hadoop</groupId> -->
+		<!-- <artifactId>hadoop-core</artifactId> -->
+		<!-- <version>1.0.3</version> -->
+		<!-- </dependency> -->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -77,11 +85,12 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>${gwtVersion}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.google.gwt</groupId> -->
+<!-- 			<artifactId>gwt-user</artifactId> -->
+<!-- 			<version>${gwtVersion}</version> -->
+<!-- 		</dependency> -->
+
 		<!-- <dependency> -->
 		<!-- <groupId>com.google.gwt</groupId> -->
 		<!-- <artifactId>gwt-dev</artifactId> -->
@@ -106,17 +115,17 @@
 			<version>2.0.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache-extras.cassandra-jdbc</groupId>
-			<artifactId>cassandra-jdbc</artifactId>
-			<version>1.2.5</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache-extras.cassandra-jdbc</groupId> -->
+		<!-- <artifactId>cassandra-jdbc</artifactId> -->
+		<!-- <version>1.2.5</version> -->
+		<!-- </dependency> -->
 
-		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk</artifactId>
-			<version>1.6.7</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>com.amazonaws</groupId> -->
+		<!-- <artifactId>aws-java-sdk</artifactId> -->
+		<!-- <version>1.6.7</version> -->
+		<!-- </dependency> -->
 
 
 	</dependencies>

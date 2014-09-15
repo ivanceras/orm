@@ -232,7 +232,7 @@ In your controller, you can use the generated classes like this:
     public DAO_Product[] listUserProducts(EntityManager em, String username, int page, int itemsPerPage) throws DatabaseException{
 		UUID userId = getUserId(em, username);
 		System.err.println("UserId: "+userId);
-		Query query = new Query(em, );
+		Query query = new Query(em, DAO_Product.class);
 		query.setPage(page);
 		query.setItemsPerPage(itemsPerPage);
 		query.addFilter(new Filter(product.active, Filter.EQUAL, true));
