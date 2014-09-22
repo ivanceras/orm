@@ -10,13 +10,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>orm</artifactId>
+  <version>0.0.5-SNAPSHOT</version>
 	<name>orm</name>
 	<description>ORM - Core Library for Database</description>
   <scm>
     <connection>scm:git:https://github.com/ivanceras/orm.git</connection>
     <developerConnection>scm:git:https://github.com/ivanceras/orm.git</developerConnection>
     <url>scm:git:https://github.com/ivanceras/orm.git</url>
-    <tag>orm-0.0.4</tag>
+    <tag>HEAD</tag>
   </scm>
 
 	<properties>
