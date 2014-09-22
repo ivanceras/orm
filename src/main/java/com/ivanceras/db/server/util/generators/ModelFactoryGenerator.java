@@ -29,23 +29,23 @@ public class ModelFactoryGenerator {
 		boolean useCamelCase = conf.useCamelCase;
 
 		SourceWriter sw = new StringSourceWriter();
-		sw.println("package "+conf.metaDataPackageName+";");
-		sw.println();
-		sw.println("import java.util.Map;");
-		sw.println("import java.util.LinkedHashMap;");
-		sw.println("import "+DAO.class.getCanonicalName()+";");
-		sw.println("import "+conf.daopackageName+".*;");
-		sw.println("");
-		sw.println("import "+com.ivanceras.db.api.ModelDef.class.getCanonicalName()+";");
-		sw.println("");
-		sw.println("public class "+conf.metaDataClassName+" extends "+com.ivanceras.db.model.ModelMetaData.class.getCanonicalName()+"{");
-		sw.println("");
-		sw.println("");
-		sw.println("\tpublic static Map<Class<? extends DAO>, ModelDef> modelDefList = new LinkedHashMap<Class<? extends DAO>, ModelDef>();");
-		sw.println("\tpublic static Map<String, ModelDef> namedModelDefList = new LinkedHashMap<String, ModelDef>();");
-		sw.println("\tpublic static Map<Class<? extends DAO>, String> modelNameListNdx = new LinkedHashMap<Class<? extends DAO>, String>();");
-		sw.println("\tpublic static Map<String, Class<? extends DAO>> classListNdx = new LinkedHashMap<String, Class<? extends DAO>>();");
-		sw.println("");
+		sw.lnprint("package "+conf.metaDataPackageName+";");
+		sw.lnprint();
+		sw.lnprint("import java.util.Map;");
+		sw.lnprint("import java.util.LinkedHashMap;");
+		sw.lnprint("import "+DAO.class.getCanonicalName()+";");
+		sw.lnprint("import "+conf.daopackageName+".*;");
+		sw.lnprint("");
+		sw.lnprint("import "+com.ivanceras.db.api.ModelDef.class.getCanonicalName()+";");
+		sw.lnprint("");
+		sw.lnprint("public class "+conf.metaDataClassName+" extends "+com.ivanceras.db.model.ModelMetaData.class.getCanonicalName()+"{");
+		sw.lnprint("");
+		sw.lnprint("");
+		sw.lnprint("\tpublic static Map<Class<? extends DAO>, ModelDef> modelDefList = new LinkedHashMap<Class<? extends DAO>, ModelDef>();");
+		sw.lnprint("\tpublic static Map<String, ModelDef> namedModelDefList = new LinkedHashMap<String, ModelDef>();");
+		sw.lnprint("\tpublic static Map<Class<? extends DAO>, String> modelNameListNdx = new LinkedHashMap<Class<? extends DAO>, String>();");
+		sw.lnprint("\tpublic static Map<String, Class<? extends DAO>> classListNdx = new LinkedHashMap<String, Class<? extends DAO>>();");
+		sw.lnprint("");
 		for(int i = 0; i < modeldefList.length; i++){
 			ModelDef modeldef = modeldefList[i];
 			String className = CStringUtils.capitalize(modeldef.getModelName(), useCamelCase);
@@ -62,100 +62,99 @@ public class ModelFactoryGenerator {
 					usedInTable.put(att, tableSet);
 				}
 			}
-			sw.println("");
-			sw.println("\tvoid init"+i+"(){");
-			sw.println("");
-			sw.println("\t\tString   namespace                               = \""+modeldef.getNamespace()+"\";");
-			sw.println("\t\tString   modelName                               = \""+className+"\";");
-			sw.println("\t\tString[] attributes                              = "+getStringListRepresentation(modeldef.getAttributes())+";");
-			sw.println("\t\tString   generatedAttribute                      = "+(modeldef.getGeneratedAttribute()!=null?("\""+modeldef.getGeneratedAttribute()+"\""):null)+";");
-			sw.println("\t\tString[] primaryAttributes                       = "+getStringListRepresentation(modeldef.getPrimaryAttributes())+";");
-			sw.println("\t\tString[] uniqueAttributes                        = "+getStringListRepresentation(modeldef.getUniqueAttributes())+";");
-			sw.println("\t\tString[] dataTypes                               = "+getStringListRepresentation(modeldef.getDataTypes())+";");
-			//			buff.println("\t\tString[] attributeComments                       = "+getStringListRepresentation(modeldef.getAttributeComments())+";");
-			sw.println("");
-			sw.println("\t\tString[] hasOneLocalColumn                       = "+getStringListRepresentation(modeldef.getHasOneLocalColumn())+";");
-			sw.println("\t\tString[] hasOne                                  = "+getStringListRepresentation(modeldef.getHasOne())+";");
-			sw.println("\t\tString[] hasOneReferencedColumn                  = "+getStringListRepresentation(modeldef.getHasOneReferencedColumn())+";");
-			sw.println("");
+			sw.lnprint("");
+			sw.lnprint("\tvoid init"+i+"(){");
+			sw.lnprint("");
+			sw.lnprint("\t\tString   namespace                               = \""+modeldef.getNamespace()+"\";");
+			sw.lnprint("\t\tString   modelName                               = \""+className+"\";");
+			sw.lnprint("\t\tString[] attributes                              = "+getStringListRepresentation(modeldef.getAttributes())+";");
+			sw.lnprint("\t\tString   generatedAttribute                      = "+(modeldef.getGeneratedAttribute()!=null?("\""+modeldef.getGeneratedAttribute()+"\""):null)+";");
+			sw.lnprint("\t\tString[] primaryAttributes                       = "+getStringListRepresentation(modeldef.getPrimaryAttributes())+";");
+			sw.lnprint("\t\tString[] uniqueAttributes                        = "+getStringListRepresentation(modeldef.getUniqueAttributes())+";");
+			sw.lnprint("\t\tString[] dataTypes                               = "+getStringListRepresentation(modeldef.getDataTypes())+";");
+			//			buff.lnprint("\t\tString[] attributeComments                       = "+getStringListRepresentation(modeldef.getAttributeComments())+";");
+			sw.lnprint("");
+			sw.lnprint("\t\tString[] hasOneLocalColumn                       = "+getStringListRepresentation(modeldef.getHasOneLocalColumn())+";");
+			sw.lnprint("\t\tString[] hasOne                                  = "+getStringListRepresentation(modeldef.getHasOne())+";");
+			sw.lnprint("\t\tString[] hasOneReferencedColumn                  = "+getStringListRepresentation(modeldef.getHasOneReferencedColumn())+";");
+			sw.lnprint("");
 
-			sw.println("\t\tString[] hasMany                                 = "+getStringListRepresentation(modeldef.getHasMany())+";");
-			sw.println("\t\tString[] hasManyReferencedColumn                 = "+getStringListRepresentation(modeldef.getHasManyReferencedColumn())+";");
-			sw.println("\t\tString[] hasManyLocalColumn                      = "+getStringListRepresentation(modeldef.getHasManyLocalColumn())+";");
-			sw.println("");
+			sw.lnprint("\t\tString[] hasMany                                 = "+getStringListRepresentation(modeldef.getHasMany())+";");
+			sw.lnprint("\t\tString[] hasManyReferencedColumn                 = "+getStringListRepresentation(modeldef.getHasManyReferencedColumn())+";");
+			sw.lnprint("\t\tString[] hasManyLocalColumn                      = "+getStringListRepresentation(modeldef.getHasManyLocalColumn())+";");
+			sw.lnprint("");
 			if(modeldef.getOwners() != null){
-				sw.println("\t\tString[] owners                                  = "+getStringListRepresentation(modeldef.getOwners())+";");
+				sw.lnprint("\t\tString[] owners                                  = "+getStringListRepresentation(modeldef.getOwners())+";");
 			}
 			if(modeldef.getPrimaryOwner() != null){
-				sw.println("\t\tString primaryOwner                              =  \""+modeldef.getPrimaryOwner()+"\";");
+				sw.lnprint("\t\tString primaryOwner                              =  \""+modeldef.getPrimaryOwner()+"\";");
 			}
 			if(modeldef.getDirectChildren() != null){
-				sw.println("\t\tString[] directChildren                          = "+getStringListRepresentation(modeldef.getDirectChildren())+";");
+				sw.lnprint("\t\tString[] directChildren                          = "+getStringListRepresentation(modeldef.getDirectChildren())+";");
 			}
 			if(modeldef.getParentClass() != null){
-				sw.println("\t\tString parentClass                         		 = \""+modeldef.getParentClass()+"\";");
+				sw.lnprint("\t\tString parentClass                         		 = \""+modeldef.getParentClass()+"\";");
 			}
 			if(modeldef.getSubClass() != null && modeldef.getSubClass().length > 0){
-				sw.println("\t\tString[] subClasses								 = "+getStringListRepresentation(modeldef.getSubClass())+";");
+				sw.lnprint("\t\tString[] subClasses								 = "+getStringListRepresentation(modeldef.getSubClass())+";");
 			}
-			sw.println("");
+			sw.lnprint("");
 
-			sw.println("\t\tboolean  caseSensitive								= "+modeldef.isCaseSensitive()+";");
-			sw.println("\t\t");
+			sw.lnprint("\t\tboolean  caseSensitive								= "+modeldef.isCaseSensitive()+";");
+			sw.lnprint("\t\t");
 
-			sw.println("\t\tModelDef modelDef = new ModelDef(");
-			sw.println("\t\t\tnamespace, ");
-			sw.println("\t\t\tmodelName, ");
-			sw.println("\t\t\tattributes,");
-			sw.println("\t\t\tgeneratedAttribute,");
-			sw.println("\t\t\tdataTypes, ");
-			sw.println("\t\t\tprimaryAttributes, ");
-			sw.println("\t\t\tuniqueAttributes, ");
-			sw.println("\t\t\thasOne, ");
-			sw.println("\t\t\thasOneLocalColumn, ");
-			sw.println("\t\t\thasOneReferencedColumn, ");
-			sw.println("\t\t\thasMany, ");
-			sw.println("\t\t\thasManyReferencedColumn, ");
-			sw.println("\t\t\thasManyLocalColumn, ");
-			sw.println("\t\t\tcaseSensitive);");
-			sw.println("\t\t\t\t");
-			sw.println("\t\tmodelDef.setPolymorphic("+modeldef.isPolymorphic()+");");
-			sw.println("\t\tmodelDef.setTableName(\""+modeldef.getTableName()+"\");");
-			sw.println("\t\tmodelDef.setDescription(\""+modeldef.getDescription()+"\");");
-			//			buff.println("\t\tmodelDef.setAttributeComments(attributeComments);");
+			sw.lnprint("\t\tModelDef modelDef = new ModelDef(");
+			sw.lnprint("\t\t\tnamespace, ");
+			sw.lnprint("\t\t\tmodelName, ");
+			sw.lnprint("\t\t\tattributes,");
+			sw.lnprint("\t\t\tgeneratedAttribute,");
+			sw.lnprint("\t\t\tdataTypes, ");
+			sw.lnprint("\t\t\tprimaryAttributes, ");
+			sw.lnprint("\t\t\tuniqueAttributes, ");
+			sw.lnprint("\t\t\thasOne, ");
+			sw.lnprint("\t\t\thasOneLocalColumn, ");
+			sw.lnprint("\t\t\thasOneReferencedColumn, ");
+			sw.lnprint("\t\t\thasMany, ");
+			sw.lnprint("\t\t\thasManyReferencedColumn, ");
+			sw.lnprint("\t\t\thasManyLocalColumn, ");
+			sw.lnprint("\t\t\tcaseSensitive);");
+			sw.lnprint("\t\t\t\t");
+			sw.lnprint("\t\tmodelDef.setPolymorphic("+modeldef.isPolymorphic()+");");
+			sw.lnprint("\t\tmodelDef.setTableName(\""+modeldef.getTableName()+"\");");
+			sw.lnprint("\t\tmodelDef.setDescription(\""+modeldef.getDescription()+"\");");
+			//			buff.lnprint("\t\tmodelDef.setAttributeComments(attributeComments);");
 			if(modeldef.getOwners() != null){
-				sw.println("\t\tmodelDef.setOwners(owners);");
+				sw.lnprint("\t\tmodelDef.setOwners(owners);");
 			}
 			if(modeldef.getPrimaryOwner() != null){
-				sw.println("\t\tmodelDef.setPrimaryOwner(primaryOwner);");
+				sw.lnprint("\t\tmodelDef.setPrimaryOwner(primaryOwner);");
 			}
 			if(modeldef.getDirectChildren() != null){
-				sw.println("\t\tmodelDef.setDirectChildren(directChildren);");
+				sw.lnprint("\t\tmodelDef.setDirectChildren(directChildren);");
 			}
 			if(modeldef.getParentClass() != null){
-				sw.println("\t\tmodelDef.setParentClass(parentClass);");
+				sw.lnprint("\t\tmodelDef.setParentClass(parentClass);");
 			}
 			if(modeldef.getSubClass() != null && modeldef.getSubClass().length > 0){
-				sw.println("\t\tmodelDef.setSubClass(subClasses);");
+				sw.lnprint("\t\tmodelDef.setSubClass(subClasses);");
 			}
-			sw.println("\t\tmodelDefList.put(DAO_"+className+".class, modelDef);");
-			sw.println("\t\tnamedModelDefList.put(\""+className+"\", modelDef);");
-			sw.println("\t\tmodelNameListNdx.put(DAO_"+className+".class, \""+className+"\");");
-			sw.println("\t\tclassListNdx.put(\""+className+"\", DAO_"+className+".class);");
-			sw.println("");
-			sw.println("");
-			sw.println("\t}");
+			sw.lnprint("\t\tmodelDefList.put(DAO_"+className+".class, modelDef);");
+			sw.lnprint("\t\tnamedModelDefList.put(\""+className+"\", modelDef);");
+			sw.lnprint("\t\tmodelNameListNdx.put(DAO_"+className+".class, \""+className+"\");");
+			sw.lnprint("\t\tclassListNdx.put(\""+className+"\", DAO_"+className+".class);");
+			sw.lnprint("");
+			sw.lnprint("");
+			sw.lnprint("\t}");
 		}
-		sw.println("");
-		sw.println("");
-		sw.println("\tpublic "+conf.metaDataClassName+"(){");
-		sw.println("\t\tsuper(modelDefList, namedModelDefList, modelNameListNdx, classListNdx);");
+		sw.lnprint("");
+		sw.lnprint("");
+		sw.lnprint("\tpublic "+conf.metaDataClassName+"(){");
+		sw.lnprint("\t\tsuper(modelDefList, namedModelDefList, modelNameListNdx, classListNdx);");
 		for(int i = 0; i < modeldefList.length; i++){
-			sw.println("\t\tinit"+i+"();");
+			sw.lnprint("\t\tinit"+i+"();");
 		}
-		sw.println("\t}");
-		sw.println("}");
-		//		System.out.println("There are "+columnSet.size()+" unique column names...");
+		sw.lnprint("\t}");
+		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), conf.metaDataDirectory, conf.metaDataClassName+".java");
 		return true;
 	}

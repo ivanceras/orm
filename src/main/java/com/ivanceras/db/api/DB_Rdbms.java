@@ -11,15 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.JoinPair.Join;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
+import com.ivanceras.db.shared.datatype.DBDataType;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.SpecialCase;
@@ -29,8 +27,6 @@ import com.ivanceras.fluent.sql.SQL;
 public abstract class DB_Rdbms{
 
 	public static final String subclasstable = "subclasstable";
-
-	private static Logger log = LogManager.getLogger("DB_Rdbms");
 
 	private void addJoins(SQL sql, Query query){
 		JoinPair[] joinPairs = query.getJoinPairs();
@@ -201,13 +197,9 @@ public abstract class DB_Rdbms{
 		for(int i = 0; i < columns.length; i++){
 			if(doComma){sql1.comma();}else{doComma=true;}
 			sql1.FIELD(columns[i]);
-			try {
-				String dbDataType = getEquivalentDBDataType(dataTypes[i]);
-				if(dbDataType != null){
-					sql1.keyword(dbDataType);
-				}
-			} catch (DataTypeException e) {
-				e.printStackTrace();
+			String dbDataType = getEquivalentDBDataType(dataTypes[i]);
+			if(dbDataType != null){
+				sql1.keyword(dbDataType);
 			}
 		}
 		if(getStorageEngine() != null){
@@ -369,8 +361,13 @@ public abstract class DB_Rdbms{
 						value = dao.get_Value(columns[i]);
 					}
 					value = getEquivalentDBObject(value);
-					if(doComma){sql1.comma();}else{doComma=true;}
-					sql1.VALUE(value);
+					
+					if(supportPreparedStatement()){
+						if(doComma){sql1.comma();}else{doComma=true;}
+						sql1.VALUE(value);
+					}else{
+						sql1.FIELD("'"+(value != null ? value.toString(): null)+"'");
+					}
 				}
 			}
 			sql1.closeParen();
@@ -390,7 +387,6 @@ public abstract class DB_Rdbms{
 	}
 
 	public SQL buildSQL(ModelMetaData meta,Query query, boolean useCursor) {
-		long t1 = System.nanoTime();
 		SQL sql1 = new SQL();
 		List<String> mentionedColumns = new ArrayList<String>();
 
@@ -525,8 +521,7 @@ public abstract class DB_Rdbms{
 				sql1.FIELD(sql4);
 			}
 		}
-		long t2 = System.nanoTime();
-		log.debug(""+((float)(t2-t1))/1000000.0f+" ms to build select statement");
+
 		return sql1;
 	}
 
@@ -596,7 +591,12 @@ public abstract class DB_Rdbms{
 				}else{
 					sql1.FIELD(columns[i]);
 					sql1.EQUAL();
-					sql1.VALUE(value);
+					if(supportPreparedStatement()){
+						sql1.VALUE(value);
+					}
+					else{
+						sql1.FIELD("'"+( value != null ? value.toString(): null )+"'");
+					}
 				}
 			}
 		}
@@ -639,7 +639,11 @@ public abstract class DB_Rdbms{
 				sql1.keyword(filter.operator);
 			}
 			if(filter.value != null){
-				sql1.VALUE(filter.value);
+				if(supportPreparedStatement()){
+					sql1.VALUE(filter.value);
+				}else{
+					sql1.FIELD("'"+(filter.value != null ? filter.value.toString() : null )+"'");
+				}
 			}
 			if(filter.query != null){
 				String con = filter.getConnector();// OR ,AND
@@ -673,8 +677,10 @@ public abstract class DB_Rdbms{
 	protected abstract String getAutoIncrementColumnConstraint();
 
 
-	abstract protected String getDBElementName(ModelDef model, String schema);
-
+	protected String getDBElementName(ModelDef model, String element) {
+		return ApiUtils.getDBElementName(model, element);
+	}
+	
 	private String getDBTableName(ModelDef model) {
 		if(model==null) return null;
 		String tableName = model.getTableName();
@@ -701,8 +707,9 @@ public abstract class DB_Rdbms{
 		}
 	}
 
-	protected abstract String getEquivalentDBDataType(String javaDataType) throws DataTypeException;
-
+	public String getEquivalentDBDataType(String genDataType) {
+		return DBDataType.fromGenericType(genDataType);
+	}
 	protected abstract Object getEquivalentDBObject(Object record);
 
 
@@ -712,7 +719,7 @@ public abstract class DB_Rdbms{
 
 	protected String getTable(ModelDef model){
 		StringBuilder sb = new StringBuilder();
-		if(model.getNamespace() != null){
+		if(useSchema() && model.getNamespace() != null){
 			sb.append(model.getNamespace()+".");
 		}
 		sb.append(model.getTableName());

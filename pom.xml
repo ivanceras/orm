@@ -24,12 +24,6 @@
 		<buildDate>${maven.build.timestamp}</buildDate>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>datanucleus-repo</id>
-			<url>http://www.datanucleus.org/downloads/maven2/</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -65,37 +59,12 @@
 
 
 
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.hive</groupId> -->
-		<!-- <artifactId>hive-jdbc</artifactId> -->
-		<!-- <version>0.11.0</version> -->
-		<!-- </dependency> -->
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.hadoop</groupId> -->
-		<!-- <artifactId>hadoop-core</artifactId> -->
-		<!-- <version>1.0.3</version> -->
-		<!-- </dependency> -->
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.3-1102-jdbc41</version>
 		</dependency>
 
-
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.google.gwt</groupId> -->
-<!-- 			<artifactId>gwt-user</artifactId> -->
-<!-- 			<version>${gwtVersion}</version> -->
-<!-- 		</dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>com.google.gwt</groupId> -->
-		<!-- <artifactId>gwt-dev</artifactId> -->
-		<!-- <version>${gwtVersion}</version> -->
-		<!-- </dependency> -->
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

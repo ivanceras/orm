@@ -1,4 +1,4 @@
-package com.ivanceras.db.server.util;
+package com.ivanceras.db.shared;
 
 import com.ivanceras.db.api.EntityManager;
 import com.ivanceras.db.api.ModelDef;

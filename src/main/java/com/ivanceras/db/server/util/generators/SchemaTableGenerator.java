@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import com.ivanceras.commons.conf.Configuration;
-import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.commons.writer.FileUtil;
 import com.ivanceras.commons.writer.SourceWriter;
 import com.ivanceras.commons.writer.StringSourceWriter;
@@ -21,26 +20,26 @@ public class SchemaTableGenerator {
 	private void generateSchemaTableNames(ModelDef[] modelList, String packageName, String dir, String className){
 		LinkedHashMap<String, List<ModelDef>> schemaModels = groupModelsBySchame(modelList);
 		SourceWriter sw = new StringSourceWriter();
-		sw.println("package "+packageName+";");
-		sw.println();
-		sw.println("public class "+className+"{");
-		sw.println();
+		sw.lnprint("package "+packageName+";");
+		sw.lnprint();
+		sw.lnprint("public class "+className+"{");
+		sw.lnprint();
 		for(Entry<String, List<ModelDef>> entry : schemaModels.entrySet()){
 			String schemaName = entry.getKey();
 			if(schemaName.equals("public")){
 				schemaName = "public_";
 			}
-			sw.println("\tpublic class "+schemaName+"{");
-			sw.println("\t");
+			sw.lnprint("\tpublic class "+schemaName+"{");
+			sw.lnprint("\t");
 			List<ModelDef> list = entry.getValue();
 			for(ModelDef model : list){
-				sw.println("\t\tpublic static final String "+model.getTableName()+" = \""+model.getNamespace()+"."+model.getTableName()+"\";");
+				sw.lnprint("\t\tpublic static final String "+model.getTableName()+" = \""+model.getNamespace()+"."+model.getTableName()+"\";");
 			}
-			sw.println("");
-			sw.println("\t}");
-			sw.println("");
+			sw.lnprint("");
+			sw.lnprint("\t}");
+			sw.lnprint("");
 		}
-		sw.println("}");
+		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), dir, className+".java");
 	}
 

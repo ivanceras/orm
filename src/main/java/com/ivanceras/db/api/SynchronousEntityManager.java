@@ -33,7 +33,7 @@ public class SynchronousEntityManager implements EntityManager{
 	 */
 	boolean isTransactionBased = false;
 
-	private HashMap<String, Object> context;
+	private HashMap<String, Object> context = new HashMap<String, Object>();
 
 	/**
 	 * Use this carefully, use only when writing scripts to export data between two database sources
@@ -57,13 +57,13 @@ public class SynchronousEntityManager implements EntityManager{
 
 
 
-	private Filter buildSoundexFilter(String column, String keyword){
-		String columnWrapper = "soundex(substring("+column+" from 1 for "+keyword.length()+"))";
-		Filter f = new Filter(columnWrapper, Filter.EQUAL, keyword);
-		f.valueWrapperLeft = "soundex(";
-		f.valueWrapperRight = ")";
-		return f;
-	}
+//	private Filter buildSoundexFilter(String column, String keyword){
+//		String columnWrapper = "soundex(substring("+column+" from 1 for "+keyword.length()+"))";
+//		Filter f = new Filter(columnWrapper, Filter.EQUAL, keyword);
+//		f.valueWrapperLeft = "soundex(";
+//		f.valueWrapperRight = ")";
+//		return f;
+//	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -422,8 +422,11 @@ public class SynchronousEntityManager implements EntityManager{
 		DAO[] daoList = null;
 		SQL sql = db.buildSQL(db.getModelMetaDataDefinition(), query, false);
 		daoList = select(sql, query.getRenamedColumnPairs());
-		for(DAO dao : daoList){
-			dao.setRenamedColumns(query.getRenamedColumnPairs());
+		db.correctDataTypes(daoList, query.getModel());
+		if(daoList != null){
+			for(DAO dao : daoList){
+				dao.setRenamedColumns(query.getRenamedColumnPairs());
+			}
 		}
 
 		if(autoCast){
@@ -432,7 +435,7 @@ public class SynchronousEntityManager implements EntityManager{
 			if(model != null){
 				clazz = getDaoClass(model.getModelName());
 			}
-			if(clazz != null){//no casting when model or clazz is null
+			if(clazz != null && daoList != null){//no casting when model or clazz is null
 				return cast(clazz, daoList);
 			}
 			else{

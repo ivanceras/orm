@@ -27,6 +27,7 @@ public class DatabaseManager {
 		String dbType = config.getDbType();
 		if(dbType.equals(POSTGRESQL)){
 			db = new DB_PostgreSQL(config);
+			System.out.println("connecting using postgresql");
 			return db;
 		}
 		//		else if(dbType.equals(HIVE )){ /** hive support */

@@ -188,6 +188,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		}
 		return correctedParameters;
 	}
+	
 	@Override
 	public boolean createModel(ModelDef model) throws DatabaseException {
 		return createModel(model,true);
@@ -423,19 +424,11 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		return c;
 	}
 
-	@Override
-	protected String getDBElementName(ModelDef model, String element) {
-		return ApiUtils.getDBElementName(model, element);
-	}
 
 	abstract String getDBUrl();
 
 	abstract String getDriverClass();
 
-	@Override
-	public String getEquivalentDBDataType(String genDataType) {
-		return DBDataType.fromGenericType(genDataType);
-	}
 
 	@Override
 	protected Object getEquivalentDBObject(Object record) {

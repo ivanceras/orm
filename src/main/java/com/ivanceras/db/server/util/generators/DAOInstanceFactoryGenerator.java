@@ -26,49 +26,47 @@ public class DAOInstanceFactoryGenerator {
 
 		SourceWriter sw = new StringSourceWriter();
 		sw.print("package "+conf2.metaDataPackageName+";");
-		sw.println("");
-		sw.println("import "+conf2.daopackageName+".*;");
-		sw.println("import "+DAO.class.getCanonicalName()+";");
-		sw.println("import "+DAOFactory.class.getCanonicalName()+";");
-		sw.println("import "+DAOInstanceFactoryException.class.getCanonicalName()+";");
-		sw.println("");
-		sw.println("public class "+fileClassName+" implements "+DAOFactory.class.getSimpleName()+"{");
-		sw.println("");
-		sw.println("\t@Override");
-		sw.println("\t@SuppressWarnings(\"unchecked\")");
-		sw.println("\tpublic <T> T getInstance(Class<? extends "+DAO.class.getSimpleName()+"> daoClass) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
+		sw.lnprint("");
+		sw.lnprint("import "+conf2.daopackageName+".*;");
+		sw.lnprint("import "+DAO.class.getCanonicalName()+";");
+		sw.lnprint("import "+DAOFactory.class.getCanonicalName()+";");
+		sw.lnprint("import "+DAOInstanceFactoryException.class.getCanonicalName()+";");
+		sw.lnprint("");
+		sw.lnprint("public class "+fileClassName+" implements "+DAOFactory.class.getSimpleName()+"{");
+		sw.lnprint("");
+		sw.lnprint("\t@Override");
+		sw.lnprint("\t@SuppressWarnings(\"unchecked\")");
+		sw.lnprint("\tpublic <T> T getInstance(Class<? extends "+DAO.class.getSimpleName()+"> daoClass) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
 		boolean doElse = false;
 		for(ModelDef model : modelList){
 			String className = CStringUtils.capitalize(model.getModelName(), useCamelCase);
-			sw.print("\t\t");
-			if(doElse){sw.print("else ");}else{doElse = true;}
-			sw.println("if(daoClass.equals(DAO_"+className+".class)){");
-			sw.println("\t\t\treturn (T)new DAO_"+className+"();");
-			sw.println("\t\t}");
+			if(doElse){sw.lnprint("\t\telse ");}else{doElse = true;}
+			sw.lnprint("\t\tif(daoClass.equals(DAO_"+className+".class)){");
+			sw.lnprint("\t\t\treturn (T)new DAO_"+className+"();");
+			sw.lnprint("\t\t}");
 		}
-		sw.println("\t\telse{");
-		sw.println("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
-		sw.println("\t\t}");
-		sw.println("\t}");
+		sw.lnprint("\t\telse{");
+		sw.lnprint("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
+		sw.lnprint("\t\t}");
+		sw.lnprint("\t}");
 		//The array instances
-		sw.println("\t@Override");
-		sw.println("\t@SuppressWarnings(\"unchecked\")");
-		sw.println("\tpublic <T> T[] getArrayInstance(Class<? extends DAO> daoClass, int n)  throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
+		sw.lnprint("\t@Override");
+		sw.lnprint("\t@SuppressWarnings(\"unchecked\")");
+		sw.lnprint("\tpublic <T> T[] getArrayInstance(Class<? extends DAO> daoClass, int n)  throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
 		boolean doElse2 = false;
 		for(ModelDef model : modelList){
 			String className = CStringUtils.capitalize(model.getModelName(), useCamelCase);
-			sw.print("\t\t");
-			if(doElse2){sw.print("else ");}else{doElse2 = true;}
-			sw.println("if(daoClass.equals(DAO_"+className+".class)){");
-			sw.println("\t\t\treturn (T[])new DAO_"+className+"[n];");
-			sw.println("\t\t}");
+			if(doElse2){sw.println("\t\telse ");}else{doElse2 = true;}
+			sw.lnprint("\t\tif(daoClass.equals(DAO_"+className+".class)){");
+			sw.lnprint("\t\t\treturn (T[])new DAO_"+className+"[n];");
+			sw.lnprint("\t\t}");
 		}
-		sw.println("\t\telse{");
-		sw.println("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
-		sw.println("\t\t}");
-		sw.println("\t}");
-		sw.println("\t");
-		sw.println("}");
+		sw.lnprint("\t\telse{");
+		sw.lnprint("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
+		sw.lnprint("\t\t}");
+		sw.lnprint("\t}");
+		sw.lnprint("\t");
+		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), dir, fileName);
 	}
 

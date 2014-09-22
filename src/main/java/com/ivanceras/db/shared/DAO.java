@@ -109,6 +109,10 @@ public class DAO{
 			this.ignoreColumn.add(igc);
 		}
 	}
+	
+	public void clear_IgnoredColumns(){
+		this.ignoreColumn.clear();
+	}
 
 	public void setProperties(Map<String, Object> properties){
 		this.properties = properties;

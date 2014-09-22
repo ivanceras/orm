@@ -4,7 +4,6 @@
 package com.ivanceras.db.server.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -24,6 +23,7 @@ import com.ivanceras.db.server.util.generators.DAOClassGenerator;
 import com.ivanceras.db.server.util.generators.DAOInstanceFactoryGenerator;
 import com.ivanceras.db.server.util.generators.MapperGenerator;
 import com.ivanceras.db.server.util.generators.ModelFactoryGenerator;
+import com.ivanceras.db.server.util.generators.ModelToDAOConversionGenerator;
 import com.ivanceras.db.server.util.generators.SchemaTableGenerator;
 import com.ivanceras.db.server.util.generators.TableColumnGenerator;
 import com.ivanceras.db.server.util.generators.TableNameGenerator;
@@ -70,6 +70,7 @@ public class DAOGenerator{
 		new TableColumnGenerator().start(modelListChilded, conf);
 		new ModelFactoryGenerator().start(modelListChilded, conf);
 		new DAOInstanceFactoryGenerator().start(modelListChilded, conf);
+		new ModelToDAOConversionGenerator().start(modelListChilded, conf);
 	}
 
 

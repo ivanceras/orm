@@ -254,6 +254,8 @@ public interface IDatabase{
 	 * @param keyword
 	 */
 	public void search(Query query, String keyword);
+
+	public void correctDataTypes(DAO[] daoList, ModelDef model);
 	
 
 }

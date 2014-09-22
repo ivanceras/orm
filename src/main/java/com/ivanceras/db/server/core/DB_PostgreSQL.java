@@ -908,5 +908,10 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		return record;
 	}
 
+	@Override
+	public void correctDataTypes(DAO[] daoList, ModelDef model) {
+		// TODO Auto-generated method stub
+	}
+
 	
 }
