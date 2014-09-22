@@ -13,7 +13,11 @@
 	<artifactId>orm</artifactId>
 	<name>orm</name>
 	<description>ORM - Core Library for Database</description>
-
+  <scm>
+    <connection>scm:git:https://github.com/ivanceras/orm.git</connection>
+    <developerConnection>scm:git:https://github.com/ivanceras/orm.git</developerConnection>
+    <url>scm:git:https://github.com/ivanceras/orm.git</url>
+  </scm>
 
 	<properties>
 		<gwtVersion>2.6.1</gwtVersion>
