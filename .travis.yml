@@ -1,15 +1,7 @@
 # kickstart travis.
 language: java
 
-before_script:
-  - pwd
-  - git clone https://github.com/ivanceras/parent
-  - cd parent
-  - mvn clean install
-
-# need to override travis 'install' since it will try gpg sign and fail.
-install: mvn clean install
-
-branches:
-  only:
-  - master
+before_install:
+ - git clone https://github.com/ivanceras/fluentsql.git
+ - cd fluentsql
+ - mvn clean install
