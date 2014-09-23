@@ -81,7 +81,7 @@ public class TestProductInsert {
 	public void test3() throws DatabaseException{
 		EntityManager em = EMF.get();
 		String userNameOrEmail = "ivanceras";
-		SQL sql = SQL.SELECT(users.username)
+		SQL sql = SQL.SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)
 					.OR(users.email).EQUAL(userNameOrEmail);
