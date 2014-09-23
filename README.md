@@ -1,7 +1,7 @@
 # Ivanceras ORM
 
 
-# ORM [![Build Status](https://api.travis-ci.org/ivanceras/orm.svg)](https://travis-ci.org/ivanceras/orm)
+[![Build Status](https://api.travis-ci.org/ivanceras/orm.svg)](https://travis-ci.org/ivanceras/orm)
 
 Yes, I know this is yet another ORM library like many others.
 
