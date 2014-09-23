@@ -421,7 +421,7 @@ public class SynchronousEntityManager implements EntityManager{
 	public <T extends DAO> T[] retrieveRecords(Query query, boolean autoCast) throws DatabaseException {
 		DAO[] daoList = null;
 		SQL sql = db.buildSQL(db.getModelMetaDataDefinition(), query, false);
-		daoList = select(sql, query.getRenamedColumnPairs());
+		daoList = execute(sql, query.getRenamedColumnPairs());
 		db.correctDataTypes(daoList, query.getModel());
 		if(daoList != null){
 			for(DAO dao : daoList){
@@ -462,12 +462,12 @@ public class SynchronousEntityManager implements EntityManager{
 
 
 	@Override
-	public <T extends DAO > T[] select(SQL sql) throws DatabaseException {
+	public <T extends DAO > T[] execute(SQL sql) throws DatabaseException {
 		return db.select(sql, null);
 	}
 
 	@Override
-	public <T extends DAO > T[] select(SQL sql, Map<String, ColumnPair> renamedColumns) throws DatabaseException {
+	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns) throws DatabaseException {
 		return db.select(sql, renamedColumns);
 	}
 

@@ -94,9 +94,9 @@ public interface EntityManager{
 
 	public void rollbackTransaction() throws DatabaseException;
 
-	public <T extends DAO > T[]  select(SQL sql) throws DatabaseException;
+	public <T extends DAO > T[]  execute(SQL sql) throws DatabaseException;
 
-	public <T extends DAO > T[] select(SQL sql, Map<String, ColumnPair> renamedColumns)
+	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns)
 			throws DatabaseException;
 
 	void setContextProvider(ContextProvider context);

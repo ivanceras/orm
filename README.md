@@ -226,6 +226,26 @@ In your controller, you can use the generated classes like this:
 	}
 ````
 
+If you prefer to use the fluentsql API, you can do so by:
+
+````java  
+
+	public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
+		SQL sql = SQL.SELECT(users.username)
+					.FROM(Table.users)
+					.WHERE(users.username).EQUAL(userNameOrEmail)
+					.OR(users.email).EQUAL(userNameOrEmail);
+		
+		DAO_Users[] users = em.execute(sql);
+		if(users.length > 0){
+		DAO_Users user0 = users[0];
+			return user0.getUserId();
+		}
+		return null;
+	}
+
+````
+
 ````java    
     /**
     * Getting the list of Products created by a certain user

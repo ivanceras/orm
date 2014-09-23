@@ -20,10 +20,15 @@ import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.SynchronousEntityManager;
 import com.ivanceras.db.sample.BazaarModelMetaData;
 import com.ivanceras.db.sample.DAO_Product;
+import com.ivanceras.db.sample.DAO_Users;
+import com.ivanceras.db.sample.SchemaTables.public_;
+import com.ivanceras.db.sample.Table;
+import com.ivanceras.db.sample.TableColumns.users;
 import com.ivanceras.db.server.core.DB_Jdbc;
 import com.ivanceras.db.server.core.DB_PostgreSQL;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
+import com.ivanceras.fluent.sql.SQL;
 
 public class TestProductInsert {
 	
@@ -69,6 +74,22 @@ public class TestProductInsert {
 		
 		em.insert(daoProduct);
 		jdbc.insert(daoProduct, null, model, null);
+		
+	}
+	
+	@Test
+	public void test3() throws DatabaseException{
+		EntityManager em = EMF.get();
+		String userNameOrEmail = "ivanceras";
+		SQL sql = SQL.SELECT(users.username)
+					.FROM(Table.users)
+					.WHERE(users.username).EQUAL(userNameOrEmail)
+					.OR(users.email).EQUAL(userNameOrEmail);
+		
+		DAO_Users[] users = em.execute(sql);
+		DAO_Users user0 = users[0];
+		
+		System.out.println(user0);
 		
 	}
 }
