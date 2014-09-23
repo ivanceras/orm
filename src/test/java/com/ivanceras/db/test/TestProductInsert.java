@@ -1,13 +1,12 @@
 package com.ivanceras.db.test;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.Statement;
 
 import org.junit.Test;
@@ -15,20 +14,18 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.ivanceras.db.api.EntityManager;
-import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.SynchronousEntityManager;
 import com.ivanceras.db.sample.BazaarModelMetaData;
 import com.ivanceras.db.sample.DAO_Product;
 import com.ivanceras.db.sample.DAO_Users;
-import com.ivanceras.db.sample.SchemaTables.public_;
 import com.ivanceras.db.sample.Table;
 import com.ivanceras.db.sample.TableColumns.users;
-import com.ivanceras.db.server.core.DB_Jdbc;
 import com.ivanceras.db.server.core.DB_PostgreSQL;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.fluent.sql.SQL;
+import static com.ivanceras.fluent.sql.SQL.*;
 
 public class TestProductInsert {
 	
@@ -81,7 +78,8 @@ public class TestProductInsert {
 	public void test3() throws DatabaseException{
 		EntityManager em = EMF.get();
 		String userNameOrEmail = "ivanceras";
-		SQL sql = SQL.SELECT(users.username, users.user_id, users.email)
+		//use import static com.ivanceras.fluent.sql.SQL.*;
+		SQL sql = SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)
 					.OR(users.email).EQUAL(userNameOrEmail);

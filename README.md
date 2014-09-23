@@ -231,7 +231,8 @@ If you prefer to use the fluentsql API, you can do so by:
 ````java  
 
 	public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
-		SQL sql = SQL.SELECT(users.username, users.user_id, users.email)
+		//use import static com.ivanceras.fluent.sql.SQL.*;
+		SQL sql = SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)
 					.OR(users.email).EQUAL(userNameOrEmail);
