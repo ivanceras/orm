@@ -8,8 +8,8 @@ before_install:
  - cd ../
  - git clone https://github.com/ivanceras/commons.git
  - cd commons
- - cd ../
  - mvn clean install
+ - cd ../
  - git clone https://github.com/ivanceras/fluentsql.git
  - cd fluentsql
  - mvn clean install
