@@ -1,6 +1,8 @@
 # Ivanceras ORM
 
 
+# ORM [![Build Status](https://api.travis-ci.org/ivanceras/orm.svg)](https://api.travis-ci.org/ivanceras/orm)
+
 Yes, I know this is yet another ORM library like many others.
 
 But this exists because all other ORM i came across does not fit all my requirements, one of which is to be able to do database operations in the browser using the same controller codes in your server side.
