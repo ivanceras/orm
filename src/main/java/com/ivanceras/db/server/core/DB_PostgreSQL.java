@@ -898,13 +898,12 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		} 
 	}
 
+	/**
+	 * return record value as is, since postgresql is already mapped to the correct data type
+	 */
 	@Override
 	protected Object getEquivalentJavaObject(Object record) {
 		if(record == null) return null;
-		if(record.getClass().equals(Timestamp.class)){
-				Date date = new Date(((Timestamp)record).getTime());
-				return date;
-		}
 		return record;
 	}
 

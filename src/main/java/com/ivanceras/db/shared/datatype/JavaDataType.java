@@ -11,7 +11,8 @@ public class JavaDataType {
 	public static final String JAVA_CHAR = "char";
 	public static final String JAVA_BOOLEAN = "Boolean";
 	public static final String JAVA_DATE = "java.util.Date";
-	public static final String JAVA_TIMESTAMP = "java.util.Timestamp";
+	public static final String JAVA_TIMESTAMP = "java.sql.Timestamp";
+	public static final String JAVA_TIME = "java.sql.Time";
 	public static final String JAVA_BYTE_ARRAY = "Byte[]";
 	public static final String JAVA_BYTE = "Byte";
 	public static final String JAVA_UUID = "java.util.UUID";
@@ -42,7 +43,10 @@ public class JavaDataType {
 			return JAVA_DATE;
 		}
 		else if(genType.equals(GenericDataType.TIMESTAMP)){
-			return JAVA_DATE;
+			return JAVA_TIMESTAMP;
+		}
+		else if(genType.equals(GenericDataType.TIME)){
+			return JAVA_TIME;
 		}
 		else if(genType.equals(GenericDataType.BYTE_ARRAY)){
 			return JAVA_BYTE_ARRAY;

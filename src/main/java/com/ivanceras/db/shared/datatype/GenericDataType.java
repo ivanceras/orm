@@ -29,8 +29,11 @@ public class GenericDataType {
 		if(dbDataType.startsWith(DBDataType.JSON)){//include limitized datatype such as character varying(255)
 			return STRING;
 		}
+		else if(dbDataType.startsWith(DBDataType.TIMESTAMP_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
+			return TIMESTAMP;
+		}
 		else if(dbDataType.startsWith(DBDataType.TIME_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
-			return DATE;
+			return TIME;
 		}
 		else if(dbDataType.startsWith(DBDataType.NUMERIC)){//include limitized datatype such as character varying(255)
 			return BIGDECIMAL;
@@ -66,8 +69,12 @@ public class GenericDataType {
 			return STRING;
 		}
 		else if(dbDataType.startsWith(DBDataType.TIMESTAMP)){
-			return DATE;
+			return TIMESTAMP;
 		}
+		else if(dbDataType.startsWith(DBDataType.TIME)){
+			return TIME;
+		}
+
 		else if(dbDataType.equals(DBDataType.BYTEA)){
 			return BYTE_ARRAY;
 		}

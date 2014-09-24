@@ -65,10 +65,10 @@ public class DBDataType {
 			return UUID;
 		}
 		else if(genType.equals(GenericDataType.FLOAT)){
-			return REAL;
+			return NUMERIC;
 		}
 		else if(genType.equals(GenericDataType.DOUBLE)){
-			return DOUBLE_PRECISION;
+			return NUMERIC;
 		}
 		else if(genType.equals(GenericDataType.BIGINTEGER)){
 			return BIGINT;
