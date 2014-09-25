@@ -226,7 +226,6 @@ In your controller, you can use the generated classes like this:
 ````
 
 If you prefer to use the fluentsql API, you can do so by: 
-As a sign of warning, fluentsql API should be used only when the EntityManager/Query API is not capable of letting you express your very complex SQL statements such as the one used in Reporting.
 
 ````java  
 
@@ -246,6 +245,10 @@ As a sign of warning, fluentsql API should be used only when the EntityManager/Q
 	}
 
 ````
+
+Warning: fluentsql API should be used only when the EntityManager/Query API is not capable of letting you express your very complex SQL statements such as the one used in Reporting.
+
+
 
 ````java    
     /**
