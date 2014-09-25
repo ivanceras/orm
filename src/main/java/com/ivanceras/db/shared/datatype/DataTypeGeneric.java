@@ -2,7 +2,7 @@ package com.ivanceras.db.shared.datatype;
 
 import com.ivanceras.db.shared.exception.DataTypeException;
 
-public class GenericDataType {
+public class DataTypeGeneric {
 
 	public static final String STRING = "String";
 	public static final String BIGDECIMAL = "BigDecimal";
@@ -20,71 +20,72 @@ public class GenericDataType {
 	public static final String DOUBLE = "Double";
 	public static final String BIGINTEGER = "BigInteger";
 	public static final String TEXT = "Text";
+	public static final String HASHMAP = "HashMap";
 
 	public static String javaDataTypeFromDBDataType(String dbDataType) throws DataTypeException{
-		return JavaDataType.fromGenericDataType(fromDBDataType(dbDataType));
+		return DataTypeJava.fromGenericDataType(fromDBDataType(dbDataType));
 	}
 
 	public static String fromDBDataType(String dbDataType){
-		if(dbDataType.startsWith(DBDataType.JSON)){//include limitized datatype such as character varying(255)
-			return STRING;
+		if(dbDataType.startsWith(DataTypeDB.JSON)){//include limitized datatype such as character varying(255)
+			return HASHMAP;
 		}
-		else if(dbDataType.startsWith(DBDataType.TIMESTAMP_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.TIMESTAMP_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
 			return TIMESTAMP;
 		}
-		else if(dbDataType.startsWith(DBDataType.TIME_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.TIME_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
 			return TIME;
 		}
-		else if(dbDataType.startsWith(DBDataType.NUMERIC)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.NUMERIC)){//include limitized datatype such as character varying(255)
 			return BIGDECIMAL;
 		}
-		else if(dbDataType.startsWith(DBDataType.CHARACTER_VARYING)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.CHARACTER_VARYING)){//include limitized datatype such as character varying(255)
 			return STRING;
 		}
-		else if(dbDataType.startsWith(DBDataType.NAME)){
+		else if(dbDataType.startsWith(DataTypeDB.NAME)){
 			return BIGDECIMAL;
 		}
-		else if(dbDataType.startsWith(DBDataType.INTEGER)){
+		else if(dbDataType.startsWith(DataTypeDB.INTEGER)){
 			return INTEGER;
 		}
-		else if(dbDataType.startsWith(DBDataType.INT)){
+		else if(dbDataType.startsWith(DataTypeDB.INT)){
 			return INTEGER;
 		}
-		else if(dbDataType.startsWith(DBDataType.BIGINT)){
+		else if(dbDataType.startsWith(DataTypeDB.BIGINT)){
 			return LONG;
 		}
-		else if(dbDataType.startsWith(DBDataType.CHARACTER)){
+		else if(dbDataType.startsWith(DataTypeDB.CHARACTER)){
 			return STRING;
 		}
-		else if(dbDataType.equals(DBDataType.BOOLEAN)){
+		else if(dbDataType.equals(DataTypeDB.BOOLEAN)){
 			return BOOLEAN;
 		}
-		else if(dbDataType.equals(DBDataType.DATE)){
+		else if(dbDataType.equals(DataTypeDB.DATE)){
 			return DATE;
 		}
-		else if(dbDataType.equals(DBDataType.TEXT)){
+		else if(dbDataType.equals(DataTypeDB.TEXT)){
 			return STRING;
 		}
-		else if(dbDataType.equals(DBDataType.NAME)){
+		else if(dbDataType.equals(DataTypeDB.NAME)){
 			return STRING;
 		}
-		else if(dbDataType.startsWith(DBDataType.TIMESTAMP)){
+		else if(dbDataType.startsWith(DataTypeDB.TIMESTAMP)){
 			return TIMESTAMP;
 		}
-		else if(dbDataType.startsWith(DBDataType.TIME)){
+		else if(dbDataType.startsWith(DataTypeDB.TIME)){
 			return TIME;
 		}
 
-		else if(dbDataType.equals(DBDataType.BYTEA)){
+		else if(dbDataType.equals(DataTypeDB.BYTEA)){
 			return BYTE_ARRAY;
 		}
-		else if(dbDataType.equals(DBDataType.UUID)){
+		else if(dbDataType.equals(DataTypeDB.UUID)){
 			return UUID;
 		}
-		else if(dbDataType.equals(DBDataType.REAL)){
+		else if(dbDataType.equals(DataTypeDB.REAL)){
 			return FLOAT;
 		}
-		else if(dbDataType.equals(DBDataType.OID)){
+		else if(dbDataType.equals(DataTypeDB.OID)){
 			return LONG;
 		}
 		else{

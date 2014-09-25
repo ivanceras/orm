@@ -2,7 +2,7 @@ package com.ivanceras.db.shared.datatype;
 
 import com.ivanceras.db.shared.exception.DataTypeException;
 
-public class DBDataType {
+public class DataTypeDB {
 	public static String JSON = "json";
 	public static String TIME = "time";
 	public static String TIME_WITH_TIME_ZONE = "time with time zone";
@@ -28,49 +28,49 @@ public class DBDataType {
 	public static final String CHAR = "char";
 	
 	public static String fromGenericType(String genType) {
-		if(genType.equals(GenericDataType.STRING)){
+		if(genType.equals(DataTypeGeneric.STRING)){
 			return CHARACTER_VARYING;
 		}
-		else if(genType.equals(GenericDataType.BIGDECIMAL)){
+		else if(genType.equals(DataTypeGeneric.BIGDECIMAL)){
 			return NUMERIC;
 		}
-		else if(genType.equals(GenericDataType.INTEGER)){
+		else if(genType.equals(DataTypeGeneric.INTEGER)){
 			return INTEGER;
 		}
-		else if(genType.equals(GenericDataType.LONG)){
+		else if(genType.equals(DataTypeGeneric.LONG)){
 			return BIGINT;
 		}
-		else if(genType.equals(GenericDataType.CHAR)){
+		else if(genType.equals(DataTypeGeneric.CHAR)){
 			return CHARACTER;
 		}
-		else if(genType.equals(GenericDataType.BOOLEAN)){
+		else if(genType.equals(DataTypeGeneric.BOOLEAN)){
 			return BOOLEAN;
 		}
-		else if(genType.equals(GenericDataType.DATE)){
+		else if(genType.equals(DataTypeGeneric.DATE)){
 			return TIMESTAMP_WITH_TIME_ZONE;
 		}
-		else if(genType.equals(GenericDataType.TIME)){
+		else if(genType.equals(DataTypeGeneric.TIME)){
 			return TIME_WITH_TIME_ZONE;
 		}
-		else if(genType.equals(GenericDataType.TIMESTAMP)){
+		else if(genType.equals(DataTypeGeneric.TIMESTAMP)){
 			return TIMESTAMP_WITH_TIME_ZONE;
 		}
-		else if(genType.equals(GenericDataType.BYTE_ARRAY)){
+		else if(genType.equals(DataTypeGeneric.BYTE_ARRAY)){
 			return BYTEA;
 		}
-		else if(genType.equals(GenericDataType.BYTE)){
+		else if(genType.equals(DataTypeGeneric.BYTE)){
 			return OID;
 		}
-		else if(genType.equals(GenericDataType.UUID)){
+		else if(genType.equals(DataTypeGeneric.UUID)){
 			return UUID;
 		}
-		else if(genType.equals(GenericDataType.FLOAT)){
+		else if(genType.equals(DataTypeGeneric.FLOAT)){
 			return NUMERIC;
 		}
-		else if(genType.equals(GenericDataType.DOUBLE)){
+		else if(genType.equals(DataTypeGeneric.DOUBLE)){
 			return NUMERIC;
 		}
-		else if(genType.equals(GenericDataType.BIGINTEGER)){
+		else if(genType.equals(DataTypeGeneric.BIGINTEGER)){
 			return BIGINT;
 		}
 		else{

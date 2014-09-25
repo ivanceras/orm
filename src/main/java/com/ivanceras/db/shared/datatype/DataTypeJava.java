@@ -2,7 +2,7 @@ package com.ivanceras.db.shared.datatype;
 
 import com.ivanceras.db.shared.exception.DataTypeException;
 
-public class JavaDataType {
+public class DataTypeJava {
 	
 	public static final String JAVA_STRING = "String";
 	public static final String JAVA_BIGDECIMAL = "java.math.BigDecimal";
@@ -19,51 +19,55 @@ public class JavaDataType {
 	public static final String JAVA_FLOAT = "Float";
 	public static final String JAVA_DOUBLE = "Double";
 	public static final String JAVA_BIGINTEGER = "java.math.BigInteger";
+	private static final String JAVA_HASHMAP = "java.util.HashMap<Object, Object>";
 	
 	public static String fromGenericDataType(String genType) throws DataTypeException{
-		if(genType.equals(GenericDataType.STRING)){
+		if(genType.equals(DataTypeGeneric.STRING)){
 			return JAVA_STRING;
 		}
-		else if(genType.equals(GenericDataType.BIGDECIMAL)){
+		else if(genType.equals(DataTypeGeneric.HASHMAP)){
+			return JAVA_HASHMAP;
+		}
+		else if(genType.equals(DataTypeGeneric.BIGDECIMAL)){
 			return JAVA_BIGDECIMAL;
 		}
-		else if(genType.equals(GenericDataType.INTEGER)){
+		else if(genType.equals(DataTypeGeneric.INTEGER)){
 			return JAVA_INTEGER;
 		}
-		else if(genType.equals(GenericDataType.LONG)){
+		else if(genType.equals(DataTypeGeneric.LONG)){
 			return JAVA_LONG;
 		}
-		else if(genType.equals(GenericDataType.CHAR)){
+		else if(genType.equals(DataTypeGeneric.CHAR)){
 			return JAVA_CHAR;
 		}
-		else if(genType.equals(GenericDataType.BOOLEAN)){
+		else if(genType.equals(DataTypeGeneric.BOOLEAN)){
 			return JAVA_BOOLEAN;
 		}
-		else if(genType.equals(GenericDataType.DATE)){
+		else if(genType.equals(DataTypeGeneric.DATE)){
 			return JAVA_DATE;
 		}
-		else if(genType.equals(GenericDataType.TIMESTAMP)){
+		else if(genType.equals(DataTypeGeneric.TIMESTAMP)){
 			return JAVA_TIMESTAMP;
 		}
-		else if(genType.equals(GenericDataType.TIME)){
+		else if(genType.equals(DataTypeGeneric.TIME)){
 			return JAVA_TIME;
 		}
-		else if(genType.equals(GenericDataType.BYTE_ARRAY)){
+		else if(genType.equals(DataTypeGeneric.BYTE_ARRAY)){
 			return JAVA_BYTE_ARRAY;
 		}
-		else if(genType.equals(GenericDataType.BYTE)){
+		else if(genType.equals(DataTypeGeneric.BYTE)){
 			return JAVA_BYTE;
 		}
-		else if(genType.equals(GenericDataType.UUID)){
+		else if(genType.equals(DataTypeGeneric.UUID)){
 			return JAVA_UUID;
 		}
-		else if(genType.equals(GenericDataType.FLOAT)){
+		else if(genType.equals(DataTypeGeneric.FLOAT)){
 			return JAVA_FLOAT;
 		}
-		else if(genType.equals(GenericDataType.DOUBLE)){
+		else if(genType.equals(DataTypeGeneric.DOUBLE)){
 			return JAVA_DOUBLE;
 		}
-		else if(genType.equals(GenericDataType.BIGINTEGER)){
+		else if(genType.equals(DataTypeGeneric.BIGINTEGER)){
 			return JAVA_BIGINTEGER;
 		}
 		else{
