@@ -1,13 +1,12 @@
 # Ivanceras ORM
 
+An ORM aimed to be migration and version upgrade friendly.
 
 [![Build Status](https://api.travis-ci.org/ivanceras/orm.svg)](https://travis-ci.org/ivanceras/orm)
 
 Yes, I know this is yet another ORM library like many others.
 
 But this exists because all other ORM i came across does not fit all my requirements, one of which is to be able to do database operations in the browser using the same controller codes in your server side.
-
-
 
 
 
@@ -226,7 +225,8 @@ In your controller, you can use the generated classes like this:
 	}
 ````
 
-If you prefer to use the fluentsql API, you can do so by:
+If you prefer to use the fluentsql API, you can do so by: 
+As a sign of warning, fluentsql API should be used only when the EntityManager/Query API is not capable of letting you express your very complex SQL statements such as the one used in Reporting.
 
 ````java  
 
