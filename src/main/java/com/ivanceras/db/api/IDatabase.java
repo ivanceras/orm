@@ -255,6 +255,11 @@ public interface IDatabase{
 	 */
 	public void search(Query query, String keyword);
 
+	/**
+	 * Actually converting the from whatever JDBC converts the object to the correct type that we intend to be using
+	 * @param daoList
+	 * @param model
+	 */
 	public void correctDataTypes(DAO[] daoList, ModelDef model);
 	
 

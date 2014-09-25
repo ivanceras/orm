@@ -45,8 +45,8 @@ import com.ivanceras.db.api.SearchBuilder;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
-import com.ivanceras.db.shared.datatype.DBDataType;
-import com.ivanceras.db.shared.datatype.GenericDataType;
+import com.ivanceras.db.shared.datatype.DataTypeDB;
+import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DataEntryException;
 import com.ivanceras.db.shared.exception.DataUpdateException;
@@ -289,21 +289,23 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		Breakdown bk = sql.build();
 		Statement pstmt = getPreparedStatement(bk.getSql(), bk.getParameters(), returnValues);
 		try{
-			logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 			ResultSet rs = null;
 			if(supportPreparedStatement()){
 				if(returnValues){
 					rs = ((PreparedStatement)pstmt).executeQuery();
+					logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 					ResultSet genKeys = pstmt.getGeneratedKeys();
 					if (genKeys.next() && returnValues) {
 						return rs.getObject(1);
 					}
 				}else{//no return values
 					((PreparedStatement)pstmt).executeUpdate();
+					logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 				}
 			}
 			else{
 				pstmt.execute(bk.getSql());//Prone to SQL injection if the Database driver dont support PreparedStatements
+				logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 			}
 		}catch(SQLException e){
 			logSQL(pstmt, bk.getSql(), bk.getParameters(), true);
@@ -359,8 +361,8 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 					pstmt.setObject(cnt, parameters[i]);
 				}
 			}
-			logSQL(pstmt, sql, parameters, false);
 			rs = pstmt.executeQuery();
+			logSQL(pstmt, sql, parameters, false);
 			currentStatement = pstmt.toString();
 			if (useCursor) {
 				pstmt.setFetchSize(0);// turn the cursor OFF
@@ -379,8 +381,8 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		Statement pstmt = null;
 		try {
 			pstmt = getPreparedStatement(bk.getSql(), bk.getParameters(), false);
-			logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 			int ret = ((PreparedStatement)pstmt).executeUpdate();
+			logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 			return ret;
 		} catch (SQLException e) {
 			logSQL(pstmt, bk.getSql(), bk.getParameters(), true);
@@ -444,7 +446,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	}
 
 	public String getEquivalentGeneralDataType(String dbDataType) {
-		return GenericDataType.fromDBDataType(dbDataType);
+		return DataTypeGeneric.fromDBDataType(dbDataType);
 	}
 
 	protected abstract Object getEquivalentJavaObject(Object record);
@@ -686,7 +688,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	void logSQL(Statement pstmt, String sql, Object[] parameters, boolean error){
 		if(debugSql || error){
-			System.out.println("ACTUAL: "+pstmt.toString());
+			System.out.println("SQL: "+pstmt.toString());
 		}
 		if (returnsSqlStatements()) {
 			log.debug(pstmt.toString());
@@ -737,8 +739,11 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 					if (supportResultSetMetaData()) {
 						for (int i = 0; i < columnCount; i++) {
 							String columnName = md.getColumnName(i + 1).replace("\"", "").toLowerCase();
-							Object record = rs.getObject(i + 1);
-							record = getEquivalentJavaObject(record);
+							Object dbRecord = rs.getObject(i + 1);
+							Object record = getEquivalentJavaObject(dbRecord);
+//							if(record != null && dbRecord!=null){
+//								System.out.println("No conversion needed for: "+columnName+" = "+ record +" from "+dbRecord.getClass()+" to "+record.getClass());
+//							}
 							row.put(columnName, record);
 						}
 					}

@@ -17,7 +17,7 @@ import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
-import com.ivanceras.db.shared.datatype.DBDataType;
+import com.ivanceras.db.shared.datatype.DataTypeDB;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.SpecialCase;
@@ -708,7 +708,7 @@ public abstract class DB_Rdbms{
 	}
 
 	public String getEquivalentDBDataType(String genDataType) {
-		return DBDataType.fromGenericType(genDataType);
+		return DataTypeDB.fromGenericType(genDataType);
 	}
 	protected abstract Object getEquivalentDBObject(Object record);
 

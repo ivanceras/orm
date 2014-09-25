@@ -21,12 +21,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
+import org.postgresql.util.PGobject;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+
+import static com.fasterxml.jackson.databind.node.JsonNodeType.ARRAY;
+import static com.fasterxml.jackson.databind.node.JsonNodeType.OBJECT;
 
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.commons.strings.CStringUtils;
@@ -45,7 +58,7 @@ import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
-import com.ivanceras.db.shared.datatype.GenericDataType;
+import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.fluent.sql.SQL;
@@ -54,9 +67,9 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 
 
 	public DB_PostgreSQL(){
-		
+
 	}
-	
+
 	public DB_PostgreSQL(DBConfig config)
 			throws DBConnectionException {
 		super(config);
@@ -86,14 +99,14 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 
 	protected String getRealTableName(String schema, String tableName) throws DatabaseException{
 		StringBuffer sql = new StringBuffer();
-		
+
 		SQL sql1 = SELECT("c.relname")
-					.FROM("pg_catalog.pg_class").AS("c")
-					.FIELD("pg_class.relname")
-					.LEFT_JOIN("pg_catalog.pg_namespace").AS("n")
-					.ON("n.oid","c.relnamespace")
-					.WHERE(LOWER("c.relname")).EQUAL_TO(LOWER(tableName));
-		
+				.FROM("pg_catalog.pg_class").AS("c")
+				.FIELD("pg_class.relname")
+				.LEFT_JOIN("pg_catalog.pg_namespace").AS("n")
+				.ON("n.oid","c.relnamespace")
+				.WHERE(LOWER("c.relname")).EQUAL_TO(LOWER(tableName));
+
 		sql.append("SELECT "+
 				" c.relname as \"Table\""+
 				" FROM"+
@@ -130,7 +143,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		return null;
 
 	}
-	
+
 	@Override
 	public String getTableComment(String table) throws DatabaseException{
 		String sql = "SELECT pg_catalog.obj_description('"+table+"'::regclass, 'pg_class')";
@@ -247,8 +260,8 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		}
 		return rs;
 	}
-	
-	
+
+
 	@Override
 	public boolean schemaExist(String schema) throws DatabaseException{
 		String sql = "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '"+schema+"'";
@@ -312,29 +325,29 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 	@Override
 	public SchemaTable[] getTableNames(String owner, String tablePattern, String[] includedSchema) throws DatabaseException{
 		System.out.println("Extracting table names which woud match ["+tablePattern+"]");
-//		ModelDef model = new ModelDef();
-//		model.setNamespace("information_schema");
-//		model.setModelName("tables");
-//		model.setTableName("tables");
-//		String[] columns = {"table_name", "table_schema"};
-//		model.setAttributes(columns);
-//		Order[] orders = new Order[1];
-//		orders[0] = new Order("table_name",true);
-//		debugSql(true);
-//		Query query = new Query(model);
-//		query.addFilter(new Filter("table_schema", Filter.NOT_IN, new LiteralString("('pg_catalog', 'information_schema')")));
-//		query.addOrder(orders);
-//
-//		DAO[] daoList = select(null, query);
-//		debugSql(false);
+		//		ModelDef model = new ModelDef();
+		//		model.setNamespace("information_schema");
+		//		model.setModelName("tables");
+		//		model.setTableName("tables");
+		//		String[] columns = {"table_name", "table_schema"};
+		//		model.setAttributes(columns);
+		//		Order[] orders = new Order[1];
+		//		orders[0] = new Order("table_name",true);
+		//		debugSql(true);
+		//		Query query = new Query(model);
+		//		query.addFilter(new Filter("table_schema", Filter.NOT_IN, new LiteralString("('pg_catalog', 'information_schema')")));
+		//		query.addOrder(orders);
+		//
+		//		DAO[] daoList = select(null, query);
+		//		debugSql(false);
 
 		SQL sql1 = SELECT("table_name", "table_schema")
 				.FROM("information_schema.tables")
 				.WHERE("table_schema").NOT_IN("pg_catalog", "information_schema")
 				.ORDER_BY("table_name");
-				
+
 		DAO[] daoList =  select(sql1, null);
-		
+
 		SchemaTable[] schema_tableNames = new SchemaTable[daoList.length];
 		for(int i = 0; i < schema_tableNames.length; i++){
 			DAO dao = daoList[i];
@@ -498,7 +511,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		if(dataTypes != null){
 			dataType = dataTypes[dtIndex];
 		}
-		if(dataType != null && dataType.equals(GenericDataType.DATE)){
+		if(dataType != null && dataType.equals(DataTypeGeneric.DATE)){
 			try{
 				System.err.println("Casting "+column+" of dataType: "+dataType+"value: "+record+" to date");
 				Date date = new Date(((Timestamp)record).getTime());
@@ -509,7 +522,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 				return date;
 			}
 		}
-		if(dataType != null && dataType.equals(GenericDataType.LONG) && record.getClass().equals(BigDecimal.class)){
+		if(dataType != null && dataType.equals(DataTypeGeneric.LONG) && record.getClass().equals(BigDecimal.class)){
 			return ((BigDecimal)record).longValue();
 		}
 		else{
@@ -738,7 +751,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 	@Override
 	protected SQL buildAggregateQuery(ModelMetaData meta,
 			Aggregate[] aggregates, boolean doComma) {
-//		StringBuffer sql = new StringBuffer();
+		//		StringBuffer sql = new StringBuffer();
 		SQL sql = new SQL();
 		List<String> mentionedColumns = new ArrayList<String>();
 		for(Aggregate agg : aggregates){
@@ -836,9 +849,9 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 						"\n 	and kcu.table_schema = '"+schema+"'"+
 						"\n		and (ccu.table_name != '"+tablename+"'"+
 						"\n		or (ccu.table_name = '"+tablename+"' and ccu.column_name != '"+tablename+"_id'))";
-						//table that referenced itself is not covered here;
-						//should do something like table_name+"_id" qualifier
-						// and (ccu.table_name != '"+tablename+"'" || (ccu.table_name = '"+tablename+"'" && ccu.column_name != '"+tablename+"_id'"));
+		//table that referenced itself is not covered here;
+		//should do something like table_name+"_id" qualifier
+		// and (ccu.table_name != '"+tablename+"'" || (ccu.table_name = '"+tablename+"'" && ccu.column_name != '"+tablename+"_id'"));
 
 		try {
 			ResultSet rs = executeSelectSQL(sql, null);
@@ -874,9 +887,9 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 				"\n 	and ccu.table_schema = '"+schema+"'" +
 				"\n and (kcu.table_name != '"+tablename+"' "+
 				"\n or (kcu.table_name = '"+tablename+"'  and kcu.column_name != '"+tablename+"_id'))";
-			//table that referenced itself is not covered here;
-			//should do something like table_name+"_id" qualifier
-			// and (kcu.table_name != '"+tablename+"'" || kcu.table_name == '"+tablename+"'"  && kcu.column_name != '"+tablename+"_id'");
+		//table that referenced itself is not covered here;
+		//should do something like table_name+"_id" qualifier
+		// and (kcu.table_name != '"+tablename+"'" || kcu.table_name == '"+tablename+"'"  && kcu.column_name != '"+tablename+"_id'");
 		try {
 			ResultSet rs = executeSelectSQL(sql, null);
 			List<String> foreignTables = new ArrayList<String>();
@@ -898,19 +911,97 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		} 
 	}
 
+
+	private Object jsonNodeToObject(JsonNode node) throws JsonParseException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		if(node.isNull()){
+			return null;
+		}
+		else if(node.isShort()){
+			return node.shortValue();
+		}
+		else if(node.isTextual()){
+			return node.asText();
+		}
+		else if(node.isInt()){
+			return node.asInt();
+		}
+		else if(node.isFloat()){
+			return node.floatValue();
+		}
+		else if(node.isBigDecimal()){
+			return node.decimalValue();
+		}
+		else if(node.isBigInteger()){
+			return node.bigIntegerValue();
+		}
+		else if(node.isBoolean()){
+			return node.asBoolean();
+		}
+		else if(node.isArray()){//We wouldn't be able to know if the json will be an array or not so use hashmap here
+			String elementString = node.toString();
+			ArrayList<Object> list = 
+					mapper.readValue(elementString, new TypeReference<ArrayList<Object>>(){});
+			Map<Integer, Object> hash = new LinkedHashMap<Integer, Object>();
+			int arraySize = list.size();
+			for(int i = 0; i < arraySize; i++){
+				hash.put(i, list.get(i));
+			}
+			return hash;
+		}
+		else if(node.isObject()){
+			String elementString = node.toString();
+			Map<String, Object> hash = 
+					mapper.readValue(elementString, new TypeReference<Map<String, Object>>(){});
+			return hash;
+
+		}
+		else{
+			System.err.println("Unable to convert to correct datatype: "+node.getNodeType()+" in "+DB_PostgreSQL.class+".jsonNodeToObject() ");
+			return node;//return as is, shouldn't happend
+		}
+	}
+
+	private Object jsonToHashMap(String recordValue) throws JsonParseException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = mapper.readTree(recordValue);
+		return jsonNodeToObject(node);
+	}
+
 	/**
-	 * return record value as is, since postgresql is already mapped to the correct data type
+	 * 
+	 * Immediate conversion of Datatypes from Postgresql that has JDBC did not do mapping to Java data types
+	 * such as JSON to String, or HashMap, 
 	 */
 	@Override
 	protected Object getEquivalentJavaObject(Object record) {
 		if(record == null) return null;
+		if(PGobject.class.equals(record.getClass())){
+			PGobject pgObject = ((PGobject)record);
+			String type = pgObject.getType();
+			if("json".equals(type)){
+				String recordValue = pgObject.getValue();
+				try {
+					return jsonToHashMap(recordValue);
+				} catch (JsonParseException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return record;
 	}
 
+	/**
+	 * Most of postgresql database datatype already mapped to the correct data type by the JDBC
+	 */
 	@Override
 	public void correctDataTypes(DAO[] daoList, ModelDef model) {
 		// TODO Auto-generated method stub
 	}
 
-	
+
 }

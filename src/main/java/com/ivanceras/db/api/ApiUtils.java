@@ -8,7 +8,7 @@ import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
-import com.ivanceras.db.shared.datatype.GenericDataType;
+import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.SpecialCase;
 
@@ -19,11 +19,11 @@ public class ApiUtils {
 		for(int i = 0; i < columns.length; i++){
 			String c = columns[i];
 			String dt = dataTypes[i];
-			if(c != null && c.equalsIgnoreCase("id") && (dt.equals(GenericDataType.INTEGER) || dt.equals(GenericDataType.LONG))){
+			if(c != null && c.equalsIgnoreCase("id") && (dt.equals(DataTypeGeneric.INTEGER) || dt.equals(DataTypeGeneric.LONG))){
 				return c;
 			}else{
 				int index = CStringUtils.indexOf(primaryKeys, c);
-				if(index >= 0 && c.toLowerCase().endsWith("id") && primaryKeys.length == 1 && (dt.equals(GenericDataType.INTEGER) || dt.equals(GenericDataType.LONG))){//if only one primary and column name ends with id, and data type is integer, then must be an autoincrement column
+				if(index >= 0 && c.toLowerCase().endsWith("id") && primaryKeys.length == 1 && (dt.equals(DataTypeGeneric.INTEGER) || dt.equals(DataTypeGeneric.LONG))){//if only one primary and column name ends with id, and data type is integer, then must be an autoincrement column
 					return c;
 				}
 			}

@@ -13,8 +13,8 @@ import com.ivanceras.commons.writer.SourceWriter;
 import com.ivanceras.commons.writer.StringSourceWriter;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.ModelDef;
-import com.ivanceras.db.shared.datatype.GenericDataType;
-import com.ivanceras.db.shared.datatype.JavaDataType;
+import com.ivanceras.db.shared.datatype.DataTypeGeneric;
+import com.ivanceras.db.shared.datatype.DataTypeJava;
 import com.ivanceras.db.shared.util.SpecialCase;
 
 public class BeanGenerator {
@@ -87,11 +87,11 @@ public class BeanGenerator {
 		sw.lnprint("");
 
 		String[] attributes = modeldef.getAttributes();
-		String[] dataTypes = JavaDataType.fromGenericDataType(modeldef.getDataTypes());
+		String[] dataTypes = DataTypeJava.fromGenericDataType(modeldef.getDataTypes());
 		if(modeldef.getSubClass() != null && modeldef.getSubClass().length > 0){
 			String[] subclassAttributes = {IDatabase.SUBCLASSTABLE};
 			attributes = CStringUtils.mergeString(attributes, subclassAttributes);
-			String[] subclassDatatypes = {GenericDataType.STRING};
+			String[] subclassDatatypes = {DataTypeGeneric.STRING};
 			dataTypes = CStringUtils.mergeString(dataTypes, subclassDatatypes);
 		}
 		String[] hasOne = modeldef.getHasOne();
