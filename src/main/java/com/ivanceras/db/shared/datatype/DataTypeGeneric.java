@@ -5,6 +5,7 @@ import com.ivanceras.db.shared.exception.DataTypeException;
 public class DataTypeGeneric {
 
 	public static final String STRING = "String";
+	public static final String JSON = "JSON";
 	public static final String BIGDECIMAL = "BigDecimal";
 	public static final String INTEGER = "Integer";
 	public static final String LONG = "Long";
@@ -20,26 +21,25 @@ public class DataTypeGeneric {
 	public static final String DOUBLE = "Double";
 	public static final String BIGINTEGER = "BigInteger";
 	public static final String TEXT = "Text";
-	public static final String HASHMAP = "HashMap";
 
 	public static String javaDataTypeFromDBDataType(String dbDataType) throws DataTypeException{
 		return DataTypeJava.fromGenericDataType(fromDBDataType(dbDataType));
 	}
 
 	public static String fromDBDataType(String dbDataType){
-		if(dbDataType.startsWith(DataTypeDB.JSON)){//include limitized datatype such as character varying(255)
-			return HASHMAP;
+		if(dbDataType.startsWith(DataTypeDB.JSON)){//json will be hashmap in java
+			return JSON;
 		}
-		else if(dbDataType.startsWith(DataTypeDB.TIMESTAMP_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.TIMESTAMP_WITH_TIME_ZONE)){
 			return TIMESTAMP;
 		}
-		else if(dbDataType.startsWith(DataTypeDB.TIME_WITH_TIME_ZONE)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.TIME_WITH_TIME_ZONE)){
 			return TIME;
 		}
-		else if(dbDataType.startsWith(DataTypeDB.NUMERIC)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.NUMERIC)){
 			return BIGDECIMAL;
 		}
-		else if(dbDataType.startsWith(DataTypeDB.CHARACTER_VARYING)){//include limitized datatype such as character varying(255)
+		else if(dbDataType.startsWith(DataTypeDB.CHARACTER_VARYING)){
 			return STRING;
 		}
 		else if(dbDataType.startsWith(DataTypeDB.NAME)){

@@ -432,19 +432,6 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	abstract String getDriverClass();
 
 
-	@Override
-	protected Object getEquivalentDBObject(Object record) {
-		if (record == null) {
-			return null;
-		}
-		if (record.getClass().equals(java.util.Date.class)) {
-			Timestamp time = new Timestamp(((Date) record).getTime());
-			return time;
-		} else {
-			return record;
-		}
-	}
-
 	public String getEquivalentGeneralDataType(String dbDataType) {
 		return DataTypeGeneric.fromDBDataType(dbDataType);
 	}

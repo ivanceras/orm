@@ -22,16 +22,10 @@ public class ModelCurator {
 		for(ModelDef m : modelList){
 
 			this.model = m;
-			System.err.println("before: "+model);
 			correct1to1Detail();
 			removeUnnecessaryHasOneToSelf();
 			removeUnnecessaryHasManyToSelf();
 			crossOutLinkerTables();
-			System.err.println("-------------");
-			System.err.println("after: "+model);
-			System.err.println("");
-			System.err.println("");
-			System.err.println("");
 
 		}
 		return modelList;

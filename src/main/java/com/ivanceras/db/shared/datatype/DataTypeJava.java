@@ -25,7 +25,7 @@ public class DataTypeJava {
 		if(genType.equals(DataTypeGeneric.STRING)){
 			return JAVA_STRING;
 		}
-		else if(genType.equals(DataTypeGeneric.HASHMAP)){
+		else if(genType.equals(DataTypeGeneric.JSON)){
 			return JAVA_HASHMAP;
 		}
 		else if(genType.equals(DataTypeGeneric.BIGDECIMAL)){

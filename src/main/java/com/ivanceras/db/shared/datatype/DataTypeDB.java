@@ -28,7 +28,10 @@ public class DataTypeDB {
 	public static final String CHAR = "char";
 	
 	public static String fromGenericType(String genType) {
-		if(genType.equals(DataTypeGeneric.STRING)){
+		if(genType.equals(DataTypeGeneric.JSON)){
+			return JSON;
+		}
+		else if(genType.equals(DataTypeGeneric.STRING)){
 			return CHARACTER_VARYING;
 		}
 		else if(genType.equals(DataTypeGeneric.BIGDECIMAL)){

@@ -25,13 +25,16 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.postgresql.PGConnection;
+import org.postgresql.ds.common.PGObjectFactory;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 import org.postgresql.util.PGobject;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -964,6 +967,8 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 
 	private Object jsonToHashMap(String recordValue) throws JsonParseException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper();
+//		Map<String, Object> map = mapper.readValue(recordValue, new TypeReference<Map<String, Object>>(){});
+//		return map;
 		JsonNode node = mapper.readTree(recordValue);
 		return jsonNodeToObject(node);
 	}
@@ -994,14 +999,93 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		}
 		return record;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private String hashMapToJson(Object record) throws JsonProcessingException {
+		HashMap<Object, Object> hash = (HashMap<Object, Object>)record;
+		ArrayList<Object> list = new ArrayList<Object>();
+		boolean useList = true;
+		for(Entry<Object, Object> entry : hash.entrySet()){
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			if(key.getClass().equals(Integer.class)){
+				list.add(value);
+			}else{
+				useList = false;//if any of the keys is not integer use the hashMap
+			}
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String json = null;
+		if(useList){
+			json = mapper.writeValueAsString(list);
+		}else{
+			json = mapper.writeValueAsString(hash);
+		}
+		return json;
+	}
+
+
+	@Override
+	protected Object getEquivalentDBObject(Object record) {
+		if (record == null) {
+			return null;
+		}
+		System.err.println("equivalent db object for "+record.getClass()+" value: "+record);
+		if(record.getClass().equals(HashMap.class)){
+			PGobject pgo = new PGobject();
+			try {
+				pgo.setType("json");
+				String json = hashMapToJson(record);
+				pgo.setValue(json);
+			} catch (SQLException | JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return pgo;
+		}
+		else if (record.getClass().equals(java.util.Date.class)) {
+			Timestamp time = new Timestamp(((Date) record).getTime());
+			return time;
+		}else {
+			return record;
+		}
+	}
+
+
+
 
 	/**
 	 * Most of postgresql database datatype already mapped to the correct data type by the JDBC
 	 */
 	@Override
 	public void correctDataTypes(DAO[] daoList, ModelDef model) {
-		// TODO Auto-generated method stub
+		for(DAO dao : daoList){
+			correctDataTypes(dao, model);
+		}
 	}
 
+	public void correctDataTypes(DAO dao, ModelDef model) {
+		String[] dataTypes = model.getDataTypes();
+		String[] attributes = model.getAttributes();
+		for(int i = 0 ; i < attributes.length; i++){
+			Object value = dao.get_Value(attributes[i]);
+			correctDataType(value, dataTypes[i]);
+		}
+
+	}
+	/**
+	 * add logic here if PostgreSQL JDBC didn't map DB data type to their correct Java Data type
+	 * @param value
+	 * @param dataType
+	 * @return
+	 */
+
+	private Object correctDataType(Object value, String dataType) {
+		if(value == null ){return null;}
+		//		if(dataType.equals(DataTypeGeneric.TIME)){
+		//			
+		//		}
+		return value;
+	}
 
 }
