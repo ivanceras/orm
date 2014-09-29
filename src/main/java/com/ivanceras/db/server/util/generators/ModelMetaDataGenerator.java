@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.ivanceras.commons.conf.Configuration;
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.commons.writer.FileUtil;
@@ -15,7 +17,7 @@ import com.ivanceras.commons.writer.StringSourceWriter;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.shared.DAO;
 
-public class ModelFactoryGenerator {
+public class ModelMetaDataGenerator {
 
 	public void start(ModelDef[] modelListChilded, Configuration conf) {
 		generateModelMetaData(modelListChilded, conf);
@@ -121,7 +123,7 @@ public class ModelFactoryGenerator {
 			sw.lnprint("\t\t\t\t");
 			sw.lnprint("\t\tmodelDef.setPolymorphic("+modeldef.isPolymorphic()+");");
 			sw.lnprint("\t\tmodelDef.setTableName(\""+modeldef.getTableName()+"\");");
-			sw.lnprint("\t\tmodelDef.setDescription(\""+modeldef.getDescription()+"\");");
+			sw.lnprint("\t\tmodelDef.setDescription(\""+StringEscapeUtils.escapeJava(modeldef.getDescription())+"\");");
 			//			buff.lnprint("\t\tmodelDef.setAttributeComments(attributeComments);");
 			if(modeldef.getOwners() != null){
 				sw.lnprint("\t\tmodelDef.setOwners(owners);");

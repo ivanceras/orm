@@ -22,7 +22,7 @@ import com.ivanceras.db.server.util.generators.ColumnNameGenerator;
 import com.ivanceras.db.server.util.generators.DAOClassGenerator;
 import com.ivanceras.db.server.util.generators.DAOInstanceFactoryGenerator;
 import com.ivanceras.db.server.util.generators.MapperGenerator;
-import com.ivanceras.db.server.util.generators.ModelFactoryGenerator;
+import com.ivanceras.db.server.util.generators.ModelMetaDataGenerator;
 import com.ivanceras.db.server.util.generators.ModelToDAOConversionGenerator;
 import com.ivanceras.db.server.util.generators.SchemaTableGenerator;
 import com.ivanceras.db.server.util.generators.TableColumnGenerator;
@@ -68,7 +68,7 @@ public class DAOGenerator{
 		new TableNameGenerator().start(modelListChilded, conf);
 		new SchemaTableGenerator().start(modelListChilded, conf);
 		new TableColumnGenerator().start(modelListChilded, conf);
-		new ModelFactoryGenerator().start(modelListChilded, conf);
+		new ModelMetaDataGenerator().start(modelListChilded, conf);
 		new DAOInstanceFactoryGenerator().start(modelListChilded, conf);
 		new ModelToDAOConversionGenerator().start(modelListChilded, conf);
 	}
