@@ -3,8 +3,8 @@
  ******************************************************************************/
 package com.ivanceras.db.server.core;
 
-import static com.ivanceras.fluent.sql.SQL.LOWER;
-import static com.ivanceras.fluent.sql.SQL.SELECT;
+import static com.ivanceras.fluent.sql.SQL.Statics.*;
+import static com.ivanceras.fluent.sql.SQL.Statics.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,14 +21,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.postgresql.PGConnection;
-import org.postgresql.ds.common.PGObjectFactory;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 import org.postgresql.util.PGobject;
@@ -39,11 +37,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-
-import static com.fasterxml.jackson.databind.node.JsonNodeType.ARRAY;
-import static com.fasterxml.jackson.databind.node.JsonNodeType.OBJECT;
-
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.Aggregate;
@@ -53,8 +46,6 @@ import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.LiteralString;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.db.api.QueryAnalysis;
-import com.ivanceras.db.api.QueryBreakdown;
 import com.ivanceras.db.api.SchemaTable;
 import com.ivanceras.db.api.WindowFunction;
 import com.ivanceras.db.model.ModelMetaData;
@@ -660,8 +651,8 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 	@Override
 	protected SQL buildDeclaredQuery(ModelMetaData meta, Map<String, DeclaredQuery> declaredQueries) {
 		List<Object> parameters = new ArrayList<Object>();
-		SQL sql = new SQL();
-		sql.keyword("WITH ");
+		SQL_Postgres sql = new SQL_Postgres();
+		sql.WITH();
 		boolean doCommaDeclaredQuery = false;
 		Map<String, String[]> mentionedDeclaredColumns = new HashMap<String, String[]>();
 		for(Map.Entry<String, DeclaredQuery> entry : declaredQueries.entrySet()){
@@ -673,11 +664,11 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 	}
 
 	protected SQL buildDeclaredQuery(ModelMetaData meta, DeclaredQuery declaredQuery, boolean doCommaDeclaredQuery) {
-		SQL sql = new SQL();
+		SQL_Postgres sql = new SQL_Postgres();
 		if(doCommaDeclaredQuery){sql.comma();}
 		DeclaredQuery dq = declaredQuery;
 		if(dq.isRecursive()){
-			sql.keyword("RECURSIVE ");
+			sql.RECURSIVE();
 		}
 		sql.keyword(""+dq.getDeclaredName());
 		String[] dqColumns = dq.getColumns();
@@ -699,7 +690,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 
 	@Override
 	protected SQL buildWindowFunctions(ModelMetaData meta, List<WindowFunction> windowFunctions, boolean doComma) {
-		SQL sql = new SQL();
+		SQL_Postgres sql = new SQL_Postgres();
 		for(WindowFunction wf : windowFunctions){
 			if(doComma) sql.comma(); else doComma = true;
 			String[] partitions = wf.getPartitionColumns();
@@ -721,7 +712,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 				fnames_2.append(")");
 			}
 			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
-			sql.keyword(" OVER (");
+			sql.OVER();
 			if(partitions != null && partitions.length > 0 ){
 				sql.PARTITION_BY();
 				boolean doCommaPartition = false;
@@ -745,8 +736,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 					}
 				}
 			}
-			sql.keyword(") ");
-			sql.keyword(" AS "+wf.getWindowAlias());
+			sql.AS(wf.getWindowAlias());
 		}
 		return sql;
 	}
@@ -774,7 +764,8 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 				fnames_1.append(function[i]+"(");
 				fnames_2.append(")");
 			}
-			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2+" AS "+agg.getAsColumn());
+			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
+			sql.AS(agg.getAsColumn());
 			mentionedColumns.add(agg.getAsColumn());
 		}
 		return sql;
@@ -1087,5 +1078,51 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		//		}
 		return value;
 	}
+	
+	
+
+	
+	
+	/**
+	 * Manipulation of SQL statements only, pertaining to PostgreSQL, 
+	 * DB_PostgreSQL pertains to connections
+	 * @author lee
+	 *
+	 */
+	public static class SQL_Postgres extends SQL{
+		
+		public SQL WITH(){
+			return keyword("WITH");
+		}
+		
+		public SQL OVER() {
+			return keyword("OVER");
+		}
+
+		public SQL WITH(String queryName){
+			return WITH().keyword(queryName);
+		}
+		public SQL RECURSIVE(){
+			return keyword("RECURSIVE");
+		}
+
+		public SQL WITH(String queryName, SQL sql){
+			return WITH(queryName).AS().FIELD(sql);
+		}
+
+		public SQL WITH_RECURSIVE(String queryName){
+			return ((SQL_Postgres)WITH()).RECURSIVE().FIELD(queryName);
+		}
+		public SQL WITH_RECURSIVE(String queryName, SQL sql){
+			return WITH_RECURSIVE(queryName).AS().FIELD(sql);
+		}
+
+		public SQL WINDOW(String name, String expression){
+			return keyword("WINDOW");
+		}
+
+
+	}
+
 
 }

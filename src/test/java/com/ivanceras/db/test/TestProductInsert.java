@@ -25,7 +25,7 @@ import com.ivanceras.db.server.core.DB_PostgreSQL;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.fluent.sql.SQL;
-import static com.ivanceras.fluent.sql.SQL.*;
+import static com.ivanceras.fluent.sql.SQL.Statics.*;
 
 public class TestProductInsert {
 	
@@ -78,7 +78,7 @@ public class TestProductInsert {
 	public void test3() throws DatabaseException{
 		EntityManager em = EMF.get();
 		String userNameOrEmail = "ivanceras";
-		//use import static com.ivanceras.fluent.sql.SQL.*;
+		//use import static com.ivanceras.fluent.sql.SQL.Statics.*;
 		SQL sql = SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)

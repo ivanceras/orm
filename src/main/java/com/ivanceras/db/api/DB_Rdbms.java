@@ -3,7 +3,7 @@
  ******************************************************************************/
 package com.ivanceras.db.api;
 
-import static com.ivanceras.fluent.sql.SQL.*;
+import static com.ivanceras.fluent.sql.SQL.Statics.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -289,7 +289,7 @@ public abstract class DB_Rdbms{
 				if(schema != null){
 					tableName.append(schema+".");
 				}
-				sql1 = SQL.ALTER_TABLE(tableName.toString());
+				sql1 = ALTER_TABLE(tableName.toString());
 				String hasOneSchema = getDBElementName(model, getTableSchema(hasOne[i]));
 				
 				String constraintName = table+"_"+CStringUtils.capitalize(model.getHasOneLocalColumn()[i])+"_fkey";

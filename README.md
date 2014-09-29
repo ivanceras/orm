@@ -11,7 +11,7 @@ But this exists because all other ORM i came across does not fit all my requirem
 
 
 
-### Features:
+#### Features:
 
 
  * Code Generators.
@@ -103,7 +103,7 @@ But this exists because all other ORM i came across does not fit all my requirem
     * Some fields are omitted to provide more readability
       * organization_id, client_id, created, createdby, updated, updatedby, description, help, active
 
-### The generated Models
+#### The generated Models
    
 
 ```java
@@ -205,7 +205,7 @@ But this exists because all other ORM i came across does not fit all my requirem
     
 ```
 
-##Usage:
+### Usage:
 In your controller, you can use the generated classes like this:
 
 ```java  
@@ -295,12 +295,12 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
      * em.retrieveRecords(Query)
  * Query class is used to cleanly express a more complex arguments for retrieving records which would pollute EntityManager API when using an exhausetive list of comma seperated method arguments
 
-#### Note
+##### Note
 
    * DAO_Product.class is a generated class based on table product
    * product.createdby -> is a generated field, of generated class product(meta classes) which contains field createdby = "product.createdby", so you won't be able to misspell tables and column names
   
-### How many classes are generated?
+#### How many classes are generated?
 
    * There are 4 generates sources for each table
       * DAO_Product.java   (com.company.dao)
@@ -334,7 +334,7 @@ Exposing the Product to API/services, you need to map the DAO to the model
 		}
 	}
 ```
-#### Note
+##### Note
 
   * ProductMapper converts DAO_Product to and fro Product. 
   * DAO_Product is a direct mapping to the database, and is regenerated when database schema changes
@@ -347,7 +347,7 @@ Exposing the Product to API/services, you need to map the DAO to the model
  * PostgreSQL - FULL Support
  * SQLite  - Through SQL.js
 
-### Additional Platforms 
+#### Additional Platform 
 via [orm-extras](https://github.com/ivanceras/orm-extras)
 Most are just stubs and not really polished as I am not using these platforms in my current development set-up.
 It is just easy to port the PostgreSQL implementation into any of these platform.
