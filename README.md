@@ -31,7 +31,7 @@ But this exists because all other ORM i came across does not fit all my requirem
     	* Product has 1 ProductAvailabilty
     	* ProductCategory is a linker table for Product and Category, so Product has many Categories
     	
-````sql
+```sql
     CREATE TABLE product
     (
       product_id uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -98,7 +98,7 @@ But this exists because all other ORM i came across does not fit all my requirem
     );
            
 
-````
+```
 #### Note
     * Some fields are omitted to provide more readability
       * organization_id, client_id, created, createdby, updated, updatedby, description, help, active
@@ -106,7 +106,7 @@ But this exists because all other ORM i came across does not fit all my requirem
 ### The generated Models
    
 
-````java
+```java
 
     public class Product{
     
@@ -203,12 +203,12 @@ But this exists because all other ORM i came across does not fit all my requirem
         .....
     }
     
-````
+```
 
 ##Usage:
 In your controller, you can use the generated classes like this:
 
-````java  
+```java  
     
     /**
     * Getting the userId using username or Email
@@ -223,11 +223,11 @@ In your controller, you can use the generated classes like this:
 		}
 		return null;
 	}
-````
+```
 
 If you prefer to use the fluentsql API, you can do so by: 
 
-````java  
+```java  
 
 	public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
 		//use import static com.ivanceras.fluent.sql.SQL.*;
@@ -244,13 +244,13 @@ If you prefer to use the fluentsql API, you can do so by:
 		return null;
 	}
 
-````
+```
 
 Note: Though writing in fluentsql API is a lot more readable and flexible, this should be used sparingly in order not to loose portability of your app to any other database platform that is very different from traditional RDBMS database (such as Google BigTable, DynamoDB)
 
 
 
-````java    
+```java    
     /**
     * Getting the list of Products created by a certain user
     */ 
@@ -284,7 +284,7 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
 		return daoProducts;
 	}
 
-````
+```
 
  * EntityManager takes care of the inserting, updating and retrieving of records.
  * Most commonly used methods are:
@@ -313,7 +313,7 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
 Using as a service.
 Exposing the Product to API/services, you need to map the DAO to the model
 
-````java
+```java
 
     
     @Override
@@ -332,7 +332,7 @@ Exposing the Product to API/services, you need to map the DAO to the model
 			EMF.release(em);
 		}
 	}
-````
+```
 #### Note
 
   * ProductMapper converts DAO_Product to and fro Product. 
@@ -365,6 +365,7 @@ If the platform won't be able to support anything in PostgreSQL, make a workarou
 
 
 ### You may Ask
+
  * Well, you can do database operation in the browser using WebSQL+javascript.
 
      Yeah, but I don't want to rewrite my java server side controller into javascript.
@@ -373,7 +374,10 @@ I don't want to maintain different code base that has the same logic.
   * Why not use Hibernate?
 
      On the server side, hibernate works, but GWT can't do reflection so hibernate is useless there.
+     
   * Why SQL.js
+  
+  
      WebSQL and indexedb could pretty much do as a platform, but the limiting factor is the asynchronous implementation in the browser. SQL.js does not do asynchronous queries, this is in parallel with how we write code on the server. Just compile the server to javascript(Using GWT in these case), you will have an exact client-side/offline implementation of your controller.
      
 
