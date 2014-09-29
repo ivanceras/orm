@@ -301,7 +301,8 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
    * product.createdby -> is a generated field, of generated class product(meta classes) which contains field createdby = "product.createdby", so you won't be able to misspell tables and column names
   
 ### How many classes are generated?
-    * There are 4 generates sources for each table
+
+   * There are 4 generates sources for each table
       * DAO_Product.java   (com.company.dao)
       * Product.java       (com.company.model)
       * ProductMapper.java (com.company.mapper)
