@@ -246,7 +246,7 @@ If you prefer to use the fluentsql API, you can do so by:
 
 ````
 
-Warning: fluentsql API should be used only when the EntityManager/Query API is not capable of letting you express your very complex SQL statements such as the one used in Reporting.
+Note: Though writing in fluentsql API is a lot more readable and flexible, this should be used sparingly in order not to loose portability of your app to any other database platform that is very different from traditional RDBMS database (such as Google BigTable, DynamoDB)
 
 
 
@@ -334,6 +334,7 @@ Exposing the Product to API/services, you need to map the DAO to the model
 	}
 ````
 #### Note
+
   * ProductMapper converts DAO_Product to and fro Product. 
   * DAO_Product is a direct mapping to the database, and is regenerated when database schema changes
   * Product is the models to used when exposing API/services in your application, this corresponds exactly to the DAO_Product at version 1.0 of your application.
@@ -343,12 +344,27 @@ Exposing the Product to API/services, you need to map the DAO to the model
 ### Supported Platforms:
 
  * PostgreSQL - FULL Support
- * SQLite  - Under construction
- * Hive - Partial Support
+ * SQLite  - Through SQL.js
+
+### Additional Platforms 
+via [orm-extras](https://github.com/ivanceras/orm-extras)
+Most are just stubs and not really polished as I am not using these platforms in my current development set-up.
+It is just easy to port the PostgreSQL implementation into any of these platform.
+If the platform won't be able to support anything in PostgreSQL, make a workaround, else throw a NotSupportedException.
+
+
+ * Oracle
+ * MySQL
+ * Hive
+ * Cassandra
+ * DynamoDB
+ * BigTable
+ * Mongo
 
 
 
-### FAQ
+
+### You may Ask
  * Well, you can do database operation in the browser using WebSQL+javascript.
 
      Yeah, but I don't want to rewrite my java server side controller into javascript.
@@ -357,13 +373,16 @@ I don't want to maintain different code base that has the same logic.
   * Why not use Hibernate?
 
      On the server side, hibernate works, but GWT can't do reflection so hibernate is useless there.
+  * Why SQL.js
+     WebSQL and indexedb could pretty much do as a platform, but the limiting factor is the asynchronous implementation in the browser. SQL.js does not do asynchronous queries, this is in parallel with how we write code on the server. Just compile the server to javascript(Using GWT in these case), you will have an exact client-side/offline implementation of your controller.
+     
 
 ### Contact me:
 
 email: ivanceras[at]gmail.com
 
 
-### Support me:
+### Support:
 
 Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
 
