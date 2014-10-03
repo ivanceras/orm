@@ -1022,7 +1022,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 		if (record == null) {
 			return null;
 		}
-		System.err.println("equivalent db object for "+record.getClass()+" value: "+record);
 		if(record.getClass().equals(HashMap.class)){
 			PGobject pgo = new PGobject();
 			try {
@@ -1073,9 +1072,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 
 	private Object correctDataType(Object value, String dataType) {
 		if(value == null ){return null;}
-		//		if(dataType.equals(DataTypeGeneric.TIME)){
-		//			
-		//		}
 		return value;
 	}
 	

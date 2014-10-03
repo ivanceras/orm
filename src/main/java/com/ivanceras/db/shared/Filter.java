@@ -21,6 +21,7 @@ public class Filter {
 	public static final String LIKE = "LIKE";
 	public static final String NOT_NULL = "NOT NULL";
 	public static final String NULL = "NULL";
+	public static final String IS_NULL = "IS NULL";
 	
 	private static final String AND = "AND";
 	private static final String OR = "OR";

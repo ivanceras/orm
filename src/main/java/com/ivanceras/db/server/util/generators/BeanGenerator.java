@@ -46,16 +46,16 @@ public class BeanGenerator {
 		sw.lnprint("public class "+className+"{");
 		sw.lnprint("");
 		sw.lnprint("");
-		sw.lnprint("\tpublic static Class<?>[] allClasses(){");
-		sw.lnprint("\t\treturn new Class[]{");
+		sw.lnTabPrint("public static Class<?>[] allClasses(){");
+		sw.lnTabPrint("    return new Class[]{");
 		boolean doComma = false;
 		for(ModelDef model : modeldef){
 			String beanName = CStringUtils.capitalize(model.getModelName(), useCamelCase);
 			if(doComma){sw.print(",");}else{doComma=true;}
-			sw.lnprint("\t\t\t"+beanName+".class");
+			sw.lnTabPrint("        "+beanName+".class");
 		}
-		sw.lnprint("\t\t};");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("    };");
+		sw.lnTabPrint("}");
 		sw.lnprint("");
 		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), directory, ""+className+".java");
@@ -83,7 +83,7 @@ public class BeanGenerator {
 		sw.lnprint("/**");
 		sw.lnprint(" *"); 
 		sw.lnprint(" */");
-		sw.lnprint("\tprivate static final long serialVersionUID = "+UUID.randomUUID().getLeastSignificantBits()+"L;");
+		sw.lnTabPrint("private static final long serialVersionUID = "+UUID.randomUUID().getLeastSignificantBits()+"L;");
 		sw.lnprint("");
 
 		String[] attributes = modeldef.getAttributes();
@@ -102,40 +102,40 @@ public class BeanGenerator {
 			String att = SpecialCase.getEquiv(attributes[i]);
 			att = CStringUtils.toVariableName(att.toLowerCase(), useCamelCase);
 			String datatype = dataTypes[i];
-			sw.lnprint("\tprivate "+datatype+" "+att+";");
+			sw.lnTabPrint("private "+datatype+" "+att+";");
 		}
 		for(int i = 0; i < distinctHasOne.length; i++){
 			String distinctHasOneStr = CStringUtils.capitalize(distinctHasOne[i].toLowerCase(), useCamelCase);
 			String distinctHasOneVar = CStringUtils.toVariableName(distinctHasOneStr, useCamelCase);
 			sw.lnprint("");
-			sw.lnprint("\tprivate "+distinctHasOneStr+" "+distinctHasOneVar+";");
+			sw.lnTabPrint("private "+distinctHasOneStr+" "+distinctHasOneVar+";");
 		}
 		for(int i = 0; i < hasMany.length; i++){
 			String hasManyStr = CStringUtils.capitalize(hasMany[i].toLowerCase(), useCamelCase);
 			String hasManyVar = CStringUtils.toVariableName(hasManyStr, useCamelCase);
 			sw.lnprint("");
-			sw.lnprint("\tprivate "+hasManyStr+"[] "+hasManyVar+Array+";");
+			sw.lnTabPrint("private "+hasManyStr+"[] "+hasManyVar+Array+";");
 		}
 
 
 		sw.lnprint("");
 		sw.lnprint("");
-		sw.lnprint("\tpublic "+className+"(){");
-		sw.lnprint("\t\t");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("public "+className+"(){");
+		sw.lnTabPrint("    ");
+		sw.lnTabPrint("}");
 		sw.lnprint("");
 		for(int i = 0; i < attributes.length; i++){
 			String att = SpecialCase.getEquiv(attributes[i]);
 			att = CStringUtils.capitalize(att.toLowerCase(), useCamelCase);
 			String attVar = CStringUtils.toVariableName(att, useCamelCase); 
 			String datatype = dataTypes[i];
-			sw.lnprint("\tpublic "+datatype+" get"+att+"(){");
-			sw.lnprint("\t\treturn "+attVar+";");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public "+datatype+" get"+att+"(){");
+			sw.lnTabPrint("    return "+attVar+";");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
-			sw.lnprint("\tpublic void set"+att+"("+datatype+" "+attVar+"){");
-			sw.lnprint("\t\tthis."+attVar+" = "+attVar+";");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public void set"+att+"("+datatype+" "+attVar+"){");
+			sw.lnTabPrint("    this."+attVar+" = "+attVar+";");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
 		}
 
@@ -143,13 +143,13 @@ public class BeanGenerator {
 			String distinctHasOneStr = CStringUtils.capitalize(distinctHasOne[i].toLowerCase(), useCamelCase);
 			String distinctHasOneVar = CStringUtils.toVariableName(distinctHasOneStr, useCamelCase);
 			sw.lnprint("");
-			sw.lnprint("\tpublic void set"+distinctHasOneStr+"("+distinctHasOneStr+" "+distinctHasOneVar+"){");
-			sw.lnprint("\t\tthis."+distinctHasOneVar+" = "+distinctHasOneVar+";");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public void set"+distinctHasOneStr+"("+distinctHasOneStr+" "+distinctHasOneVar+"){");
+			sw.lnTabPrint("    this."+distinctHasOneVar+" = "+distinctHasOneVar+";");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
-			sw.lnprint("\tpublic "+distinctHasOneStr+" get"+distinctHasOneStr+"(){");
-			sw.lnprint("\t\treturn "+distinctHasOneVar+";");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public "+distinctHasOneStr+" get"+distinctHasOneStr+"(){");
+			sw.lnTabPrint("    return "+distinctHasOneVar+";");
+			sw.lnTabPrint("}");
 		}
 
 
@@ -157,28 +157,28 @@ public class BeanGenerator {
 			String hasManyStr = CStringUtils.capitalize(hasMany[i].toLowerCase(), useCamelCase);
 			String hasManyVar = CStringUtils.toVariableName(hasManyStr, useCamelCase);
 			sw.lnprint("");
-			sw.lnprint("\tpublic void set"+hasManyStr+Array+"("+hasManyStr+"[] "+hasManyVar+Array+"){");
-			sw.lnprint("\t\tthis."+hasManyVar+Array+" = "+hasManyVar+Array+";");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public void set"+hasManyStr+Array+"("+hasManyStr+"[] "+hasManyVar+Array+"){");
+			sw.lnTabPrint("    this."+hasManyVar+Array+" = "+hasManyVar+Array+";");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
-			sw.lnprint("\tpublic "+hasManyStr+"[] get"+hasManyStr+Array+"(){");
-			sw.lnprint("\t\treturn "+hasManyVar+Array+";");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public "+hasManyStr+"[] get"+hasManyStr+Array+"(){");
+			sw.lnTabPrint("    return "+hasManyVar+Array+";");
+			sw.lnTabPrint("}");
 		}
 		//Override the toString
-		sw.lnprint("\t@Override");
-		sw.lnprint("\tpublic String toString(){");
-		sw.lnprint("\t\tStringBuilder sb = new StringBuilder();");
-		sw.lnprint("\t\tsb.append("+className+".class+\"->[\");");
+		sw.lnTabPrint("@Override");
+		sw.lnTabPrint("public String toString(){");
+		sw.lnTabPrint("    StringBuilder sb = new StringBuilder();");
+		sw.lnTabPrint("    sb.append("+className+".class+\"->[\");");
 		for(int i = 0; i < attributes.length; i++){
 			String att = SpecialCase.getEquiv(attributes[i]);
 			att = CStringUtils.capitalize(att.toLowerCase(), useCamelCase);
 			String attVar = CStringUtils.toVariableName(att, useCamelCase); 
-			sw.lnprint("\t\tsb.append("+attVar+"!=null ? "+attVar+"+\", \":\"\");");
+			sw.lnTabPrint("    sb.append("+attVar+"!=null ? "+attVar+"+\", \":\"\");");
 		}
-		sw.lnprint("\t\tsb.append(\"]\");");
-		sw.lnprint("\t\treturn sb.toString();");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("    sb.append(\"]\");");
+		sw.lnTabPrint("    return sb.toString();");
+		sw.lnTabPrint("}");
 		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), directory, ""+className+".java");
 		return true;

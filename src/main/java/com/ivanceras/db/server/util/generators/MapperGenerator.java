@@ -1,6 +1,10 @@
 package com.ivanceras.db.server.util.generators;
 
 import static com.ivanceras.db.server.util.DAOGenerator.Array;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ivanceras.commons.conf.Configuration;
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.commons.writer.FileUtil;
@@ -35,6 +39,8 @@ public class MapperGenerator {
 		sw.lnprint("import "+conf.daopackageName+".DAO_"+className+";");
 		sw.lnprint("import "+conf.bopackageName+"."+className+";");
 		sw.lnprint("import "+conf.bopackageName+".*;");
+		sw.lnprint("import static "+conf.metaDataPackageName+".Column.*;");
+		sw.lnprint("import "+CStringUtils.class.getCanonicalName()+";");
 		sw.lnprint("");
 		sw.lnprint("public class "+className+"Mapper{");
 		sw.lnprint("/**");
@@ -49,91 +55,126 @@ public class MapperGenerator {
 
 		String[] hasMany = modeldef.getHasMany();
 
+		List<String> fieldList = new ArrayList<String>();
+		
+		for(String att : attributes){
+			att = CStringUtils.toVariableName(att.toLowerCase(), useCamelCase);
+			fieldList.add(att);
+		}
+		sw.lnTabPrint("/**");
+		sw.lnTabPrint("*fields -  are those Model properties exposed in the API, change the field names as needed to support previous revision of your API");
+		sw.lnTabPrint("*columns - These are the exact column names in the database tables, fields to columns are translated back and fort using their relative indexes on the array");
+		sw.lnTabPrint("* Make sure the columns and field relative location is aligned ");
+		sw.lnTabPrint("*/");
+		sw.lnTabPrint("private static String[] fields  = {"+getQuotedStringListRepresentation(fieldList.toArray(new String[fieldList.size()]))+"};");
+		sw.lnTabPrint("private static String[] columns = {"+getStringListRepresentation(attributes)+"};");
+		sw.lnprint();
+		sw.lnprint();
+
 		/**
 		 * map from DAO to Business Object
 		 */
-		sw.lnprint("\tpublic static "+className+" map(DAO_"+className+" dao"+className+"){");
+		sw.lnTabPrint("public static "+className+" map(DAO_"+className+" dao"+className+"){");
 		String boObject = CStringUtils.toVariableName(className, useCamelCase);
-		sw.lnprint("\t\tif(dao"+className+" == null){");
-		sw.lnprint("\t\t\treturn null;");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t\t"+className+" "+boObject+" = new "+className+"();"); 
+		sw.lnTabPrint("    if(dao"+className+" == null){");
+		sw.lnTabPrint("        return null;");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("    "+className+" "+boObject+" = new "+className+"();"); 
 		for(int i = 0; i < attributes.length; i++){
 			String att = attributes[i];
 			att = SpecialCase.getEquiv(att);
 			att = CStringUtils.capitalize(att.toLowerCase(), useCamelCase);
-			sw.lnprint("\t\t"+boObject+".set"+att+"(dao"+className+".get"+att+"());");
+			sw.lnTabPrint("    "+boObject+".set"+att+"(dao"+className+".get"+att+"());");
 		}
 		for(int j = 0; j < distinctHasOne.length; j++){
 			String distinctHasOneStr = CStringUtils.capitalize(distinctHasOne[j].toLowerCase(), useCamelCase);
-			sw.lnprint("\t\t"+boObject+".set"+distinctHasOneStr+"("+distinctHasOneStr+"Mapper.map("+"dao"+className+".get"+distinctHasOneStr+"()));");
+			sw.lnTabPrint("    "+boObject+".set"+distinctHasOneStr+"("+distinctHasOneStr+"Mapper.map("+"dao"+className+".get"+distinctHasOneStr+"()));");
 		}
 		for(int k = 0; k < hasMany.length; k++){
 			String hasManyStr = CStringUtils.capitalize(hasMany[k].toLowerCase(), useCamelCase);
-			sw.lnprint("\t\t"+boObject+".set"+hasManyStr+Array+"("+hasManyStr+"Mapper.map(dao"+className+".get"+hasManyStr+Array+"()));");
+			sw.lnTabPrint("    "+boObject+".set"+hasManyStr+Array+"("+hasManyStr+"Mapper.map(dao"+className+".get"+hasManyStr+Array+"()));");
 		}
 
-		sw.lnprint("\t\treturn "+boObject+";");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("    return "+boObject+";");
+		sw.lnTabPrint("}");
 		sw.lnprint("");
 
 		/**
 		 * map from Business Object to DAO
 		 */
-		sw.lnprint("\tpublic static DAO_"+className+" map("+className+" "+boObject+"){");
-		sw.lnprint("\t\tif("+boObject+" == null){");
-		sw.lnprint("\t\t\treturn null;");
-		sw.lnprint("\t\t}");
+		sw.lnTabPrint("public static DAO_"+className+" map("+className+" "+boObject+"){");
+		sw.lnTabPrint("    if("+boObject+" == null){");
+		sw.lnTabPrint("        return null;");
+		sw.lnTabPrint("    }");
 
-		sw.lnprint("\t\tDAO_"+className+" dao"+className+" = new DAO_"+className+"();"); 
+		sw.lnTabPrint("    DAO_"+className+" dao"+className+" = new DAO_"+className+"();"); 
 		for(int i = 0; i < attributes.length; i++){
 			String att = SpecialCase.getEquiv(attributes[i]);
 			att = CStringUtils.capitalize(att.toLowerCase(), useCamelCase);
-			sw.lnprint("\t\tdao"+className+".set"+att+"("+boObject+".get"+att+"());");
+			sw.lnTabPrint("    dao"+className+".set"+att+"("+boObject+".get"+att+"());");
 		}
 		for(int j = 0; j < distinctHasOne.length; j++){
 			String distinctHasOneStr = CStringUtils.capitalize(distinctHasOne[j].toLowerCase(), useCamelCase);
-			sw.lnprint("\t\tdao"+className+".set"+distinctHasOneStr+"("+distinctHasOneStr+"Mapper.map("+boObject+".get"+distinctHasOneStr+"()));");
+			sw.lnTabPrint("    dao"+className+".set"+distinctHasOneStr+"("+distinctHasOneStr+"Mapper.map("+boObject+".get"+distinctHasOneStr+"()));");
 		}
 		for(int k = 0; k < hasMany.length; k++){
 			String hasManyStr = CStringUtils.capitalize(hasMany[k].toLowerCase(), useCamelCase);
-			sw.lnprint("\t\tdao"+className+".set"+hasManyStr+Array+"("+hasManyStr+"Mapper.map("+boObject+".get"+hasManyStr+Array+"()));");
+			sw.lnTabPrint("    dao"+className+".set"+hasManyStr+Array+"("+hasManyStr+"Mapper.map("+boObject+".get"+hasManyStr+Array+"()));");
 		}
 
-		sw.lnprint("\t\treturn dao"+className+";");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("    return dao"+className+";");
+		sw.lnTabPrint("}");
 
 
 
 		/**
 		 * array mapping from DAO to Business Object
 		 */
-		sw.lnprint("\tpublic static "+className+"[] map(DAO_"+className+"[] dao"+className+Array+"){");
-		sw.lnprint("\t\tif(dao"+className+Array+" == null){");
-		sw.lnprint("\t\t\treturn null;");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t\t"+className+"[] "+boObject+Array+" = new "+className+"[dao"+className+Array+".length];");
-		sw.lnprint("\t\tint index = 0;");
-		sw.lnprint("\t\tfor(DAO_"+className+" dao"+className+" : dao"+className+Array+"){");
-		sw.lnprint("\t\t\t"+boObject+Array+"[index++] = map(dao"+className+");");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t\treturn "+boObject+Array+";");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("public static "+className+"[] map(DAO_"+className+"[] dao"+className+Array+"){");
+		sw.lnTabPrint("    if(dao"+className+Array+" == null){");
+		sw.lnTabPrint("        return null;");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("    "+className+"[] "+boObject+Array+" = new "+className+"[dao"+className+Array+".length];");
+		sw.lnTabPrint("    int index = 0;");
+		sw.lnTabPrint("    for(DAO_"+className+" dao"+className+" : dao"+className+Array+"){");
+		sw.lnTabPrint("        "+boObject+Array+"[index++] = map(dao"+className+");");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("    return "+boObject+Array+";");
+		sw.lnTabPrint("}");
 
 		/**
 		 * array mapping from Business Object to DAO
 		 */
-		sw.lnprint("\tpublic static DAO_"+className+"[] map("+className+"[] "+boObject+Array+"){");
-		sw.lnprint("\t\tif("+boObject+Array+" == null){");
-		sw.lnprint("\t\t\treturn null;");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t\tDAO_"+className+"[] dao"+className+Array+" = new DAO_"+className+"["+boObject+Array+".length];");
-		sw.lnprint("\t\tint index = 0;");
-		sw.lnprint("\t\tfor("+className+" "+className+" : "+boObject+Array+"){");
-		sw.lnprint("\t\t\tdao"+className+Array+"[index++] = map("+className+");");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t\treturn dao"+className+Array+";");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("public static DAO_"+className+"[] map("+className+"[] "+boObject+Array+"){");
+		sw.lnTabPrint("    if("+boObject+Array+" == null){");
+		sw.lnTabPrint("        return null;");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("    DAO_"+className+"[] dao"+className+Array+" = new DAO_"+className+"["+boObject+Array+".length];");
+		sw.lnTabPrint("    int index = 0;");
+		sw.lnTabPrint("    for("+className+" "+className+" : "+boObject+Array+"){");
+		sw.lnTabPrint("        dao"+className+Array+"[index++] = map("+className+");");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("    return dao"+className+Array+";");
+		sw.lnTabPrint("}");
+	
+		sw.lnprint();
+		sw.lnprint();
+		sw.lnTabPrint("public static String getColumn(String field){");
+		sw.lnTabPrint("	int index = CStringUtils.indexOf(fields, field);");
+		sw.lnTabPrint("	if(index >= 0){");
+		sw.lnTabPrint("		return columns[index];");
+		sw.lnTabPrint("	}");
+		sw.lnTabPrint("	return null;");
+		sw.lnTabPrint("}");
+		sw.lnprint();
+		sw.lnprint();
+		sw.lnTabPrint("public static String getField(String column){");
+		sw.lnTabPrint("	int index = CStringUtils.indexOf(columns, column);");
+		sw.lnTabPrint("	if(index >= 0){");
+		sw.lnTabPrint("		return  fields[index];");
+		sw.lnTabPrint("	}");
+		sw.lnTabPrint("	return null;");
+		sw.lnTabPrint("}");
 
 		sw.lnprint("}");
 		
@@ -142,4 +183,33 @@ public class MapperGenerator {
 		return true;
 
 	}
+	
+	private String getQuotedStringListRepresentation(String[] list){
+		if(list == null){
+			return null;
+		}
+		StringBuffer buff = new StringBuffer();
+		boolean doComma = false;
+		for(String l : list){
+			if(doComma){buff.append(", ");}else{doComma=true;}
+			buff.append("\""+l+"\"");
+		}
+		return buff.toString();
+	}
+	
+	private String getStringListRepresentation(String[] list){
+		if(list == null){
+			return null;
+		}
+		StringBuffer buff = new StringBuffer();
+		boolean doComma = false;
+		for(String l : list){
+			if(doComma){buff.append(", ");}else{doComma=true;}
+			buff.append(" "+l+" ");
+		}
+		return buff.toString();
+	}
+	
+	
+	
 }

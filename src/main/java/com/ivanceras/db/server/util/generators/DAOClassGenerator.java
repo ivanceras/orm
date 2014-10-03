@@ -59,9 +59,9 @@ public class DAOClassGenerator {
 
 		sw.lnprint("");
 		sw.lnprint("");
-		sw.lnprint("\tpublic DAO_"+className+"(){");
-		sw.lnprint("\t\tsuper(\""+className+"\");");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("public DAO_"+className+"(){");
+		sw.lnTabPrint("    super(\""+className+"\");");
+		sw.lnTabPrint("}");
 		sw.lnprint("");
 		for(int i = 0; i < attributes.length; i++){
 			//			System.out.lnprint("attribute["+i+"]: "+attributes[i]);
@@ -70,13 +70,13 @@ public class DAOClassGenerator {
 			att = CStringUtils.capitalize(att.toLowerCase(),useCamelCase);
 			String attVar = CStringUtils.toVariableName(att,useCamelCase);
 			String datatype = dataTypes[i];
-			sw.lnprint("\tpublic "+datatype+" get"+att+"(){");
-			sw.lnprint("\t\treturn ("+datatype+")get_Value(Column."+columnName+");");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public "+datatype+" get"+att+"(){");
+			sw.lnTabPrint("    return ("+datatype+")get_Value(Column."+columnName+");");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
-			sw.lnprint("\tpublic void set"+att+"("+datatype+" "+attVar+"){");
-			sw.lnprint("\t\tset_Value(Column."+columnName+", "+attVar+");");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public void set"+att+"("+datatype+" "+attVar+"){");
+			sw.lnTabPrint("    set_Value(Column."+columnName+", "+attVar+");");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
 		}
 
@@ -84,13 +84,13 @@ public class DAOClassGenerator {
 			String distinctHasOneStr = CStringUtils.capitalize(distinctHasOne[i].toLowerCase(),useCamelCase);
 			String distinctHasOneVar = CStringUtils.toVariableName(distinctHasOneStr,useCamelCase);
 			sw.lnprint("");
-			sw.lnprint("\tpublic void set"+distinctHasOneStr+"(DAO_"+distinctHasOneStr+" "+distinctHasOneVar+"){");
-			sw.lnprint("\t\tset_Value(\""+distinctHasOne[i]+"\", "+distinctHasOneVar+");");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public void set"+distinctHasOneStr+"(DAO_"+distinctHasOneStr+" "+distinctHasOneVar+"){");
+			sw.lnTabPrint("    set_Value(\""+distinctHasOne[i]+"\", "+distinctHasOneVar+");");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
-			sw.lnprint("\tpublic DAO_"+distinctHasOneStr+" get"+distinctHasOneStr+"(){");
-			sw.lnprint("\t\treturn (DAO_"+distinctHasOneStr+")get_Value(\""+distinctHasOne[i]+"\");");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public DAO_"+distinctHasOneStr+" get"+distinctHasOneStr+"(){");
+			sw.lnTabPrint("    return (DAO_"+distinctHasOneStr+")get_Value(\""+distinctHasOne[i]+"\");");
+			sw.lnTabPrint("}");
 		}
 
 
@@ -98,56 +98,56 @@ public class DAOClassGenerator {
 			String hasManyStr = CStringUtils.capitalize(hasMany[i].toLowerCase(),useCamelCase);
 			String hasManyVar = CStringUtils.toVariableName(hasManyStr,useCamelCase);
 			sw.lnprint("");
-			sw.lnprint("\tpublic void set"+hasManyStr+Array+"(DAO_"+hasManyStr+"[] "+hasManyVar+Array+"){");
-			sw.lnprint("\t\tset_Value(\""+hasMany[i]+Array+"\", "+hasManyVar+Array+");");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public void set"+hasManyStr+Array+"(DAO_"+hasManyStr+"[] "+hasManyVar+Array+"){");
+			sw.lnTabPrint("    set_Value(\""+hasMany[i]+Array+"\", "+hasManyVar+Array+");");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
-			sw.lnprint("\tpublic DAO_"+hasManyStr+"[] get"+hasManyStr+Array+"(){");
-			sw.lnprint("\t\treturn (DAO_"+hasManyStr+"[])get_Value(\""+hasMany[i]+Array+"\");");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("public DAO_"+hasManyStr+"[] get"+hasManyStr+Array+"(){");
+			sw.lnTabPrint("    return (DAO_"+hasManyStr+"[])get_Value(\""+hasMany[i]+Array+"\");");
+			sw.lnTabPrint("}");
 		}
 		if(includeDepracated){
 			sw.lnprint("");
-			sw.lnprint("\t/**");
-			sw.lnprint("\t * @deprecated user{@link "+EntityManager.class.getSimpleName()+".cast(DAO_"+className+".class, dao); instead))}");
-			sw.lnprint("\t * @param dao");
-			sw.lnprint("\t * @return DAO_"+className+"");
-			sw.lnprint("\t */");
-			sw.lnprint("\t@Deprecated");
-			sw.lnprint("\tpublic static DAO_"+className+" cast(DAO dao){");
-			sw.lnprint("\t\tif(dao == null){");
-			sw.lnprint("\t\t\treturn null;");
-			sw.lnprint("\t\t}");
-			sw.lnprint("\t\telse if(DAO_"+className+".class.equals(dao.getClass())){");
-			sw.lnprint("\t\t\treturn (DAO_"+className+") dao;");
-			sw.lnprint("\t\t}");
-			sw.lnprint("\t\telse{");
-			sw.lnprint("\t\t\tDAO_"+className+" "+varClassName+" = "+DAO_Operator.class.getSimpleName()+".cast(new DAO_"+className+"(), \""+className+"\", dao);");
-			sw.lnprint("\t\t\treturn "+varClassName+";");
-			sw.lnprint("\t\t}");
-			sw.lnprint("\t}");
-			sw.lnprint("\t");
-			sw.lnprint("\t/**");
-			sw.lnprint("\t * @deprecated user{@link "+EntityManager.class.getSimpleName()+".cast(DAO_"+className+".class, daoArray); instead))}");
-			sw.lnprint("\t * @param daoArray");
-			sw.lnprint("\t * @return DAO_"+className+"[]");
-			sw.lnprint("\t */");
-			sw.lnprint("\t@Deprecated");
-			sw.lnprint("\tpublic static DAO_"+className+"[] cast(DAO[] daoArray){");
-			sw.lnprint("\t\tif(daoArray == null){");
-			sw.lnprint("\t\t\treturn null;");
-			sw.lnprint("\t\t}");
-			sw.lnprint("\t\telse if(DAO_"+className+"[].class.equals(daoArray.getClass())){");
-			sw.lnprint("\t\t\treturn (DAO_"+className+"[]) daoArray;");
-			sw.lnprint("\t\t}");
-			sw.lnprint("\t\telse{");
-			sw.lnprint("\t\t\tDAO_"+className+"[] "+varClassName+Array+" = "+DAO_Operator.class.getSimpleName()+".cast(new DAO_"+className+"[daoArray.length],\""+className+"\", daoArray);");
-			sw.lnprint("\t\t\treturn "+varClassName+Array+";");
-			sw.lnprint("\t\t}");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("/**");
+			sw.lnTabPrint(" * @deprecated user{@link "+EntityManager.class.getSimpleName()+".cast(DAO_"+className+".class, dao); instead))}");
+			sw.lnTabPrint(" * @param dao");
+			sw.lnTabPrint(" * @return DAO_"+className+"");
+			sw.lnTabPrint(" */");
+			sw.lnTabPrint("@Deprecated");
+			sw.lnTabPrint("public static DAO_"+className+" cast(DAO dao){");
+			sw.lnTabPrint("    if(dao == null){");
+			sw.lnTabPrint("        return null;");
+			sw.lnTabPrint("    }");
+			sw.lnTabPrint("    else if(DAO_"+className+".class.equals(dao.getClass())){");
+			sw.lnTabPrint("        return (DAO_"+className+") dao;");
+			sw.lnTabPrint("    }");
+			sw.lnTabPrint("    else{");
+			sw.lnTabPrint("        DAO_"+className+" "+varClassName+" = "+DAO_Operator.class.getSimpleName()+".cast(new DAO_"+className+"(), \""+className+"\", dao);");
+			sw.lnTabPrint("        return "+varClassName+";");
+			sw.lnTabPrint("    }");
+			sw.lnTabPrint("}");
+			sw.lnTabPrint("");
+			sw.lnTabPrint("/**");
+			sw.lnTabPrint(" * @deprecated user{@link "+EntityManager.class.getSimpleName()+".cast(DAO_"+className+".class, daoArray); instead))}");
+			sw.lnTabPrint(" * @param daoArray");
+			sw.lnTabPrint(" * @return DAO_"+className+"[]");
+			sw.lnTabPrint(" */");
+			sw.lnTabPrint("@Deprecated");
+			sw.lnTabPrint("public static DAO_"+className+"[] cast(DAO[] daoArray){");
+			sw.lnTabPrint("    if(daoArray == null){");
+			sw.lnTabPrint("        return null;");
+			sw.lnTabPrint("    }");
+			sw.lnTabPrint("    else if(DAO_"+className+"[].class.equals(daoArray.getClass())){");
+			sw.lnTabPrint("        return (DAO_"+className+"[]) daoArray;");
+			sw.lnTabPrint("    }");
+			sw.lnTabPrint("    else{");
+			sw.lnTabPrint("        DAO_"+className+"[] "+varClassName+Array+" = "+DAO_Operator.class.getSimpleName()+".cast(new DAO_"+className+"[daoArray.length],\""+className+"\", daoArray);");
+			sw.lnTabPrint("        return "+varClassName+Array+";");
+			sw.lnTabPrint("    }");
+			sw.lnTabPrint("}");
 		}
 
-		sw.lnprint("\t");
+		sw.lnTabPrint("");
 
 		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), directory, "DAO_"+className+".java");

@@ -58,7 +58,7 @@ public class TableNameGenerator {
 		sw.lnprint();
 		sw.lnprint("public class "+className+"{");
 		for(String table : orderedList){
-			sw.lnprint("\tpublic final static String "+table+" = \""+table+"\";");
+			sw.lnTabPrint("public final static String "+table+" = \""+table+"\";");
 		}
 		sw.lnprint("");
 		sw.lnprint("}");

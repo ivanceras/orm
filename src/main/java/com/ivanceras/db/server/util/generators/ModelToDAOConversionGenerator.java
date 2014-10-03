@@ -46,25 +46,25 @@ public class ModelToDAOConversionGenerator {
 		sw.lnprint("import "+conf.bopackageName+".*;");
 		sw.lnprint("");
 		sw.lnprint("public class "+className+"{");
-		sw.lnprint("\t/**");
-		sw.lnprint("\t*"); 
-		sw.lnprint("\t*"); 
-		sw.lnprint("\t*/");
-		sw.lnprint("\t@SuppressWarnings(\"unchecked\")"); 
-		sw.lnprint("\tpublic <D extends DAO, M> D convert(M obj) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
-		sw.lnprint("\t\tif(obj == null){return null;}"); 
+		sw.lnTabPrint("/**");
+		sw.lnTabPrint("*"); 
+		sw.lnTabPrint("*"); 
+		sw.lnTabPrint("*/");
+		sw.lnTabPrint("@SuppressWarnings(\"unchecked\")"); 
+		sw.lnTabPrint("public <D extends DAO, M> D convert(M obj) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
+		sw.lnTabPrint("    if(obj == null){return null;}"); 
 		boolean doElse = false;
 		for(ModelDef model : modelList){
 			String modelClassName = CStringUtils.capitalize(model.getModelName(), useCamelCase);
-			if(doElse){sw.lnprint("\t\telse ");}else{doElse = true;}
-			sw.lnprint("\t\tif(obj.getClass().equals("+modelClassName+".class)){"); 
-			sw.lnprint("\t\t\treturn (D)"+modelClassName+"Mapper.map(("+modelClassName+")obj);"); 
-			sw.lnprint("\t\t}"); 
+			if(doElse){sw.lnTabPrint("    else ");}else{doElse = true;}
+			sw.lnTabPrint("    if(obj.getClass().equals("+modelClassName+".class)){"); 
+			sw.lnTabPrint("        return (D)"+modelClassName+"Mapper.map(("+modelClassName+")obj);"); 
+			sw.lnTabPrint("    }"); 
 		}
-		sw.lnprint("\t\telse{");
-		sw.lnprint("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No coversion mapper class for \"+obj.getClass()+\"]\");");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t}"); 
+		sw.lnTabPrint("    else{");
+		sw.lnTabPrint("        throw new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No coversion mapper class for \"+obj.getClass()+\"]\");");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("}"); 
 		sw.lnprint("}"); 
 		FileUtil.writeToFile(sw.toString(), directory, fileName);
 		return true;

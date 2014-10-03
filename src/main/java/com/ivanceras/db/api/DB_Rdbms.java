@@ -62,55 +62,55 @@ public abstract class DB_Rdbms{
 
 	}
 
-//	/**
-//	 * Conversion of Query Object to SQL Construct objects
-//	 * TODO: complex statements like window queries and WTE are not supported
-//	 * @param query
-//	 * @return
-//	 */
-//	@Deprecated
-//	public synchronized SQL build(Query query) {
-//		ModelDef model = query.getModel();
-//		SQL sql = null;
-//		if(query.getSelectAllColumns()){
-//			sql = SELECT("*");
-//		}
-//		else{
-//			sql = SELECT();
-//			sql.FIELD(model.getAttributes());
-//		}
-//		String schema = model.getNamespace();
-//		String table = model.getModelName();
-//		if(schema != null){
-//			table = schema+"."+table;
-//		}
-//		sql.FROM(table);
-//		addJoins(sql, query);
-//		Filter[] filters = query.getFilters();
-//
-//		buildWhereClause(sql, filters);
-//
-//		String[] groupedColumns = query.getGroupedColumns();
-//		if(groupedColumns != null){
-//			sql.GROUP_BY(groupedColumns);
-//		}
-//		Order[] orders = query.getOrders();
-//		if(orders != null){
-//			for(Order order : orders){
-//				sql.ORDER_BY(order.getColumn());
-//				if(!order.isAscending()){
-//					sql.DESC();
-//				}
-//			}
-//		}
-//		if(query.getLimit() != null){
-//			sql.LIMIT(query.getLimit());
-//		}
-//		if(query.getOffset() != null){
-//			sql.OFFSET(query.getOffset().intValue());
-//		}
-//		return sql;
-//	}
+	//	/**
+	//	 * Conversion of Query Object to SQL Construct objects
+	//	 * TODO: complex statements like window queries and WTE are not supported
+	//	 * @param query
+	//	 * @return
+	//	 */
+	//	@Deprecated
+	//	public synchronized SQL build(Query query) {
+	//		ModelDef model = query.getModel();
+	//		SQL sql = null;
+	//		if(query.getSelectAllColumns()){
+	//			sql = SELECT("*");
+	//		}
+	//		else{
+	//			sql = SELECT();
+	//			sql.FIELD(model.getAttributes());
+	//		}
+	//		String schema = model.getNamespace();
+	//		String table = model.getModelName();
+	//		if(schema != null){
+	//			table = schema+"."+table;
+	//		}
+	//		sql.FROM(table);
+	//		addJoins(sql, query);
+	//		Filter[] filters = query.getFilters();
+	//
+	//		buildWhereClause(sql, filters);
+	//
+	//		String[] groupedColumns = query.getGroupedColumns();
+	//		if(groupedColumns != null){
+	//			sql.GROUP_BY(groupedColumns);
+	//		}
+	//		Order[] orders = query.getOrders();
+	//		if(orders != null){
+	//			for(Order order : orders){
+	//				sql.ORDER_BY(order.getColumn());
+	//				if(!order.isAscending()){
+	//					sql.DESC();
+	//				}
+	//			}
+	//		}
+	//		if(query.getLimit() != null){
+	//			sql.LIMIT(query.getLimit());
+	//		}
+	//		if(query.getOffset() != null){
+	//			sql.OFFSET(query.getOffset().intValue());
+	//		}
+	//		return sql;
+	//	}
 
 
 	protected abstract SQL buildAggregateQuery(ModelMetaData meta, Aggregate[] aggregates, boolean doComma);
@@ -263,7 +263,7 @@ public abstract class DB_Rdbms{
 		schema = getDBElementName(model,schema);
 		String table = getDBTableName(model);
 
-		
+
 		StringBuilder tableName = new StringBuilder();
 		if(schema != null && useSchema()){
 			tableName.append(schema+".");
@@ -291,7 +291,7 @@ public abstract class DB_Rdbms{
 				}
 				sql1 = ALTER_TABLE(tableName.toString());
 				String hasOneSchema = getDBElementName(model, getTableSchema(hasOne[i]));
-				
+
 				String constraintName = table+"_"+CStringUtils.capitalize(model.getHasOneLocalColumn()[i])+"_fkey";
 				sql1.ADD().CONSTRAINT(constraintName);
 				sql1.FOREIGN_KEY(model.getHasOneLocalColumn()[i]);
@@ -301,7 +301,7 @@ public abstract class DB_Rdbms{
 				}
 				sql1.REFERENCES(referencedTable.toString(), model.getHasOneReferencedColumn()[i]);
 			}
-			
+
 		}
 		return sql1;
 	}
@@ -360,8 +360,8 @@ public abstract class DB_Rdbms{
 					if(dao != null) {
 						value = dao.get_Value(columns[i]);
 					}
-					value = getEquivalentDBObject(value);
-					
+					//					value = getEquivalentDBObject(value);
+
 					if(supportPreparedStatement()){
 						if(doComma){sql1.comma();}else{doComma=true;}
 						sql1.VALUE(value);
@@ -490,13 +490,18 @@ public abstract class DB_Rdbms{
 			sql1.GROUP_BY(groupedColumns);
 		}
 		if(orders != null && orders.length > 0){
+			boolean doOrderBy = true;
 			for(int i = 0; i < orders.length; i++){
 				if(orders[i] != null){
+					if(doOrderBy){
+						sql1.ORDER_BY();
+						doOrderBy = false;
+					}
 					if(orders[i].isAscending()){
-						sql1.ORDER_BY(orders[i].getColumn());
+						sql1.FIELD(orders[i].getColumn());
 					}
 					else{
-						sql1.ORDER_BY(orders[i].getColumn()).DESC();
+						sql1.FIELD(orders[i].getColumn()).DESC();
 					}
 				}
 			}
@@ -582,7 +587,7 @@ public abstract class DB_Rdbms{
 				Object value = null;
 				if(dao != null) {
 					value = dao.get_Value(columns[i]);
-					value = getEquivalentDBObject(value);
+					//					value = getEquivalentDBObject(value);
 				}
 				if(CStringUtils.inArray(defaultedColumnValues, columns[i])){
 					sql1.FIELD(columns[i]);
@@ -632,6 +637,15 @@ public abstract class DB_Rdbms{
 
 	private void extractFilter(SQL sql1, Filter... filterList) {
 		for(Filter filter : filterList){
+			
+			Filter[] childFilters = filter.getFilterList();
+			if(childFilters != null && childFilters.length > 0){
+				sql1.openParen();
+			}
+			String con = filter.getConnector();// OR ,AND
+			if(con!=null){
+				sql1.keyword(con);
+			}
 			if(filter.attribute != null){
 				sql1.FIELD(filter.attribute);
 			}
@@ -646,23 +660,13 @@ public abstract class DB_Rdbms{
 				}
 			}
 			if(filter.query != null){
-				String con = filter.getConnector();// OR ,AND
-				if(con!=null){
-					sql1.keyword(con);
-				}
-				Filter[] childFilters = filter.getFilterList();
-				if(childFilters != null && childFilters.length > 0){
-					sql1.openParen();
-				}
-				if(filter.query != null){
-					SQL sql2 = buildSQL(null, filter.query, false);
-					sql1.FIELD(sql2);
-				}
+				SQL sql2 = buildSQL(null, filter.query, false);
+				sql1.FIELD(sql2);
+			}
 
-				if(childFilters != null && childFilters.length > 0){
-					extractFilter(sql1, childFilters);
-					sql1.closeParen();
-				}
+			if(childFilters != null && childFilters.length > 0){
+				extractFilter(sql1, childFilters);
+				sql1.closeParen();
 			}
 		}
 	}
@@ -680,7 +684,7 @@ public abstract class DB_Rdbms{
 	protected String getDBElementName(ModelDef model, String element) {
 		return ApiUtils.getDBElementName(model, element);
 	}
-	
+
 	private String getDBTableName(ModelDef model) {
 		if(model==null) return null;
 		String tableName = model.getTableName();

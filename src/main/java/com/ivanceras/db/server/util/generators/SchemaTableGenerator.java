@@ -29,14 +29,14 @@ public class SchemaTableGenerator {
 			if(schemaName.equals("public")){
 				schemaName = "public_";
 			}
-			sw.lnprint("\tpublic class "+schemaName+"{");
-			sw.lnprint("\t");
+			sw.lnTabPrint("public class "+schemaName+"{");
+			sw.lnTabPrint("");
 			List<ModelDef> list = entry.getValue();
 			for(ModelDef model : list){
-				sw.lnprint("\t\tpublic static final String "+model.getTableName()+" = \""+model.getNamespace()+"."+model.getTableName()+"\";");
+				sw.lnTabPrint("    public static final String "+model.getTableName()+" = \""+model.getNamespace()+"."+model.getTableName()+"\";");
 			}
 			sw.lnprint("");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
 		}
 		sw.lnprint("}");

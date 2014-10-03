@@ -34,38 +34,38 @@ public class DAOInstanceFactoryGenerator {
 		sw.lnprint("");
 		sw.lnprint("public class "+fileClassName+" implements "+DAOFactory.class.getSimpleName()+"{");
 		sw.lnprint("");
-		sw.lnprint("\t@Override");
-		sw.lnprint("\t@SuppressWarnings(\"unchecked\")");
-		sw.lnprint("\tpublic <T> T getInstance(Class<? extends "+DAO.class.getSimpleName()+"> daoClass) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
+		sw.lnTabPrint("@Override");
+		sw.lnTabPrint("@SuppressWarnings(\"unchecked\")");
+		sw.lnTabPrint("public <T> T getInstance(Class<? extends "+DAO.class.getSimpleName()+"> daoClass) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
 		boolean doElse = false;
 		for(ModelDef model : modelList){
 			String className = CStringUtils.capitalize(model.getModelName(), useCamelCase);
-			if(doElse){sw.lnprint("\t\telse ");}else{doElse = true;}
-			sw.lnprint("\t\tif(daoClass.equals(DAO_"+className+".class)){");
-			sw.lnprint("\t\t\treturn (T)new DAO_"+className+"();");
-			sw.lnprint("\t\t}");
+			if(doElse){sw.lnTabPrint("    else ");}else{doElse = true;}
+			sw.lnTabPrint("    if(daoClass.equals(DAO_"+className+".class)){");
+			sw.lnTabPrint("        return (T)new DAO_"+className+"();");
+			sw.lnTabPrint("    }");
 		}
-		sw.lnprint("\t\telse{");
-		sw.lnprint("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t}");
+		sw.lnTabPrint("    else{");
+		sw.lnTabPrint("        throw new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("}");
 		//The array instances
-		sw.lnprint("\t@Override");
-		sw.lnprint("\t@SuppressWarnings(\"unchecked\")");
-		sw.lnprint("\tpublic <T> T[] getArrayInstance(Class<? extends DAO> daoClass, int n)  throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
+		sw.lnTabPrint("@Override");
+		sw.lnTabPrint("@SuppressWarnings(\"unchecked\")");
+		sw.lnTabPrint("public <T> T[] getArrayInstance(Class<? extends DAO> daoClass, int n)  throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
 		boolean doElse2 = false;
 		for(ModelDef model : modelList){
 			String className = CStringUtils.capitalize(model.getModelName(), useCamelCase);
-			if(doElse2){sw.println("\t\telse ");}else{doElse2 = true;}
-			sw.lnprint("\t\tif(daoClass.equals(DAO_"+className+".class)){");
-			sw.lnprint("\t\t\treturn (T[])new DAO_"+className+"[n];");
-			sw.lnprint("\t\t}");
+			if(doElse2){sw.println("        else ");}else{doElse2 = true;}
+			sw.lnTabPrint("    if(daoClass.equals(DAO_"+className+".class)){");
+			sw.lnTabPrint("        return (T[])new DAO_"+className+"[n];");
+			sw.lnTabPrint("    }");
 		}
-		sw.lnprint("\t\telse{");
-		sw.lnprint("\t\t\tthrow new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
-		sw.lnprint("\t\t}");
-		sw.lnprint("\t}");
-		sw.lnprint("\t");
+		sw.lnTabPrint("    else{");
+		sw.lnTabPrint("        throw new "+DAOInstanceFactoryException.class.getSimpleName()+"(\"No class for \"+daoClass+\"]\");");
+		sw.lnTabPrint("    }");
+		sw.lnTabPrint("}");
+		sw.lnTabPrint("");
 		sw.lnprint("}");
 		FileUtil.writeToFile(sw.toString(), dir, fileName);
 	}

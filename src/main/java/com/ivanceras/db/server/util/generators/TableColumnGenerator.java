@@ -19,14 +19,14 @@ public class TableColumnGenerator {
 		sw.lnprint("public class "+className+"{");
 		sw.lnprint();
 		for(ModelDef model : modelList){
-			sw.lnprint("\tpublic class "+model.getTableName()+"{");
-			sw.lnprint("\t");
+			sw.lnTabPrint("public class "+model.getTableName()+"{");
+			sw.lnTabPrint("");
 			String[] attributes = model.getAttributes();
 			for(String att : attributes){
-				sw.lnprint("\t\tpublic static final String "+att+" = \""+model.getTableName()+"."+att+"\";");
+				sw.lnTabPrint("\tpublic static final String "+att+" = \""+model.getTableName()+"."+att+"\";");
 			}
 			sw.lnprint("");
-			sw.lnprint("\t}");
+			sw.lnTabPrint("}");
 			sw.lnprint("");
 		}
 		sw.lnprint("}");
