@@ -43,7 +43,7 @@ public class ColumnPair{
 	
 	@Override
 	public String toString(){
-		return column1+"="+column2;
+		return column1+"-->"+column2;
 	}
 	
 }

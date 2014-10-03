@@ -115,6 +115,8 @@ public class SynchronousEntityManager implements EntityManager{
 	public int count(Query query) throws DatabaseException {
 		ModelDef model = new ModelDef();
 		Query countQuery = new Query(model);
+		query.setItemsPerPage(null);//set to null when counting
+		query.setPage(null);//set to null when counting
 		countQuery.setBaseQuery(query, "t1");
 		model.setAttributes(new String[]{"count(*)"});
 		DAO[] daoList = db.select(db.getModelMetaDataDefinition(), countQuery);

@@ -936,12 +936,13 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 			String elementString = node.toString();
 			ArrayList<Object> list = 
 					mapper.readValue(elementString, new TypeReference<ArrayList<Object>>(){});
-			Map<Integer, Object> hash = new LinkedHashMap<Integer, Object>();
-			int arraySize = list.size();
-			for(int i = 0; i < arraySize; i++){
-				hash.put(i, list.get(i));
-			}
-			return hash;
+//			Map<Integer, Object> hash = new LinkedHashMap<Integer, Object>();
+//			int arraySize = list.size();
+//			for(int i = 0; i < arraySize; i++){
+//				hash.put(i, list.get(i));
+//			}
+//			return hash;
+			return list;
 		}
 		else if(node.isObject()){
 			String elementString = node.toString();

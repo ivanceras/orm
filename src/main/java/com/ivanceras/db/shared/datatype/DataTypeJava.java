@@ -19,14 +19,14 @@ public class DataTypeJava {
 	public static final String JAVA_FLOAT = "Float";
 	public static final String JAVA_DOUBLE = "Double";
 	public static final String JAVA_BIGINTEGER = "java.math.BigInteger";
-	private static final String JAVA_HASHMAP = "java.util.HashMap<Object, Object>";
+	private static final String JAVA_OBJECT = "Object";
 	
 	public static String fromGenericDataType(String genType) throws DataTypeException{
 		if(genType.equals(DataTypeGeneric.STRING)){
 			return JAVA_STRING;
 		}
 		else if(genType.equals(DataTypeGeneric.JSON)){
-			return JAVA_HASHMAP;
+			return JAVA_OBJECT;
 		}
 		else if(genType.equals(DataTypeGeneric.BIGDECIMAL)){
 			return JAVA_BIGDECIMAL;

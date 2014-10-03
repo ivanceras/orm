@@ -11,7 +11,7 @@ public class DAO_Operator {
 		if(dao == null){
 			return null;
 		}
-		instance.setProperties(dao.getProperties());
+		copyProperties(instance, dao);
 		ColumnPair pair = dao.getRenamedColumns(modelName);//This is the name of the model to cast the dao to
 		if(pair != null){
 			ColumnPair[] pairs = pair.getPairs();
@@ -35,18 +35,15 @@ public class DAO_Operator {
 		return instanceArr;
 	}
 	
-
-	public DAO copy (DAO dao){
+	
+	private static <T> void copyProperties(T instance, DAO dao){
+		
 		Map<String, Object> properties = dao.getProperties();
-		Map<String, Object> copy = dao.getProperties();
 		for(Entry<String, Object> entry : properties.entrySet()){
 			String key = entry.getKey();
 			Object value = entry.getValue();
-			copy.put(key, value);
+			((DAO) instance).set_Value(key, value);
 		}
-		DAO daoCopy = new DAO(dao.getModelName());
-		daoCopy.setProperties(copy);
-		return daoCopy;
 	}
 
 
