@@ -15,13 +15,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,21 +27,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.ivanceras.commons.conf.DBConfig;
-import com.ivanceras.commons.strings.CStringUtils;
-import com.ivanceras.db.api.Aggregate;
-import com.ivanceras.db.api.ApiUtils;
 import com.ivanceras.db.api.ColumnDataType;
 import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.DB_Rdbms;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.db.api.QueryBreakdown;
 import com.ivanceras.db.api.SearchBuilder;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
-import com.ivanceras.db.shared.datatype.DataTypeDB;
 import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DataEntryException;
@@ -67,6 +58,8 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		 * to
 		 */
 	}
+	private static Logger log = LogManager.getLogger(DB_Jdbc.class.getSimpleName());
+
 	private static HashMap<String, String> propToHash(Properties prop) {
 		HashMap<String, String> hash = new HashMap<String, String>();
 		for (Entry<Object, Object> entry : prop.entrySet()) {
@@ -74,7 +67,6 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		}
 		return hash;
 	}
-
 	private static HashMap<String, String> readPropertyFile(
 			String etcCustomConfigurationFile) throws IOException {
 		Properties prop = new Properties();
@@ -95,25 +87,24 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		}
 		return propToHash(prop);
 	}
-	private ModelMetaData meta;
-	private static Logger log = LogManager.getLogger("DB_Jdbc");
 	protected Connection connection = null;
-
-	protected String dbName;
-
-	protected boolean initialized = false;
-	private boolean isTransacted = false;
-	private boolean debugSql = false;
-	protected String dbHost;
-	protected String dbPort;
-	protected String dbUser;
-	protected String dbPassword;
-
-	protected String dbSchema;
-
 	private String currentStatement;
 
 	protected DBConfig dbConfig;
+
+	protected String dbHost;
+	protected String dbName;
+	protected String dbPassword;
+	protected String dbPort;
+	protected String dbSchema;
+	protected String dbUser;
+	private boolean debugSql = false;
+
+	protected boolean initialized = false;
+
+	private boolean isTransacted = false;
+
+	private ModelMetaData meta;
 
 	public DB_Jdbc(){
 
@@ -772,6 +763,13 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	}
 
+	@Override
+	public DAO[] select(ModelMetaData meta, Query query)
+			throws DatabaseException {
+		SQL sql = buildSQL(meta, query, true);
+		return executeSelectAll(sql, query.getRenamedColumnPairs());
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends DAO> T[] select(SQL sql, Map<String, ColumnPair> renamedColumns)
@@ -827,17 +825,10 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 			return null;
 		}
 	}
-
+	
 	@Override
 	protected boolean useTableKeyWord() {
 		return true;
-	}
-	
-	@Override
-	public DAO[] select(ModelMetaData meta, Query query)
-			throws DatabaseException {
-		SQL sql = buildSQL(meta, query, true);
-		return executeSelectAll(sql, query.getRenamedColumnPairs());
 	}
 
 

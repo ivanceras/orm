@@ -62,56 +62,6 @@ public abstract class DB_Rdbms{
 
 	}
 
-	//	/**
-	//	 * Conversion of Query Object to SQL Construct objects
-	//	 * TODO: complex statements like window queries and WTE are not supported
-	//	 * @param query
-	//	 * @return
-	//	 */
-	//	@Deprecated
-	//	public synchronized SQL build(Query query) {
-	//		ModelDef model = query.getModel();
-	//		SQL sql = null;
-	//		if(query.getSelectAllColumns()){
-	//			sql = SELECT("*");
-	//		}
-	//		else{
-	//			sql = SELECT();
-	//			sql.FIELD(model.getAttributes());
-	//		}
-	//		String schema = model.getNamespace();
-	//		String table = model.getModelName();
-	//		if(schema != null){
-	//			table = schema+"."+table;
-	//		}
-	//		sql.FROM(table);
-	//		addJoins(sql, query);
-	//		Filter[] filters = query.getFilters();
-	//
-	//		buildWhereClause(sql, filters);
-	//
-	//		String[] groupedColumns = query.getGroupedColumns();
-	//		if(groupedColumns != null){
-	//			sql.GROUP_BY(groupedColumns);
-	//		}
-	//		Order[] orders = query.getOrders();
-	//		if(orders != null){
-	//			for(Order order : orders){
-	//				sql.ORDER_BY(order.getColumn());
-	//				if(!order.isAscending()){
-	//					sql.DESC();
-	//				}
-	//			}
-	//		}
-	//		if(query.getLimit() != null){
-	//			sql.LIMIT(query.getLimit());
-	//		}
-	//		if(query.getOffset() != null){
-	//			sql.OFFSET(query.getOffset().intValue());
-	//		}
-	//		return sql;
-	//	}
-
 
 	protected abstract SQL buildAggregateQuery(ModelMetaData meta, Aggregate[] aggregates, boolean doComma);
 
@@ -664,6 +614,10 @@ public abstract class DB_Rdbms{
 				sql1.FIELD(sql2);
 			}
 
+			if(filter.getFilterSql() != null){
+				sql1.FIELD(filter.getFilterSql());
+			}
+			
 			if(childFilters != null && childFilters.length > 0){
 				extractFilter(sql1, childFilters);
 				sql1.closeParen();

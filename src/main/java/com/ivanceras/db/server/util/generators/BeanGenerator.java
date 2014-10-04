@@ -178,6 +178,17 @@ public class BeanGenerator {
 			String attVar = CStringUtils.toVariableName(att, useCamelCase); 
 			sw.lnTabPrint("    sb.append("+attVar+"!=null ? "+attVar+"+\", \":\"\");");
 		}
+		for(int i = 0; i < distinctHasOne.length; i++){
+			String distinctHasOneStr = CStringUtils.capitalize(distinctHasOne[i].toLowerCase(), useCamelCase);
+			String distinctHasOneVar = CStringUtils.toVariableName(distinctHasOneStr, useCamelCase);
+			sw.lnTabPrint("    sb.append("+distinctHasOneVar+"!=null ? "+distinctHasOneVar+"+\", \":\"\");");
+		}
+		for(int i = 0; i < hasMany.length; i++){
+			String hasManyStr = CStringUtils.capitalize(hasMany[i].toLowerCase(), useCamelCase);
+			String hasManyVar = CStringUtils.toVariableName(hasManyStr, useCamelCase);
+			sw.lnTabPrint("    sb.append("+hasManyVar+Array+"!=null ? "+hasManyVar+Array+"+\", \":\"\");");
+		}
+
 		sw.lnTabPrint("    sb.append(\"]\");");
 		sw.lnTabPrint("    return sb.toString();");
 		sw.lnTabPrint("}");

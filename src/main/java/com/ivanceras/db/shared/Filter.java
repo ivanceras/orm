@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.ivanceras.db.api.LiteralString;
 import com.ivanceras.db.api.Query;
+import com.ivanceras.fluent.sql.SQL;
 
 public class Filter {
 	public static final String LESS_THAN = "<";
@@ -43,7 +44,18 @@ public class Filter {
 	private String connector;
 	
 	private List<Filter> filterList = new ArrayList<Filter>();
+	
+	private SQL filterSql;
 
+	
+	/**
+	 * Provides a way to exempt unsupported functions, new features to be used
+	 * @param filterInStringForm
+	 */
+	public Filter(SQL filterSql){
+		this.setFilterSql(filterSql);
+	}
+	
 	/**
 	 * For NULL or IS_NULL test
 	 * @param attribute
@@ -116,6 +128,14 @@ public class Filter {
 	@Override
 	public String toString(){
 		return this.attribute+" "+this.operator+" "+(this.value!=null?this.value:this.literalValue);
+	}
+
+	public SQL getFilterSql() {
+		return filterSql;
+	}
+
+	public void setFilterSql(SQL filterSql) {
+		this.filterSql = filterSql;
 	}
 	
 }
