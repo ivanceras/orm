@@ -38,6 +38,7 @@ public class DAOClassGenerator {
 		sw.lnprint("*/");
 		sw.lnprint("");
 		sw.lnprint("import "+DAO.class.getCanonicalName()+";");
+		sw.lnprint("import "+conf.metaDataPackageName+".Table;");
 		sw.lnprint("import "+conf.metaDataPackageName+".Column;");
 		sw.lnprint("public class DAO_"+className+" extends DAO{");
 		sw.lnprint("/**");
@@ -85,11 +86,11 @@ public class DAOClassGenerator {
 			String distinctHasOneVar = CStringUtils.toVariableName(distinctHasOneStr,useCamelCase);
 			sw.lnprint("");
 			sw.lnTabPrint("public void set"+distinctHasOneStr+"(DAO_"+distinctHasOneStr+" "+distinctHasOneVar+"){");
-			sw.lnTabPrint("    set_Value(\""+distinctHasOne[i]+"\", "+distinctHasOneVar+");");
+			sw.lnTabPrint("    set_Value(Table."+distinctHasOne[i]+", "+distinctHasOneVar+");");
 			sw.lnTabPrint("}");
 			sw.lnprint("");
 			sw.lnTabPrint("public DAO_"+distinctHasOneStr+" get"+distinctHasOneStr+"(){");
-			sw.lnTabPrint("    return (DAO_"+distinctHasOneStr+")get_Value(\""+distinctHasOne[i]+"\");");
+			sw.lnTabPrint("    return (DAO_"+distinctHasOneStr+")get_Value(Table."+distinctHasOne[i]+");");
 			sw.lnTabPrint("}");
 		}
 

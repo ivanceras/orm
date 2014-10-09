@@ -23,31 +23,31 @@ public class Filter {
 	public static final String NOT_NULL = "NOT NULL";
 	public static final String NULL = "NULL";
 	public static final String IS_NULL = "IS NULL";
-	
+
 	private static final String AND = "AND";
 	private static final String OR = "OR";
 	public static final String NOT_LIKE = "NOT LIKE";
-	
+
 	public String attribute;
 	public String operator;
 	public Object value;
 	public Query query;
-	
+
 	public String columnWrapperLeft;
 	public String columnWrapperRight;
-	
+
 	public String valueWrapperLeft;
 	public String valueWrapperRight;
-	
+
 	public String literalValue;
-	
+
 	private String connector;
-	
+
 	private List<Filter> filterList = new ArrayList<Filter>();
-	
+
 	private SQL filterSql;
 
-	
+
 	/**
 	 * Provides a way to exempt unsupported functions, new features to be used
 	 * @param filterInStringForm
@@ -55,7 +55,7 @@ public class Filter {
 	public Filter(SQL filterSql){
 		this.setFilterSql(filterSql);
 	}
-	
+
 	/**
 	 * For NULL or IS_NULL test
 	 * @param attribute
@@ -66,7 +66,7 @@ public class Filter {
 		this.literalValue = filter.literalValue;
 		this.query = filter.query;
 	}
-	
+
 	public Filter(String attribute, String operator, Object value){
 		this.attribute = attribute;
 		this.operator = operator;
@@ -76,7 +76,7 @@ public class Filter {
 		this.attribute = attribute;
 		this.operator = operator;
 	}
-	
+
 	public Filter(String attribute, String operator, Query query){
 		this.attribute = attribute;
 		this.operator = operator;
@@ -88,26 +88,28 @@ public class Filter {
 		this.operator = operator;
 		this.literalValue = value!=null ? value.toString() : null;
 	}
-	
+
 	public Filter or(Filter filter){
 		filter.connector = OR;
 		filterList.add(filter);
 		return this;
 	}
-	
+
 	public Filter and(Filter filter){
-		filter.connector = AND;
-		filterList.add(filter);
+		if(filter != null){
+			filter.connector = AND;
+			filterList.add(filter);
+		}
 		return this;
 	}
-	
+
 	public Filter and(Filter... filters){
 		for(Filter f : filters){
 			and(f);
 		}
 		return this;
 	}
-	
+
 	public String getFilterType() {
 		return connector;
 	}
@@ -137,5 +139,5 @@ public class Filter {
 	public void setFilterSql(SQL filterSql) {
 		this.filterSql = filterSql;
 	}
-	
+
 }

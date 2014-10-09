@@ -566,8 +566,10 @@ public abstract class DB_Rdbms{
 			sql1.WHERE();
 			boolean doAnd = false;
 			for(Filter filter: filters){
-				if(doAnd){sql1.AND();}else{doAnd=true;}
-				extractFilter(sql1, filter);
+				if(filter != null){
+					if(doAnd){sql1.AND();}else{doAnd=true;}
+					extractFilter(sql1, filter);
+				}
 			}
 		}
 	}
@@ -586,41 +588,47 @@ public abstract class DB_Rdbms{
 	}
 
 	private void extractFilter(SQL sql1, Filter... filterList) {
-		for(Filter filter : filterList){
-			
-			Filter[] childFilters = filter.getFilterList();
-			if(childFilters != null && childFilters.length > 0){
-				sql1.openParen();
-			}
-			String con = filter.getConnector();// OR ,AND
-			if(con!=null){
-				sql1.keyword(con);
-			}
-			if(filter.attribute != null){
-				sql1.FIELD(filter.attribute);
-			}
-			if(filter.operator != null){
-				sql1.keyword(filter.operator);
-			}
-			if(filter.value != null){
-				if(supportPreparedStatement()){
-					sql1.VALUE(filter.value);
-				}else{
-					sql1.FIELD("'"+(filter.value != null ? filter.value.toString() : null )+"'");
-				}
-			}
-			if(filter.query != null){
-				SQL sql2 = buildSQL(null, filter.query, false);
-				sql1.FIELD(sql2);
-			}
+		if(filterList != null){
+			for(Filter filter : filterList){
+				if(filter != null){
+					Filter[] childFilters = filter.getFilterList();
+					if(childFilters != null && childFilters.length > 0){
+						sql1.openParen();
+					}
+					String con = filter.getConnector();// OR ,AND
+					if(con!=null){
+						sql1.keyword(con);
+					}
+					if(filter.attribute != null){
+						sql1.FIELD(filter.attribute);
+					}
+					if(filter.operator != null){
+						sql1.keyword(filter.operator);
+					}
+					if(filter.value != null){
+						if(supportPreparedStatement()){
+							sql1.VALUE(filter.value);
+						}else{
+							//at least do a sql escaping here
+							String value = filter.value != null ? filter.value.toString() : null;
+							value = CStringUtils.escapeSQL(value);
+							sql1.FIELD("'"+value+"'");
+						}
+					}
+					if(filter.query != null){
+						SQL sql2 = buildSQL(null, filter.query, false);
+						sql1.FIELD(sql2);
+					}
 
-			if(filter.getFilterSql() != null){
-				sql1.FIELD(filter.getFilterSql());
-			}
-			
-			if(childFilters != null && childFilters.length > 0){
-				extractFilter(sql1, childFilters);
-				sql1.closeParen();
+					if(filter.getFilterSql() != null){
+						sql1.FIELD(filter.getFilterSql());
+					}
+
+					if(childFilters != null && childFilters.length > 0){
+						extractFilter(sql1, childFilters);
+						sql1.closeParen();
+					}
+				}
 			}
 		}
 	}

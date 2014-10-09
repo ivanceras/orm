@@ -17,6 +17,7 @@ import com.ivanceras.commons.conf.Configuration;
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.EntityManager;
 import com.ivanceras.db.api.ModelDef;
+import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.server.util.generators.BeanGenerator;
 import com.ivanceras.db.server.util.generators.ColumnNameGenerator;
 import com.ivanceras.db.server.util.generators.DAOClassGenerator;
@@ -40,14 +41,16 @@ public class DAOGenerator{
 	private Configuration conf;
 	private List<String[]> tableGroups;
 	private boolean cleanupDirectory;
+	private ModelMetaData explicitMeta;
 	
 	public static final String Array = "List"; //Use word "List" instead of "Array"
 
-	public DAOGenerator(EntityManager em, Configuration conf, List<String[]> tableGroups, boolean cleanupDirectory){
+	public DAOGenerator(EntityManager em, Configuration conf, List<String[]> tableGroups, ModelMetaData explicitMeta,  boolean cleanupDirectory){
 		this.em = em;
 		this.conf = conf;
 		this.tableGroups = tableGroups;
 		this.cleanupDirectory = cleanupDirectory;
+		this.explicitMeta = explicitMeta;
 	}
 
 	public void start() throws Exception{
@@ -55,7 +58,11 @@ public class DAOGenerator{
 			CleanUp.start(conf);
 		}
 		ModelDefinitionProvider provider = new ModelDefinitionProvider(em.getDB(), conf.dbUser, null, conf.includeSchema);
-		ModelDef[] modelList = correctModelList(provider.getTableDefinitions());
+		ModelDef[] origModelList = provider.getTableDefinitions();
+		
+		//TODO: proper support for explicit ModelDefinitions
+		ModelDef[] withExplecitList = overrideModelDefFromExplicit(origModelList, explicitMeta);
+		ModelDef[] modelList = correctModelList(withExplecitList);
 		
 		new DAOClassGenerator().start(modelList, conf, true, false);
 		new BeanGenerator().start(modelList, conf);
@@ -75,6 +82,41 @@ public class DAOGenerator{
 
 
 
+	/**
+	 * Support ExplecitModelDefinition
+	 * @param modelList
+	 * @param explicitMeta
+	 * @return
+	 */
+
+	private ModelDef[] overrideModelDefFromExplicit(ModelDef[] modelList, ModelMetaData explicitMeta) {
+		List<ModelDef> withExplecityMeta = new ArrayList<ModelDef>();
+		for(ModelDef model : modelList){
+			ModelDef overrideModel = getOverrideModel(model, explicitMeta);
+			withExplecityMeta.add(overrideModel);
+		}
+		return withExplecityMeta.toArray(new ModelDef[withExplecityMeta.size()]);
+	}
+
+	/**
+	 * When the mode is in the explecit  model, use it instead, else use what's the in database
+	 * @param model
+	 * @param explicitMeta2
+	 * @return
+	 */
+	private ModelDef getOverrideModel(ModelDef model,
+			ModelMetaData explicitMeta2) {
+		if(explicitMeta2 == null){
+			return model;
+		}
+		List<ModelDef> explicitList = explicitMeta2.getModelDefinitionList();
+		for(ModelDef explicitModel : explicitList){
+			if(explicitModel.getModelName().equals(model.getModelName())){
+				return explicitModel;
+			}
+		}
+		return model;
+	}
 
 	/**
 	 * Correctionals in model definition, such as
