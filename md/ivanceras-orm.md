@@ -111,23 +111,23 @@ But this exists because all other ORM i came across does not fit all my requirem
 
     public class Product{
 
-        	private java.util.Date created;
-        	private java.util.UUID createdby;
+        	private Date created;
+        	private UUID createdby;
         	private String name;
         	private String description;
         	private Boolean active;
-        	private java.util.UUID productId;
-        	private java.util.UUID parentProductId;
+        	private UUID productId;
+        	private UUID parentProductId;
         	private Boolean isService;
-        	private java.math.BigDecimal price;
+        	private BigDecimal price;
         	private Boolean useParentPrice;
         	private String unit;
-        	private java.math.BigDecimal stocks;
+        	private BigDecimal stocks;
         	private String tags;
         	private String info;
         	private String currency;
         	private Integer seqNo;
-        	private java.math.BigDecimal upfrontFee;
+        	private BigDecimal upfrontFee;
 
         	private ProductAvailability productAvailability;
 
@@ -141,15 +141,15 @@ But this exists because all other ORM i came across does not fit all my requirem
 
     public class ProductAvailability{
 
-        	private java.util.UUID productId;
+        	private UUID productId;
         	private Boolean available;
         	private Boolean alwaysAvailable;
-        	private java.math.BigDecimal stocks;
-        	private java.util.Date availableFrom;
-        	private java.util.Date availableUntil;
+        	private BigDecimal stocks;
+        	private Date availableFrom;
+        	private Date availableUntil;
         	private String availableDay;
-        	private java.util.Date openTime;
-        	private java.util.Date closeTime;
+        	private Date openTime;
+        	private Date closeTime;
 
         	private Product product;
         	//setters and getters
@@ -163,7 +163,7 @@ But this exists because all other ORM i came across does not fit all my requirem
         	private String name;
         	private String description;
         	private Boolean active;
-        	private java.util.UUID categoryId;
+        	private UUID categoryId;
 
         	private Category category;
 
@@ -177,10 +177,10 @@ But this exists because all other ORM i came across does not fit all my requirem
 
     public class ProductCategory{
 
-        	private java.util.Date created;
-        	private java.util.UUID createdby;
-        	private java.util.UUID productId;
-        	private java.util.UUID categoryId;
+        	private Date created;
+        	private UUID createdby;
+        	private UUID productId;
+        	private UUID categoryId;
 
         	private Category category;
 
@@ -195,7 +195,7 @@ But this exists because all other ORM i came across does not fit all my requirem
 
         	private String name;
         	private Boolean active;
-        	private java.util.UUID userId;
+        	private UUID userId;
         	private String username;
         	private String password;
         	private String email;
@@ -230,8 +230,10 @@ If you prefer to use the fluentsql API, you can do so by:
 
 ```java
 
+	import static com.ivanceras.fluent.sql.SQL.Statics.*;
+    ...
+
 	public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
-		//use import static com.ivanceras.fluent.sql.SQL.*;
 		SQL sql = SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)

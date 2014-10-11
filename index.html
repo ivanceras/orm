@@ -15,8 +15,6 @@
     <!-- Bootstrap theme -->
     <link href="dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
-    <!-- google prettify -->
-    <link href="dist/css/prettify.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="app/ivanceras.css" rel="stylesheet">
 
@@ -38,16 +36,24 @@
     <script src="dist/prettify/lang-sql.js"></script>
     <script src="dist/markdown/marked.js"></script>
 
-<!--
     <link rel="stylesheet" href="dist/prettify/prettify.min.css">
--->
+    <link rel="stylesheet" href="dist/markdown/marked.css">
 <!--
     <link rel="stylesheet" href="dist/prettify/sons-of-obsidian.css">
 -->
-    <link rel="stylesheet" href="dist/prettify/github.css">
+    <link rel="stylesheet" href="dist/prettify/hemisu-light.css">
 
     <script src="app/ivanceras.js"></script>
 
+    <style type="text/css">
+        .prettyprint > code {
+            font-family: monospace;
+        }
+        pre .com {
+            font-style: italic;
+        }
+
+    </style>
 </head>
 
 <body ng-app="ivanceras" ng-controller="mainController" role="document" style="">
