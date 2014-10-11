@@ -18,6 +18,12 @@ body {
 }
 
 .cjumbotron {
-	background-color: #eef;
+	background-color: #eee;
 }
 
+.prettyprint > code {
+    font-family: monospace;
+}
+pre .com {
+    font-style: italic;
+}

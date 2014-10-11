@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1024"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Ivanceras ORM</title>
+
+<meta name="description" content="Ivanceras ORM"/>
+<meta name="author" content="Jovansonlee B. Cesar"/>
+
+<!--
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+-->
+<script src="dist/js/prefixfree.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="shortcut icon" href="favicon.png"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+
+<style type="text/css">
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+body {
+    font-family: 'PT Sans', sans-serif;
+    min-height: 740px;
+
+    background: rgb(215, 215, 215);
+    background: radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));
+}
+
+b, strong {
+    font-weight: bold
+}
+
+i, em {
+    font-style: italic
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    padding: 0 0.1em;
+    background: rgba(255, 255, 255, 0.5);
+    text-shadow: -1px -1px 2px rgba(100, 100, 100, 0.9);
+    border-radius: 0.2em;
+
+    transition: 0.5s;
+}
+
+a:hover,
+a:focus {
+    background: rgba(255, 255, 255, 1);
+    text-shadow: -1px -1px 2px rgba(100, 100, 100, 0.5);
+}
+
+
+.fallback-message {
+    font-family: sans-serif;
+    line-height: 1.3;
+
+    width: 780px;
+    padding: 10px 10px 0;
+    margin: 20px auto;
+
+    border: 1px solid #E4C652;
+    border-radius: 10px;
+    background: #EEDC94;
+}
+
+.fallback-message p {
+    margin-bottom: 10px;
+}
+
+.impress-supported .fallback-message {
+    display: none;
+}
+
+
+.step {
+    position: relative;
+    width: 900px;
+    padding: 40px;
+    margin: 20px auto;
+
+    box-sizing: border-box;
+
+    font-family: 'PT Serif', georgia, serif;
+    font-size: 48px;
+    line-height: 1.5;
+}
+
+.impress-enabled .step {
+    margin: 0;
+    opacity: 0.3;
+
+    transition: opacity 1s;
+}
+
+.impress-enabled .step.active {
+    opacity: 1
+}
+
+.slide {
+    display: block;
+
+    width: 900px;
+    height: 700px;
+    padding: 40px 60px;
+
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+
+    color: rgb(102, 102, 102);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 30px;
+    line-height: 36px;
+    letter-spacing: -1px;
+}
+
+.slide q {
+    display: block;
+    font-size: 50px;
+    line-height: 72px;
+
+    margin-top: 100px;
+}
+
+.slide q strong {
+    white-space: nowrap;
+}
+
+
+#title {
+    padding: 0;
+}
+
+#title .try {
+    font-size: 64px;
+    position: absolute;
+    top: -0.5em;
+    left: 1.5em;
+
+    transform: translateZ(20px);
+}
+
+#title h1 {
+    font-size: 190px;
+
+    transform: translateZ(50px);
+}
+
+#title .footnote {
+    font-size: 32px;
+}
+
+#big {
+    width: 600px;
+    text-align: center;
+    font-size: 60px;
+    line-height: 1;
+}
+
+#big b {
+    display: block;
+    font-size: 250px;
+    line-height: 250px;
+}
+
+#big .thoughts {
+    font-size: 90px;
+    line-height: 150px;
+}
+
+#tiny {
+    width: 500px;
+    text-align: center;
+}
+
+
+#ing {
+    width: 500px
+}
+
+
+#ing b {
+    display: inline-block;
+    transition: 0.5s;
+}
+
+
+#ing.present .positioning {
+    transform: translateY(-10px);
+}
+
+
+#ing.present .rotating {
+    transform: rotate(-10deg);
+
+    transition-delay: 0.25s;
+}
+
+
+#ing.present .scaling {
+    transform: scale(0.7);
+
+    transition-delay: 0.5s;
+}
+
+
+
+#imagination {
+    width: 600px;
+}
+
+#imagination .imagination {
+    font-size: 78px;
+}
+
+
+#source {
+    width: 700px;
+    padding-bottom: 300px;
+
+    background-image: url(favicon.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+}
+
+#source q {
+    font-size: 60px;
+}
+
+
+#its-in-3d p {
+    transform-style: preserve-3d;
+}
+
+
+#its-in-3d span,
+#its-in-3d b {
+    display: inline-block;
+    transform: translateZ(40px);
+
+    transition: 0.5s;
+}
+
+#its-in-3d .have {
+    transform: translateZ(-40px);
+}
+
+#its-in-3d .you {
+    transform: translateZ(20px);
+}
+
+#its-in-3d .noticed {
+    transform: translateZ(-40px);
+}
+
+#its-in-3d .its {
+    transform: translateZ(60px);
+}
+
+#its-in-3d .in {
+    transform: translateZ(-10px);
+}
+
+#its-in-3d .footnote {
+    font-size: 32px;
+
+    transform: translateZ(-10px);
+}
+
+#its-in-3d.present span,
+#its-in-3d.present b {
+    transform: translateZ(0px);
+}
+
+
+#overview {
+    display: none
+}
+
+.impress-on-overview .step {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.hint {
+    display: none;
+
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 200px;
+
+    background: rgba(0, 0, 0, 0.5);
+    color: #EEE;
+    text-align: center;
+
+    font-size: 50px;
+    padding: 20px;
+
+    z-index: 100;
+
+    opacity: 0;
+
+    transform: translateY(400px);
+
+    transition: opacity 1s, transform 0.5s 1s;
+}
+
+.impress-enabled .hint {
+    display: block
+}
+
+.impress-on-bored .hint {
+    opacity: 1;
+
+    transform: translateY(0px);
+
+    transition: opacity 1s 5s, transform 0.5s 4.5s;
+}
+
+.impress-enabled {
+    pointer-events: none
+}
+
+.impress-enabled #impress {
+    pointer-events: auto
+}
+
+
+.fa-4 {
+    margin-right: 0.07142857em;
+    font-size: 7em;
+}
+
+</style>
+
+</head>
+
+<body class="impress-not-supported">
+
+<div class="fallback-message">
+    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified
+        version of this presentation.</p>
+
+    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+</div>
+
+<div id="impress">
+
+
+    <div id="bored" class="step slide" data-x="-1000" data-y="-1800">
+        <q>Tired of fighting against your existing ORM</q>
+        <i class="fa fa-play-circle-o fa-4"></i>
+    </div>
+
+
+    <div class="step slide" data-x="0" data-y="-1800">
+        <q>Would you like to take control of your ORM</q>
+    </div>
+
+    <div class="step slide" data-x="1000" data-y="-1800">
+        <q>Without having to write a lot of code</q>
+    </div>
+
+
+    <div id="title" class="step" data-x="0" data-y="0" data-scale="4">
+        <span class="try">then you should try</span>
+
+        <h1>Ivanceras ORM</h1>
+    </div>
+
+
+    <div id="its" class="step" data-x="850" data-y="3000" data-rotate="90" data-scale="5">
+        <p>It's an ORM written for the modern Infrastucture</p>
+    </div>
+
+    <div id="big" class="step" data-x="3500" data-y="2100" data-rotate="180" data-scale="6">
+        <p>take control of your <b>data</b> <span class="thoughts">data</span></p>
+    </div>
+
+
+    <div id="tiny" class="step" data-x="2825" data-y="2325" data-z="-3000" data-rotate="300" data-scale="1">
+        <p>and your <b>reports</b></p>
+    </div>
+
+
+    <div id="ing" class="step" data-x="3500" data-y="-850" data-rotate="270" data-scale="6">
+        <p>by <b class="positioning">generating</b>, <b class="rotating">using,</b> <b class="scaling">rinsing</b>
+            and repeat</p>
+    </div>
+
+    <div id="imagination" class="step" data-x="6700" data-y="-300" data-scale="6">
+        <p>it's an <b>iterative</b> meta programming <b class="imagination">concept</b></p>
+    </div>
+
+    <div id="source" class="step" data-x="6400" data-y="2200" data-rotate="20" data-scale="4">
+        <p>want to know more?</p>
+        <q><a href="http://github.com/ivanceras/orm">Use the documentation</a></q>
+    </div>
+
+    <div id="one-more-thing" class="step" data-x="6000" data-y="4000" data-scale="2">
+        <p>one more thing...</p>
+    </div>
+
+    <div id="its-in-3d" class="step" data-x="6200" data-y="4300" data-z="-100" data-rotate-x="-40" data-rotate-y="10"
+         data-scale="2">
+        <p><span class="have">You</span> <span class="you">don`t</span> <span class="noticed">have</span> <span
+                class="its">to</span>write <span class="in">bolierplate codes</span> <b><sup>*</sup></b>!</p>
+        <span class="footnote">*I'm looking at you hibernate</span>
+    </div>
+    <div id="end" class="step" data-x="4000" data-y="1000" data-z="1000" data-rotate="-90" data-rotate-y="90" data-scale="0.5">
+
+        <h1>Ivanceras ORM</h1>
+        <hr>
+        <p>by ivanceras
+        <br>maintained by ivanceras
+        <br>for ivanceras
+        <br>in collaboration with
+        <br>ivanceras@gmail.com
+        </p>
+
+    </div>
+    <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10">
+    </div>
+
+</div>
+
+<div class="hint">
+    <p>Use a spacebar or arrow keys to navigate</p>
+</div>
+<script>
+    if ("ontouchstart" in document.documentElement) {
+        document.querySelector(".hint").innerHTML = "<p>Tap on the left or right to navigate</p>";
+    }
+</script>
+
+<script src="dist/js/impress.js"></script>
+<script>impress().init();</script>
+
+
+
+</body>
+</html>

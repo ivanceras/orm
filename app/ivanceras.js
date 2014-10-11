@@ -9,9 +9,10 @@ app.config(function($routeProvider, $locationProvider) {
   $routeProvider.when('/download',    {templateUrl: "templates/download.html"});
   $routeProvider.when('/tutorial',    {templateUrl: "templates/tutorial.html"});
   $routeProvider.when('/guide',    {templateUrl: "templates/guide.html"});
-  $routeProvider.when('/demo',    {templateUrl: "templates/demo.html"});
+  $routeProvider.when('/slide',    {templateUrl: "templates/slide-wrapper.html"});
   $routeProvider.when('/orm',    {templateUrl: "templates/ivanceras-orm.html"});
   $routeProvider.when('/fluentsql',    {templateUrl: "templates/fluentsql.html"});
+  $routeProvider.when('/trying-to-solve',    {templateUrl: "templates/guide.html"});
 });
 
 app.service('analytics', [

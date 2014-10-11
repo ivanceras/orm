@@ -14,12 +14,11 @@
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dist/prettify/tomorrow-night-bright.css">
 
     <!-- Custom styles for this template -->
     <link href="app/ivanceras.css" rel="stylesheet">
 
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <style type="text/css"></style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -36,72 +35,54 @@
     <script src="dist/prettify/lang-sql.js"></script>
     <script src="dist/markdown/marked.js"></script>
 
-    <link rel="stylesheet" href="dist/prettify/prettify.min.css">
-<!--
-    <link rel="stylesheet" href="dist/markdown/marked.css">
--->
-<!--
-    <link rel="stylesheet" href="dist/prettify/sons-of-obsidian.css">
--->
-    <link rel="stylesheet" href="dist/prettify/tomorrow-night-bright.css">
-
     <script src="app/ivanceras.js"></script>
 
-    <style type="text/css">
-        .prettyprint > code {
-            font-family: monospace;
-        }
-        pre .com {
-            font-style: italic;
-        }
-
-    </style>
 </head>
 
-<body ng-app="ivanceras" ng-controller="mainController" role="document" style="">
-
-<!-- Fixed navbar -->
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed"
-                    data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span> <span
-                    class="icon-bar"></span> <span class="icon-bar"></span> <span
-                    class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#/">Ivanceras</a>
+<body>
+<div  ng-app="ivanceras" ng-controller="mainController" role="document" style="">
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                        data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span> <span
+                        class="icon-bar"></span> <span class="icon-bar"></span> <span
+                        class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/">Ivanceras</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#/">Home</a></li>
+                    <li><a href="#/download">Develop</a></li>
+                    <li><a href="#/slide">Slides</a></li>
+                    <li class="dropdown">
+                        <a href="" class="dropdown-toggle"
+                           data-toggle="dropdown">About<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#/orm">ORM</a></li>
+                            <li><a href="#/guide">Guide</a></li>
+                            <li><a href="#/fluentsql">Fluent SQL</a></li>
+                        </ul></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#/">Home</a></li>
-                <li><a href="#/download">Download</a></li>
-                <li><a href="#/demo">Demo</a></li>
-                <li class="dropdown">
-                    <a href="" class="dropdown-toggle"
-                       data-toggle="dropdown">About<span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#/orm">ORM</a></li>
-                        <li><a href="#/tutorial">Tutorial</a></li>
-                        <li><a href="#/guide">Guide</a></li>
-                        <li><a href="#/fluentsql">Fluent SQL</a></li>
-                    </ul></li>
-            </ul>
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-</div>
-
-<div class="container theme-showcase" role="main">
-
-
-    <div ng-view class="app-content" >
-        <div ng-include="'templates/about.html'"/>
     </div>
 
+    <div class="container theme-showcase" role="main">
 
+
+        <div ng-view class="app-content" >
+            <div ng-include="'templates/about.html'"/>
+        </div>
+
+
+    </div>
+    <!-- /container -->
 </div>
-<!-- /container -->
 
 
 <!-- Bootstrap core JavaScript
