@@ -404,7 +404,11 @@ public abstract class DB_Rdbms{
 						if(!CStringUtils.inArray(excludedColumns, columns[i])){
 							String columnName = getDBElementName(inv,columns[i]);
 							if(invTable!=null  && prependTableName()){
-								columnName = invTable+"."+columnName;
+								if(query.hasConflictedColumn(columns[i])){
+									System.err.println(columns[i]+" has conflict...");
+									columnName = invTable+"."+columnName;
+								}
+								
 							}
 							String asColumn = query.getRenamed(inv, columns[i]);
 							sql1.FIELD(columnName);
@@ -660,7 +664,7 @@ public abstract class DB_Rdbms{
 			return "\""+model.getTableName()+"\"";
 		}
 		else{
-			return CStringUtils.capitalize(tableName);//beautify a little bit
+			return tableName;
 		}
 	}
 
@@ -669,7 +673,7 @@ public abstract class DB_Rdbms{
 			return "\""+tableName.toLowerCase()+"\"";
 		}
 		else{
-			return CStringUtils.capitalize(tableName);//beautify a little bit
+			return tableName;
 		}
 	}
 

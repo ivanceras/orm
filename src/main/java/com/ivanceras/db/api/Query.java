@@ -510,5 +510,9 @@ public class Query {
 		return this;
 	}
 
+	public boolean hasConflictedColumn(String column) {
+		return analyzer.hasConflictedColumn(column);
+	}
+
 
 }

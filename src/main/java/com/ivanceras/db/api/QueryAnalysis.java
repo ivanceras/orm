@@ -2,14 +2,17 @@ package com.ivanceras.db.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class QueryAnalysis {
 
 	private Map<String, String> renameColumns = new HashMap<String, String>();
 	private Map<ModelDef, List<String>> conflictModelColumn = new HashMap<ModelDef, List<String>>();
 	private Map<String, ColumnPair> renamedColumnPairs = new HashMap<String, ColumnPair>();
+	Set<String> allColumnConflict = new HashSet<String>();
 
 	Query query;
 
@@ -27,6 +30,10 @@ public class QueryAnalysis {
 				if(sameAttributes != null && sameAttributes.length > 0){
 					addToConflictingModelColumns(model, sameAttributes);
 					addToConflictingModelColumns(invmodel, sameAttributes);
+					
+					for(String sa : sameAttributes){//list down all to allColumns that has conflict
+						allColumnConflict.add(sa);
+					}
 				}
 			}
 		}
@@ -90,6 +97,10 @@ public class QueryAnalysis {
 			return renameColumns.get(hash);
 		}
 		return null;
+	}
+
+	public boolean hasConflictedColumn(String column) {
+		return allColumnConflict.contains(column);
 	}
 
 }
