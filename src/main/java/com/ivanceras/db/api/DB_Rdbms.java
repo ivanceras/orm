@@ -172,7 +172,6 @@ public abstract class DB_Rdbms{
 		}
 		SQL sql1= DELETE().FROM(table);
 
-
 		buildWhereClause(sql1, filters);
 		return sql1;
 	}
@@ -405,7 +404,6 @@ public abstract class DB_Rdbms{
 							String columnName = getDBElementName(inv,columns[i]);
 							if(invTable!=null  && prependTableName()){
 								if(query.hasConflictedColumn(columns[i])){
-									System.err.println(columns[i]+" has conflict...");
 									columnName = invTable+"."+columnName;
 								}
 								

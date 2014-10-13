@@ -43,7 +43,11 @@ public class ColumnPair{
 	
 	@Override
 	public String toString(){
-		return column1+"-->"+column2;
+		StringBuilder sb = new StringBuilder();
+		for(ColumnPair pair : pairs){
+			sb.append(pair.getColumn1()+"->"+pair.getColumn2());
+		}
+		return sb.toString();
 	}
 	
 }

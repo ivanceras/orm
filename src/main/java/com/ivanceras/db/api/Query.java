@@ -423,9 +423,9 @@ public class Query {
 		return enumerateColumns;
 	}
 
-	public ColumnPair rename(Class<? extends DAO> daoClass, String column, String asColumn){
+	public void rename(Class<? extends DAO> daoClass, String column, String asColumn){
 		ModelDef model = meta.getDefinition(daoClass);
-		return analyzer.rename(model, column, asColumn);
+		analyzer.rename(model, column, asColumn);
 	}
 
 	public Query setBaseQuery(Query baseQuery, String baseQueryName) {

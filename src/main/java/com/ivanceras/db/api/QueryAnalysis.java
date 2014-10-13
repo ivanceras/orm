@@ -8,10 +8,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class QueryAnalysis {
+	
+	//TODO: need to clean up, unify the container of renamed columns...
 
+	//all columns in all tables
 	private Map<String, String> renameColumns = new HashMap<String, String>();
 	private Map<ModelDef, List<String>> conflictModelColumn = new HashMap<ModelDef, List<String>>();
+	
+	//renamed columns for each table
 	private Map<String, ColumnPair> renamedColumnPairs = new HashMap<String, ColumnPair>();
+	
+	//conflicted columns only
 	Set<String> allColumnConflict = new HashSet<String>();
 
 	Query query;
@@ -74,6 +81,17 @@ public class QueryAnalysis {
 		renamedColumnPairs.put(tableName, columnPairs);
 	}
 
+	public void addToRenamedColumnPairs(ModelDef model, String column, String asColumn){
+		ColumnPair columnPairs = renamedColumnPairs.get(model.getTableName());
+		if(columnPairs == null){
+			columnPairs = new ColumnPair(column, asColumn);
+		}else{
+			columnPairs.add(new ColumnPair(column, asColumn));
+		}
+		String tableName = model.getModelName();
+		renamedColumnPairs.put(tableName, columnPairs);
+		
+	}
 
 	public Map<String, ColumnPair> getRenamedColumnPairs(){
 		return renamedColumnPairs;
@@ -84,19 +102,22 @@ public class QueryAnalysis {
 	}
 
 
-	public ColumnPair rename(ModelDef model, String column, String asColumn){
+	/**
+	 * Not very simple, since you have to support renaming a column (without the model) as well.
+	 */
+	public void rename(ModelDef model, String column, String asColumn){
 		String hash = getRenameColumnValue(model, column);
 		renameColumns.put(hash, asColumn);
-		return new ColumnPair(column, asColumn);
+		addToRenamedColumnPairs(model, column, asColumn);
 	}
 
 
 	public String getRenamed(ModelDef model, String column){
-		if(conflictModelColumn.containsKey(model)){
+//		if(conflictModelColumn.containsKey(model)){
 			String hash = getRenameColumnValue(model, column);
 			return renameColumns.get(hash);
-		}
-		return null;
+//		}
+//		return null;
 	}
 
 	public boolean hasConflictedColumn(String column) {

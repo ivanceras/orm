@@ -13,11 +13,14 @@ public class DAO_Operator {
 		}
 		copyProperties(instance, dao);
 		ColumnPair pair = dao.getRenamedColumns(modelName);//This is the name of the model to cast the dao to
+		
 		if(pair != null){
 			ColumnPair[] pairs = pair.getPairs();
 			for(ColumnPair p : pairs){
 				if(dao.getProperties().containsKey(p.getColumn2())){
-					instance.set_Value(p.getColumn1(), dao.get_Value(p.getColumn2()));
+					String key = p.getColumn1();
+					Object value = dao.get_Value(p.getColumn2());
+					instance.set_Value(key, value);
 				}
 			}
 		}
