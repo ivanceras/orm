@@ -40,6 +40,7 @@ public class MapperGenerator {
 		sw.lnprint("import "+conf.bopackageName+"."+className+";");
 		sw.lnprint("import "+conf.bopackageName+".*;");
 		sw.lnprint("import static "+conf.metaDataPackageName+".Column.*;");
+		sw.lnprint("import static "+conf.metaDataPackageName+".Table.*;");
 		sw.lnprint("import "+CStringUtils.class.getCanonicalName()+";");
 		sw.lnprint("");
 		sw.lnprint("public class "+className+"Mapper{");
@@ -56,11 +57,25 @@ public class MapperGenerator {
 		String[] hasMany = modeldef.getHasMany();
 
 		List<String> fieldList = new ArrayList<String>();
+		List<String> objectList = new ArrayList<String>();
+		List<String> tableList = new ArrayList<String>();
 		
 		for(String att : attributes){
 			att = CStringUtils.toVariableName(att.toLowerCase(), useCamelCase);
 			fieldList.add(att);
 		}
+		
+		for(String obj : hasOne){
+			obj = CStringUtils.toVariableName(obj.toLowerCase(), useCamelCase);
+			tableList.add(obj);
+			objectList.add(obj);
+		}
+		for(String obj : hasMany){
+			obj = CStringUtils.toVariableName(obj.toLowerCase(), useCamelCase);
+			tableList.add(obj);
+			objectList.add(obj);
+		}
+		
 		sw.lnTabPrint("/**");
 		sw.lnTabPrint("*fields -  are those Model properties exposed in the API, change the field names as needed to support previous revision of your API");
 		sw.lnTabPrint("*columns - These are the exact column names in the database tables, fields to columns are translated back and fort using their relative indexes on the array");
@@ -68,6 +83,9 @@ public class MapperGenerator {
 		sw.lnTabPrint("*/");
 		sw.lnTabPrint("private static String[] fields  = {"+getQuotedStringListRepresentation(fieldList.toArray(new String[fieldList.size()]))+"};");
 		sw.lnTabPrint("private static String[] columns = {"+getStringListRepresentation(attributes)+"};");
+		sw.lnprint();
+		sw.lnTabPrint("private static String[] objects  = {"+getQuotedStringListRepresentation(objectList.toArray(new String[objectList.size()]))+"};");
+		sw.lnTabPrint("private static String[] tables   = {"+getStringListRepresentation(tableList.toArray(new String[tableList.size()]))+"};");
 		sw.lnprint();
 		sw.lnprint();
 
@@ -172,6 +190,25 @@ public class MapperGenerator {
 		sw.lnTabPrint("	int index = CStringUtils.indexOf(columns, column);");
 		sw.lnTabPrint("	if(index >= 0){");
 		sw.lnTabPrint("		return  fields[index];");
+		sw.lnTabPrint("	}");
+		sw.lnTabPrint("	return null;");
+		sw.lnTabPrint("}");
+		
+		sw.lnprint();
+		sw.lnprint();
+		sw.lnTabPrint("public static String getTable(String object){");
+		sw.lnTabPrint("	int index = CStringUtils.indexOf(objects, object);");
+		sw.lnTabPrint("	if(index >= 0){");
+		sw.lnTabPrint("		return tables[index];");
+		sw.lnTabPrint("	}");
+		sw.lnTabPrint("	return null;");
+		sw.lnTabPrint("}");
+		sw.lnprint();
+		sw.lnprint();
+		sw.lnTabPrint("public static String getObject(String table){");
+		sw.lnTabPrint("	int index = CStringUtils.indexOf(tables, table);");
+		sw.lnTabPrint("	if(index >= 0){");
+		sw.lnTabPrint("		return  objects[index];");
 		sw.lnTabPrint("	}");
 		sw.lnTabPrint("	return null;");
 		sw.lnTabPrint("}");

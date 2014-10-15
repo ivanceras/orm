@@ -72,6 +72,11 @@ public class Filter {
 		this.operator = operator;
 		this.value = value;
 	}
+	public Filter(String attribute, String operator, SQL sql){
+		this.attribute = attribute;
+		this.operator = operator;
+		this.filterSql = sql;
+	}
 	public Filter(String attribute, String operator){
 		this.attribute = attribute;
 		this.operator = operator;

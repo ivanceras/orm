@@ -55,8 +55,10 @@ public class ModelCurator {
 
 						if (inModelsPrimary && model.getPrimaryAttributes().length == 1
 								&& inHasManyPrimary && hasManyModel.getPrimaryAttributes().length == 1){
-
+							System.err.println("Moving "+hasMany+" to has one of "+model.getTableName());
+							System.err.println("before: "+model);
 							model = moveFromHasManyToHasOne(model, hasMany);
+							System.err.println("after: "+model);
 
 						}
 
@@ -72,31 +74,35 @@ public class ModelCurator {
 		List<String> newHasMany = new LinkedList<String>(Arrays.asList(model.getHasMany()));
 
 		int index = CStringUtils.indexOf(model.getHasMany(), hasMany);
-		String addedHasOne = newHasMany.remove(index);
-		List<String> newHasManyLocalColumn = new LinkedList<String>(Arrays.asList(model.getHasManyLocalColumn()));
-		String addedHasOneLocalColumn = newHasManyLocalColumn.remove(index);
+		if(index >= 0){// DON'T OVERLOOK, should be >= not just >
+			String addedHasOne = newHasMany.remove(index);
+			List<String> newHasManyLocalColumn = new LinkedList<String>(Arrays.asList(model.getHasManyLocalColumn()));
+			String addedHasOneLocalColumn = newHasManyLocalColumn.remove(index);
 
-		List<String> newHasManyReferencedColumn = new LinkedList<String>(Arrays.asList(model.getHasManyReferencedColumn()));
-		String addedHasOneReferencedLocalColumn = newHasManyReferencedColumn.remove(index);
+			List<String> newHasManyReferencedColumn = new LinkedList<String>(Arrays.asList(model.getHasManyReferencedColumn()));
+			String addedHasOneReferencedLocalColumn = newHasManyReferencedColumn.remove(index);
 
-		model.setHasMany(newHasMany.toArray(new String[newHasMany.size()]));
-		model.setHasManyReferredColumn(newHasManyReferencedColumn.toArray(new String[newHasManyReferencedColumn.size()]));
-		model.setHasManyForeignColumn(newHasManyLocalColumn.toArray(new String[newHasManyLocalColumn.size()]));
+			model.setHasMany(newHasMany.toArray(new String[newHasMany.size()]));
+			model.setHasManyReferredColumn(newHasManyReferencedColumn.toArray(new String[newHasManyReferencedColumn.size()]));
+			model.setHasManyForeignColumn(newHasManyLocalColumn.toArray(new String[newHasManyLocalColumn.size()]));
 
 
-		List<String> newHasOne = new ArrayList<String>(Arrays.asList(model.getHasOne()));
-		newHasOne.add(addedHasOne);
+			List<String> newHasOne = new ArrayList<String>(Arrays.asList(model.getHasOne()));
+			newHasOne.add(addedHasOne);
 
-		List<String> newHasOneLocalColumn = new ArrayList<String>(Arrays.asList(model.getHasOneLocalColumn()));
-		newHasOneLocalColumn.add(addedHasOneLocalColumn);
+			List<String> newHasOneLocalColumn = new ArrayList<String>(Arrays.asList(model.getHasOneLocalColumn()));
+			newHasOneLocalColumn.add(addedHasOneLocalColumn);
 
-		List<String> newHasOneReferencedLocalColumn =new ArrayList<String>( Arrays.asList(model.getHasOneReferencedColumn()));
-		newHasOneReferencedLocalColumn.add(addedHasOneReferencedLocalColumn);
+			List<String> newHasOneReferencedLocalColumn =new ArrayList<String>( Arrays.asList(model.getHasOneReferencedColumn()));
+			newHasOneReferencedLocalColumn.add(addedHasOneReferencedLocalColumn);
 
-		model.setHasOne(newHasOne.toArray(new String[newHasOne.size()]));
-		model.setHasOneLocalColumn(newHasOneLocalColumn.toArray(new String[newHasOneLocalColumn.size()]));
-		model.setHasOneReferredColumn(newHasOneReferencedLocalColumn.toArray(new String[newHasOneReferencedLocalColumn.size()]));
-		return model;
+			model.setHasOne(newHasOne.toArray(new String[newHasOne.size()]));
+			model.setHasOneLocalColumn(newHasOneLocalColumn.toArray(new String[newHasOneLocalColumn.size()]));
+			model.setHasOneReferredColumn(newHasOneReferencedLocalColumn.toArray(new String[newHasOneReferencedLocalColumn.size()]));
+			return model;
+		}else{
+			return model;
+		}
 	}
 
 	private ModelDef getModel(String hasMany) {

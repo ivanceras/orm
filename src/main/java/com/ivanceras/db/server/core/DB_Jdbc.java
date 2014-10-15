@@ -361,7 +361,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		} catch (SQLException e) {
 			logSQL(pstmt, sql, parameters, true);
 			e.printStackTrace();
-			throw new DatabaseException(e.getMessage());
+			throw new DatabaseException("SQL: "+sql+"\n"+e.getMessage());
 		}
 		return rs;
 	}

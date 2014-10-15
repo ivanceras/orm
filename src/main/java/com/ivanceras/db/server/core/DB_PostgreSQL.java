@@ -398,9 +398,13 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase{
 
 			// Close the large object
 			obj.close();
+			fis.close();
 			return oid;
 		} catch (SQLException e)
 		{
+			e.printStackTrace();
+			throw new DatabaseException("Unable to write Binary Large Object");
+		} catch (IOException e) {
 			e.printStackTrace();
 			throw new DatabaseException("Unable to write Binary Large Object");
 		}

@@ -402,8 +402,8 @@ public abstract class DB_Rdbms{
 					for(int i = 0; i < columns.length; i++){
 						if(!CStringUtils.inArray(excludedColumns, columns[i])){
 							String columnName = getDBElementName(inv,columns[i]);
-							if(invTable!=null  && prependTableName()){
-								if(query.hasConflictedColumn(columns[i])){
+							if(invTable!=null ){
+								if(query.hasConflictedColumn(columns[i]) ||  prependTableName()){
 									columnName = invTable+"."+columnName;
 								}
 								
