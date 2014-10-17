@@ -97,4 +97,22 @@ public class DataTypeGeneric {
 			return null;
 		}
 	}
+	
+	/**
+	 * Based on the generic data type convert record to an appropriate Java Data type
+	 * @param dataType
+	 * @param record
+	 */
+	public static Object convert(String dataType, Object record){
+		System.err.println("HERE!!!");
+		if(record == null){return null;}
+		if(dataType.equals(UUID)){
+			System.err.println("Converting from String to "+dataType);
+			return java.util.UUID.fromString(record.toString());
+		}
+		//TODO: add a lot of else if here for the other data types
+		else{
+			return record;
+		}
+	}
 }

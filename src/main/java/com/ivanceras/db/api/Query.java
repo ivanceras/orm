@@ -514,5 +514,9 @@ public class Query {
 		return analyzer.hasConflictedColumn(column);
 	}
 
+	public <T extends DAO> T[] execute() throws DatabaseException {
+		return em.retrieveRecords(this);
+	}
+
 
 }
