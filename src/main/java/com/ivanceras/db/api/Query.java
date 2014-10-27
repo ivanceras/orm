@@ -450,7 +450,7 @@ public class Query {
 	}
 
 
-	public Query setDistinctColumns(String[] distinctColumns) {
+	public Query setDistinctColumns(String... distinctColumns) {
 		if(distinctColumns != null && distinctColumns.length > 0){
 			for(String col : distinctColumns){
 				this.distinctColumns.add(col);

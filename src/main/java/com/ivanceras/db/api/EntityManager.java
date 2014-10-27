@@ -99,7 +99,7 @@ public interface EntityManager{
 	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns)
 			throws DatabaseException;
 
-	void setContextProvider(ContextProvider context);
+//	void setContextProvider(ContextProvider context);
 
 	public boolean setForeignConstraint(ModelDef model) throws DatabaseException;
 

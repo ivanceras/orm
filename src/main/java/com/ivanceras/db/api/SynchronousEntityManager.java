@@ -22,7 +22,7 @@ public class SynchronousEntityManager implements EntityManager{
 	/**
 	 * Globally enable/disable record changelog. Enable by default
 	 */
-	private ContextProvider contextProvider;
+//	private ContextProvider contextProvider;
 
 	static SynchronousEntityManager singleton;
 
@@ -153,14 +153,14 @@ public class SynchronousEntityManager implements EntityManager{
 	}
 
 	private int deleteRecord(ModelDef model, Filter... filters) throws DatabaseException{
-		DAO[] affectedRecords = null;
-		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
-			affectedRecords = getAffectedRecords(model, filters);
-		}
+//		DAO[] affectedRecords = null;
+//		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
+//			affectedRecords = getAffectedRecords(model, filters);
+//		}
 		int ret = db.delete(model, filters);
-		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
-			contextProvider.recordDeleteChange(model, affectedRecords);
-		}
+//		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
+//			contextProvider.recordDeleteChange(model, affectedRecords);
+//		}
 		return ret;
 	}
 
@@ -225,18 +225,18 @@ public class SynchronousEntityManager implements EntityManager{
 		super.finalize();
 	}
 
-	/**
-	 * This are the affected records before updating or deleting
-	 * @param model
-	 * @param filters
-	 * @return
-	 * @throws DatabaseException 
-	 */
-	private DAO[] getAffectedRecords(ModelDef model, Filter[] filters) throws DatabaseException{
-		Class<? extends DAO> clazz = getDaoClass(model.getModelName());
-		DAO[] daoList = getAll(clazz, filters);
-		return daoList;
-	}
+//	/**
+//	 * This are the affected records before updating or deleting
+//	 * @param model
+//	 * @param filters
+//	 * @return
+//	 * @throws DatabaseException 
+//	 */
+//	private DAO[] getAffectedRecords(ModelDef model, Filter[] filters) throws DatabaseException{
+//		Class<? extends DAO> clazz = getDaoClass(model.getModelName());
+//		DAO[] daoList = getAll(clazz, filters);
+//		return daoList;
+//	}
 
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass) throws DatabaseException{
@@ -386,9 +386,9 @@ public class SynchronousEntityManager implements EntityManager{
 	@SuppressWarnings("unchecked")
 	protected <T extends DAO> T insertRecord(DAO dao, ModelDef model, boolean autoCast) throws DatabaseException{
 		DAO ret = db.insert(dao, null, model, null);
-		if(contextProvider != null && contextProvider.isEnableRecordChangelog() && contextProvider.isEnableInsertChangelog()){
-			contextProvider.recordInsertChange(dao);
-		}
+//		if(contextProvider != null && contextProvider.isEnableRecordChangelog() && contextProvider.isEnableInsertChangelog()){
+//			contextProvider.recordInsertChange(dao);
+//		}
 		if(autoCast){
 			Class<? extends DAO> clazz = getDaoClass(dao.getModelName());
 			return cast(clazz, ret);
@@ -473,10 +473,10 @@ public class SynchronousEntityManager implements EntityManager{
 		return db.select(sql, renamedColumns);
 	}
 
-	@Override
-	public void setContextProvider(ContextProvider context) {
-		this.contextProvider = context;
-	}
+//	@Override
+//	public void setContextProvider(ContextProvider context) {
+//		this.contextProvider = context;
+//	}
 
 	@Override
 	public boolean setForeignConstraint(ModelDef model)
@@ -508,19 +508,19 @@ public class SynchronousEntityManager implements EntityManager{
 
 
 	private <T extends DAO> T updateRecord(DAO dao, ModelDef model, Filter[] filters) throws DatabaseException{
-		DAO[] affectedRecords = null;
-		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
-			affectedRecords = getAffectedRecords(model, filters);
-			System.err.println("There are "+affectedRecords.length+" affected record(s)");
-			for(DAO ar : affectedRecords){
-				System.err.println(ar);
-			}
-		}
+//		DAO[] affectedRecords = null;
+//		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
+//			affectedRecords = getAffectedRecords(model, filters);
+//			System.err.println("There are "+affectedRecords.length+" affected record(s)");
+//			for(DAO ar : affectedRecords){
+//				System.err.println(ar);
+//			}
+//		}
 		DAO ret = db.update(dao, model, filters);
 		Class<? extends DAO> clazz = getDaoClass(dao.getModelName());
-		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
-			contextProvider.recordUpdateChange(dao, affectedRecords);
-		}
+//		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
+//			contextProvider.recordUpdateChange(dao, affectedRecords);
+//		}
 		return cast(clazz, ret);
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.IDatabase;
+import com.ivanceras.db.api.IDatabaseDev;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.SchemaTable;
 import com.ivanceras.db.shared.exception.DatabaseException;
@@ -17,12 +18,12 @@ import com.ivanceras.db.shared.exception.DatabaseException;
 public class ModelDefinitionProvider {
 
 
-	private IDatabase db;
+	private IDatabaseDev db;
 	private String user;
 	private String tablePattern;
 	private String[] includeSchema;
 
-	public ModelDefinitionProvider(IDatabase db, String user, String tablePattern, 
+	public ModelDefinitionProvider(IDatabaseDev db, String user, String tablePattern, 
 			String[] includeSchema){
 		this.db = db;
 		this.user = user;

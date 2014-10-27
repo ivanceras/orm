@@ -153,16 +153,16 @@ public interface IDatabase{
 	 * @return
 	 */
 	public boolean reset();
-	/**
-	 * This is queries directly from the database, so this will be costly. Only used this on initialization processes
-	 * @param schema
-	 * @param tableName
-	 * @return
-	 * @throws DatabaseException
-	 */
-	public ModelDef getModelMetaData(String schema, String tableName) throws DatabaseException;
-	public SchemaTable[] getTableNames(String schema, String tablePattern, String[] includedSchema)
-			throws DatabaseException;
+//	/**
+//	 * This is queries directly from the database, so this will be costly. Only used this on initialization processes
+//	 * @param schema
+//	 * @param tableName
+//	 * @return
+//	 * @throws DatabaseException
+//	 */
+//	public ModelDef getModelMetaData(String schema, String tableName) throws DatabaseException;
+//	public SchemaTable[] getTableNames(String schema, String tablePattern, String[] includedSchema)
+//			throws DatabaseException;
 	
 	boolean createSchema(String schema) throws DatabaseException;
 	boolean dropNamespace(String schema, boolean forced) throws DatabaseException;
@@ -189,8 +189,8 @@ public interface IDatabase{
 
 	boolean isConnected();
 	
-	Map<String, String> getTableColumnComments(String tableName, String schema)
-			throws DatabaseException;
+//	Map<String, String> getTableColumnComments(String tableName, String schema)
+//			throws DatabaseException;
 	String getTableComment(String tableName, String schema)
 			throws DatabaseException;
 	
@@ -227,13 +227,13 @@ public interface IDatabase{
 	 */
 	public <T extends DAO > T[] select(SQL sql, Map<String, ColumnPair> renamedColumns) throws DatabaseException;
 	
-	/**
-	 * Get the comments of this table
-	 * @param table
-	 * @return
-	 * @throws DatabaseException
-	 */
-	public String getTableComment(String table) throws DatabaseException;
+//	/**
+//	 * Get the comments of this table
+//	 * @param table
+//	 * @return
+//	 * @throws DatabaseException
+//	 */
+//	public String getTableComment(String table) throws DatabaseException;
 	
 	/**
 	 * Insert a DAO object with the definition defined in the model argument

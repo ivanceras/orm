@@ -16,6 +16,7 @@ import java.util.Set;
 import com.ivanceras.commons.conf.Configuration;
 import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.EntityManager;
+import com.ivanceras.db.api.IDatabaseDev;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.server.util.generators.BeanGenerator;
@@ -57,7 +58,8 @@ public class DAOGenerator{
 		if(cleanupDirectory){
 			CleanUp.start(conf);
 		}
-		ModelDefinitionProvider provider = new ModelDefinitionProvider(em.getDB(), conf.dbUser, null, conf.includeSchema);
+		IDatabaseDev db = (IDatabaseDev) em.getDB();//TODO make sure DB platform can be used for development
+		ModelDefinitionProvider provider = new ModelDefinitionProvider(db, conf.dbUser, null, conf.includeSchema);
 		ModelDef[] origModelList = provider.getTableDefinitions();
 		
 		//TODO: proper support for explicit ModelDefinitions

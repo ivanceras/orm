@@ -440,58 +440,6 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		return currentStatement;
 	}
 
-	@Override
-	public ModelDef getModelMetaData(String schema, String tableName)
-			throws DatabaseException {
-
-		String realTableName = getRealTableName(schema, tableName);
-		boolean caseSensitive = true;
-		if (realTableName != null) {
-			caseSensitive = isCaseSensitive(tableName, realTableName);
-		} else {
-			String msg = "No equivalent table in the database: [" + schema
-					+ "." + tableName + "]";
-			log.error(msg);
-			throw new DatabaseException(msg);
-		}
-		if (schema == null) {
-			schema = getTableSchema(tableName);
-		}
-		ColumnDataType columns = getColumnDetails(schema, realTableName);
-		String[] primaryKeys = getPrimaryKeysList(schema, realTableName);
-		String tableComment = getTableComment(realTableName, schema);
-
-		String autoIncrementColumn = getAutoIncrementColumn(realTableName);
-		ForeignKey fki = getImportedKeys(schema, realTableName);
-		ForeignKey fke = getExportedKeys(schema, realTableName);
-
-		ModelDef modelDef = new ModelDef();
-		modelDef.setNamespace(schema);
-		modelDef.setDescription(tableComment);
-		modelDef.setModelName(tableName);
-		modelDef.setTableName(realTableName);
-		modelDef.setCaseSensitive(caseSensitive);
-		modelDef.setAttributes(columns.getColumns());
-		modelDef.setDataTypes(columns.getDataTypes());
-		modelDef.setGeneratedAttribute(autoIncrementColumn);
-		modelDef.setPrimaryAttributes(primaryKeys);
-		modelDef.setUniqueAttributes(getUniqueKeys(schema, realTableName));
-
-		if (fki != null) {
-			modelDef.setHasOne(fki.foreignTable);
-			modelDef.setHasOneLocalColumn(fki.localColumn);
-			modelDef.setHasOneReferredColumn(fki.referedColumn);
-		}
-		if (fke != null) {
-			modelDef.setHasMany(fke.foreignTable);
-			modelDef.setHasManyForeignColumn(fke.localColumn);
-			modelDef.setHasManyReferredColumn(fke.referedColumn);
-		}
-		modelDef.setParentClass(getParentClass(tableName));
-		modelDef.setSubClass(getSubClasses(tableName));
-
-		return modelDef;
-	}
 
 	@Override
 	public ModelMetaData getModelMetaDataDefinition() throws DatabaseException {
