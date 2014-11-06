@@ -456,7 +456,6 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	 */
 	public Statement getPreparedStatement(String sql,
 			Object[] parameters, boolean returnValues) throws DatabaseException {
-		System.out.println("sql: "+sql);
 		Statement stmt = null;
 		try {
 			if(supportPreparedStatement()){
@@ -614,7 +613,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	void logSQL(Statement pstmt, String sql, Object[] parameters, boolean error){
 		if(debugSql || error){
-			System.out.println(""+pstmt.toString());
+			//System.out.println(""+pstmt.toString());
 		}
 		if (returnsSqlStatements()) {
 			log.debug(pstmt.toString());

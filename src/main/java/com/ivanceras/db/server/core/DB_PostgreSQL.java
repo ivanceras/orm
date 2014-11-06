@@ -133,7 +133,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 				}
 			}
 		} catch (SQLException e) {
-			System.err.println(sql+"["+(parameters!=null?Arrays.asList(parameters):"")+"]");
+			//System.err.println(sql+"["+(parameters!=null?Arrays.asList(parameters):"")+"]");
 			e.printStackTrace();
 			throw new DatabaseException();
 		}
@@ -630,7 +630,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		try {
 			rs = executeSelectSQL(sql, parameters);
 			Statement stm = rs.getStatement();
-			System.out.println("SQL: "+stm.toString());
+//			System.out.println("SQL: "+stm.toString());
 			if(rs.next()){
 				String comment = rs.getString("comment");
 				return comment;
