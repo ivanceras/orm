@@ -1,17 +1,12 @@
 package com.ivanceras.db.shared;
 
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.ivanceras.commons.conf.DBConfig;
-import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.Aggregate;
 import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.DB_Rdbms;
@@ -20,7 +15,6 @@ import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.IDatabaseDev;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.db.api.QueryBreakdown;
 import com.ivanceras.db.api.SchemaTable;
 import com.ivanceras.db.api.WindowFunction;
 import com.ivanceras.db.model.ModelMetaData;

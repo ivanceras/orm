@@ -33,7 +33,6 @@ import com.ivanceras.db.api.DB_Rdbms;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.db.api.SearchBuilder;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
@@ -612,8 +611,11 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	}
 
 	void logSQL(Statement pstmt, String sql, Object[] parameters, boolean error){
-		if(debugSql || error){
+		if(debugSql){
 			//System.out.println(""+pstmt.toString());
+		}
+		if(error){
+			System.out.println(""+pstmt.toString());
 		}
 		if (returnsSqlStatements()) {
 			log.debug(pstmt.toString());
@@ -705,8 +707,8 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	@Override
 	public void search(Query query, String keyword) {
-		SearchBuilder sb = new SearchBuilder(query);
-		sb.keyword(keyword);
+//		SearchBuilder sb = new SearchBuilder(query);
+//		sb.keyword(keyword);
 
 	}
 

@@ -16,7 +16,7 @@
 		</Console>
 	</appenders>
 	<loggers>
-		<logger name="DB_Jdbc" level="ERROR">
+		<logger name="DB_Jdbc" level="DEBUG">
 			<appender-ref ref="Console" />
 		</logger>
 		<root level="ERROR">

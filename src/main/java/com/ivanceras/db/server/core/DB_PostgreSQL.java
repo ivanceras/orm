@@ -4,7 +4,6 @@
 package com.ivanceras.db.server.core;
 
 import static com.ivanceras.fluent.sql.SQL.Statics.*;
-import static com.ivanceras.fluent.sql.SQL.Statics.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
@@ -34,9 +31,7 @@ import org.postgresql.util.PGobject;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.commons.strings.CStringUtils;
