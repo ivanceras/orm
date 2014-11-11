@@ -9,6 +9,8 @@ Yes, I know this is yet another ORM library like many others.
 
 But this exists because all other ORM i came across does not fit all my requirements, one of which is to be able to do database operations in the browser using the same controller codes in your server side.
 
+You are in full control, on how and which data are you gonna fetch data in every situation you see fit.
+
 
 
 
@@ -165,11 +167,7 @@ But this exists because all other ORM i came across does not fit all my requirem
         	private Boolean active;
         	private java.util.UUID categoryId;
         
-        	private Category category;
-        
-        	private Category[] categoryList;
-        
-        	private Product[] productList;
+        	private Product[] productList; // isn't really logical, these are the products where it belongs to this category.
     	
     		//setters and getters
             .....
