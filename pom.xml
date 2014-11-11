@@ -134,4 +134,5 @@
 		</plugins>
 	</build>
 
+	<url>https://github.com/ivanceras/orm</url>
 </project>
