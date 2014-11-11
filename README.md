@@ -226,6 +226,17 @@ In your controller, you can use the generated classes like this:
 	}
 ```
 
+Generated SQL:
+
+```sql
+
+SELECT name, active, user_id, username, password, email
+FROM users
+WHERE users.username = ?
+OR users.email = ?
+
+```
+
 If you prefer to use the fluentsql API, you can do so by: 
 
 ```java  
@@ -246,6 +257,18 @@ If you prefer to use the fluentsql API, you can do so by:
 	}
 
 ```
+Generated SQL:
+
+```sql
+
+SELECT users.username, users.user_id, users.email
+FROM users
+WHERE users.username = ?
+OR users.email = ?
+
+```
+
+
 
 Note: Though writing in fluentsql API is a lot more readable and flexible, this should be used sparingly in order not to loose portability of your app to any other database platform that is very different from traditional RDBMS database (such as Google BigTable, DynamoDB)
 
