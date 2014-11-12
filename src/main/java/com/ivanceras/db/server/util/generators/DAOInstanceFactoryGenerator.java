@@ -34,7 +34,7 @@ public class DAOInstanceFactoryGenerator {
 		sw.lnprint("");
 		sw.lnprint("public class "+fileClassName+" implements "+DAOFactory.class.getSimpleName()+"{");
 		sw.lnprint("");
-		sw.lnTabPrint("@Override");
+//		sw.lnTabPrint("@Override");
 		sw.lnTabPrint("@SuppressWarnings(\"unchecked\")");
 		sw.lnTabPrint("public <T> T getInstance(Class<? extends "+DAO.class.getSimpleName()+"> daoClass) throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
 		boolean doElse = false;
@@ -50,7 +50,7 @@ public class DAOInstanceFactoryGenerator {
 		sw.lnTabPrint("    }");
 		sw.lnTabPrint("}");
 		//The array instances
-		sw.lnTabPrint("@Override");
+//		sw.lnTabPrint("@Override");
 		sw.lnTabPrint("@SuppressWarnings(\"unchecked\")");
 		sw.lnTabPrint("public <T> T[] getArrayInstance(Class<? extends DAO> daoClass, int n)  throws "+DAOInstanceFactoryException.class.getSimpleName()+"{");
 		boolean doElse2 = false;

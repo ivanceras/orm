@@ -204,7 +204,7 @@ You are in full control, on how and which data are you gonna fetch data in every
     
 ```
 
-### Usage:
+### Usage Code snippet:
 In your controller, you can use the generated classes like this:
 
 ```java  
@@ -385,6 +385,9 @@ If the platform won't be able to support anything in PostgreSQL, make a workarou
  * Mongo
 
 
+
+### Quickstart Guide
+TODO: make a quick start guide, using the library, create a boilerplate project
 
 
 ### You may Ask

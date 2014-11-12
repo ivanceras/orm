@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 
 	<parent>
@@ -10,9 +11,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>orm</artifactId>
-  <version>0.0.6-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<name>orm</name>
 	<description>ORM - Core Library for Database</description>
+	<url>https://github.com/ivanceras/orm</url>
 	<scm>
 		<connection>scm:git:https://github.com/ivanceras/orm.git</connection>
 		<developerConnection>scm:git:https://github.com/ivanceras/orm.git</developerConnection>
@@ -24,12 +26,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>commons</artifactId>
-			<version>0.0.5</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>fluentsql</artifactId>
-			<version>0.0.5</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -134,5 +136,5 @@
 		</plugins>
 	</build>
 
-	<url>https://github.com/ivanceras/orm</url>
+
 </project>

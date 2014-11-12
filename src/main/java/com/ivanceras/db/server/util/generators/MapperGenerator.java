@@ -40,7 +40,7 @@ public class MapperGenerator {
 		sw.lnprint("import "+conf.bopackageName+"."+className+";");
 		sw.lnprint("import "+conf.bopackageName+".*;");
 		sw.lnprint("import static "+conf.metaDataPackageName+".Column.*;");
-		sw.lnprint("import static "+conf.metaDataPackageName+".Table.*;");
+		sw.lnprint("import "+conf.metaDataPackageName+".Table;");
 		sw.lnprint("import "+CStringUtils.class.getCanonicalName()+";");
 		sw.lnprint("");
 		sw.lnprint("public class "+className+"Mapper{");
@@ -82,10 +82,10 @@ public class MapperGenerator {
 		sw.lnTabPrint("* Make sure the columns and field relative location is aligned ");
 		sw.lnTabPrint("*/");
 		sw.lnTabPrint("private static String[] fields  = {"+getQuotedStringListRepresentation(fieldList.toArray(new String[fieldList.size()]))+"};");
-		sw.lnTabPrint("private static String[] columns = {"+getStringListRepresentation(attributes)+"};");
+		sw.lnTabPrint("private static String[] columns = {"+getStringListRepresentation("",attributes)+"};");
 		sw.lnprint();
 		sw.lnTabPrint("private static String[] objects  = {"+getQuotedStringListRepresentation(objectList.toArray(new String[objectList.size()]))+"};");
-		sw.lnTabPrint("private static String[] tables   = {"+getStringListRepresentation(tableList.toArray(new String[tableList.size()]))+"};");
+		sw.lnTabPrint("private static String[] tables   = {"+getStringListRepresentation("Table.", tableList.toArray(new String[tableList.size()]))+"};");
 		sw.lnprint();
 		sw.lnprint();
 
@@ -234,7 +234,7 @@ public class MapperGenerator {
 		return buff.toString();
 	}
 	
-	private String getStringListRepresentation(String[] list){
+	private String getStringListRepresentation(String prepend, String[] list){
 		if(list == null){
 			return null;
 		}
@@ -242,7 +242,7 @@ public class MapperGenerator {
 		boolean doComma = false;
 		for(String l : list){
 			if(doComma){buff.append(", ");}else{doComma=true;}
-			buff.append(" "+l+" ");
+			buff.append(" "+prepend+l+" ");
 		}
 		return buff.toString();
 	}
