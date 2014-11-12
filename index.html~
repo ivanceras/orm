@@ -28,8 +28,8 @@
     <style id="holderjs-style" type="text/css"></style>
 
 
-    <script src="dist/js/angular.js"></script>
-    <script src="dist/js/angular-route.js"></script>
+    <script src="dist/js/angular.min.js"></script>
+    <script src="dist/js/angular-route.min.js"></script>
     <script src="dist/js/angular-sanitize.min.js"></script>
     <script src="dist/prettify/prettify.min.js"></script>
     <script src="dist/prettify/lang-sql.js"></script>
@@ -40,7 +40,6 @@
 </head>
 
 <body>
-
 <div  ng-app="ivanceras" ng-controller="mainController" role="document" style="">
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -86,13 +85,6 @@
     <!-- /container -->
 </div>
 
-<br>
-<hr>
-
-
-
-
-
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -118,5 +110,13 @@
     ga('create', 'UA-8925673-9', 'ivanceras.com');
     ga('send', 'pageview');
 </script>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 </body>
 </html>
