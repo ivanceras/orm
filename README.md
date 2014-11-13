@@ -102,9 +102,6 @@ You are in full control, on how and which data are you gonna fetch data in every
            
 
 ```
-#### Note
-    * Some fields are omitted to provide more readability
-      * organization_id, client_id, created, createdby, updated, updatedby, description, help, active
 
 #### The generated Models
    
@@ -167,7 +164,7 @@ You are in full control, on how and which data are you gonna fetch data in every
         	private Boolean active;
         	private java.util.UUID categoryId;
         
-        	private Product[] productList; // isn't really logical, these are the products where it belongs to this category.
+        	private Product[] productList; 
     	
     		//setters and getters
             .....

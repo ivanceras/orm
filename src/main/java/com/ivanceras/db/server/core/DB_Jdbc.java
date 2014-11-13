@@ -279,14 +279,18 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		Breakdown bk = sql.build();
 		Statement pstmt = getPreparedStatement(bk.getSql(), bk.getParameters(), returnValues);
 		try{
-			ResultSet rs = null;
 			if(supportPreparedStatement()){
 				if(returnValues){
-					rs = ((PreparedStatement)pstmt).executeQuery();
+					((PreparedStatement)pstmt).executeUpdate();//was executeQuery
 					logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
 					ResultSet genKeys = pstmt.getGeneratedKeys();
 					if (genKeys.next() && returnValues) {
-						return rs.getObject(1);
+						Object ret = genKeys.getObject(1);
+						log.debug("Returning something.."+ret);
+						return ret;
+					}
+					else{
+						log.debug("Nothing is returned..");
 					}
 				}else{//no return values
 					((PreparedStatement)pstmt).executeUpdate();
@@ -546,9 +550,10 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		String autoIncrementColumn = model.getGeneratedAttribute();
 		autoIncrementColumn = getDBElementName(model, autoIncrementColumn);
 		SQL sql = buildInsertStatement(dao, meta, model, query);
-		Object ret = executeInsertSQL(sql, false);
+		Object ret = executeInsertSQL(sql, true);
 		if(ret != null){
-			dao.set_Value("_return_from_insert", ret);
+			
+			dao.set_Value(IDatabase.RETURN_FROM_INSERT, ret);
 		}
 		return dao;
 

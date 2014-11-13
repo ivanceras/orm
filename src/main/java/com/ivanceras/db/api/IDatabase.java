@@ -27,6 +27,8 @@ import com.ivanceras.fluent.sql.SQL;
 public interface IDatabase{
 	
 	public final static String SUBCLASSTABLE = "subclasstable";
+	public static final String RETURN_FROM_INSERT = "_return_from_insert";
+	
 	
 	/**
 	 * begin a database transaction to avoid Dirty Reads/Writes of the database.
