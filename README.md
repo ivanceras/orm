@@ -224,7 +224,7 @@ In your controller, you can use the generated classes like this:
 	}
 ```
 
-Generated SQL:
+Generated SQL which will be executed:
 
 ```sql
 
@@ -271,6 +271,9 @@ OR users.email = ?
 Note: Though writing in fluentsql API is a lot more readable and flexible, this should be used sparingly in order not to loose portability of your app to any other database platform that is very different from traditional RDBMS database (such as Google BigTable, DynamoDB)
 
 
+#### More on FluentSQl
+`https://github.com/ivanceras/fluentsql`
+
 
 ```java    
     /**
@@ -308,19 +311,19 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
 
 ```
 
- * EntityManager takes care of the inserting, updating and retrieving of records.
+ * [EntityManager](https://github.com/ivanceras/orm/blob/master/src/main/java/com/ivanceras/db/api/EntityManager.java) takes care of the inserting, updating and retrieving of records.
  * Most commonly used methods are:
      * `em.getOne(..)`
      * `em.getAll(..)`
      * `em.insert(..)`
      * `em.update(..)`
      * `em.retrieveRecords(Query)`
- * Query class is used to cleanly express a more complex arguments for retrieving records which would pollute EntityManager API when using an exhausetive list of comma seperated method arguments
+ * `Query` class is used to cleanly express a more complex arguments for retrieving records which would pollute `EntityManager` API when using an exhausetive list of comma seperated method arguments
 
 ##### Note
 
-   * DAO_Product.class is a generated class based on table product
-   * product.createdby -> is a generated field, of generated class product(meta classes) which contains field createdby = "product.createdby", so you won't be able to misspell tables and column names
+   * `DAO_Product.class` is a generated class based on table product
+   * product.createdby -> is a generated field, of generated class `product`(meta classes) which contains field `createdby` = "product.createdby", so you won't be able to misspell tables and column names
   
 #### How many classes are generated?
 
