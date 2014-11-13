@@ -387,7 +387,11 @@ If the platform won't be able to support anything in PostgreSQL, make a workarou
 
 
 ### Quickstart Guide
-TODO: make a quick start guide, using the library, create a boilerplate project
+
+Follow the README in the boilerplate sample code.
+
+https://github.com/ivanceras/boilerplate
+
 
 
 ### You may Ask
