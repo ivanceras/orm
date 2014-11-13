@@ -358,10 +358,10 @@ Exposing the `Product` to API/services, you need to map the `DAO` to the model
 ```
 ##### Note
 
-  * ProductMapper converts DAO_Product to and fro Product. 
-  * DAO_Product is a direct mapping to the database, and is regenerated when database schema changes
-  * Product is the models to used when exposing API/services in your application, this corresponds exactly to the DAO_Product at version 1.0 of your application.
-  * When you release version 2.0, Pretty sure a lot of database table schema already has changed, while you still need to support version 1.0 while using the new updated database, you will only have to change the ProductMapper of version 1.0 to map the model representation of Product version 1.0 to convert to and for DAO_Product 2.0. 
+  * `ProductMapper` converts `DAO_Product` to and fro `Product`. 
+  * `DAO_Product` is a direct mapping to the database, and is regenerated when database schema changes
+  * `Product` is the models to used when exposing API/services in your application, this corresponds exactly to the `DAO_Product` at version 1.0 of your application.
+  * When you release version 2.0, Pretty sure a lot of database table schema already has changed, while you still need to support version 1.0 while using the new updated database, you will only have to change the `ProductMapper` of version 1.0 to map the model representation of `Product` version 1.0 to convert to and for `DAO_Product` 2.0. 
    
 
 ### Supported Platforms:
@@ -416,9 +416,13 @@ I don't want to maintain different code base that has the same logic.
 email: ivanceras[at]gmail.com
 
 
-### Support:
+### Want to contribute:
 
-Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
+* Fork this project
+
+* [Submit issues!] (https://github.com/ivanceras/orm/issues)
+
+* I accept Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
 
 
 [![Click here to lend your support to: Ivanceras ORM and make a donation at pledgie.com !](https://pledgie.com/campaigns/26665.png?skin_name=chrome)](https://pledgie.com/campaigns/26665)
