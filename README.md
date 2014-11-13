@@ -240,7 +240,7 @@ If you prefer to use the fluentsql API, you can do so by:
 ```java  
 
 	public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
-		//use import static com.ivanceras.fluent.sql.SQL.*;
+		//use import static com.ivanceras.fluent.sql.SQL.Statics.*;
 		SQL sql = SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)
@@ -310,11 +310,11 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
 
  * EntityManager takes care of the inserting, updating and retrieving of records.
  * Most commonly used methods are:
-     * em.getOne
-     * em.getAll
-     * em.insert
-     * em.update
-     * em.retrieveRecords(Query)
+     * `em.getOne(..)`
+     * `em.getAll(..)`
+     * `em.insert(..)`
+     * `em.update(..)`
+     * `em.retrieveRecords(Query)`
  * Query class is used to cleanly express a more complex arguments for retrieving records which would pollute EntityManager API when using an exhausetive list of comma seperated method arguments
 
 ##### Note
@@ -325,16 +325,16 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
 #### How many classes are generated?
 
    * There are 4 generates sources for each table
-      * DAO_Product.java   (com.company.dao)
-      * Product.java       (com.company.model)
-      * ProductMapper.java (com.company.mapper)
-      * product.java       (com.company.meta)
-   * Then there is ModelMetaData which contains the definition of each DAO classes
-   * There is also Column.java (in com.company.meta) which list down all the column names(distinct) used in your database tables, very useful for autotyping in the IDE and also compile time error checking.
-   * There is also Table.java (in com.company.meta) which list down the table names in your database. 
+      * `DAO_Product.java`   `(com.company.dao)`
+      * `Product.java`       `(com.company.model)`
+      * `ProductMapper.java` `(com.company.mapper)`
+      * `product.java`       `(com.company.meta)`
+   * Then there is `ModelMetaData` which contains the definition of each `DAO` classes
+   * There is also `Column.java` (in `com.company.meta`) which list down all the column names(distinct) used in your database tables, very useful for autotyping in the IDE and also compile time error checking.
+   * There is also `Table.java` (in `com.company.meta`) which list down the table names in your database. 
 
 Using as a service.
-Exposing the Product to API/services, you need to map the DAO to the model
+Exposing the `Product` to API/services, you need to map the `DAO` to the model
 
 ```java
 
