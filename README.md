@@ -271,8 +271,7 @@ OR users.email = ?
 Note: Though writing in fluentsql API is a lot more readable and flexible, this should be used sparingly in order not to loose portability of your app to any other database platform that is very different from traditional RDBMS database (such as Google BigTable, DynamoDB)
 
 
-#### More on FluentSQl
-`https://github.com/ivanceras/fluentsql`
+More on FluentSQL (https://github.com/ivanceras/fluentsql)
 
 
 ```java    
