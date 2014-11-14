@@ -3,6 +3,7 @@
 
 An ORM aimed to be migration and version upgrade friendly.
 
+
 [![Build Status](https://api.travis-ci.org/ivanceras/orm.svg)](https://travis-ci.org/ivanceras/orm)
 
 Yes, I know this is yet another ORM library like many others.
@@ -28,7 +29,9 @@ You are in full control, on how and which data are you gonna fetch data in every
     * The code generator can figure out which of the Models has 1:1 or 1:M relations based on the primary keys and foreign keys of the table schemas
     * a Model which has 1:1 relationship with another model, will have each other's model as a field.
     * a Model which has 1:M relationship with another model, will have a field arry of the other model
-    
+ 
+#### [What are the problems we are trying to solve?](http://www.ivanceras.com/#/trying-to-solve) 
+  
 ####    Example:
     	Product, ProductAvailability, ProductCategory, Category
     	* Product has 1 ProductAvailabilty
@@ -419,7 +422,7 @@ email: ivanceras[at]gmail.com
 
 * Fork this project
 
-* [Submit issues!] (https://github.com/ivanceras/orm/issues)
+* [Submit issues](https://github.com/ivanceras/orm/issues)
 
 * I accept Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
 
