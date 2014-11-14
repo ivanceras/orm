@@ -102,9 +102,6 @@ You are in full control, on how and which data are you gonna fetch data in every
            
 
 ```
-#### Note
-    * Some fields are omitted to provide more readability
-      * organization_id, client_id, created, createdby, updated, updatedby, description, help, active
 
 #### The generated Models
    
@@ -167,7 +164,7 @@ You are in full control, on how and which data are you gonna fetch data in every
         	private Boolean active;
         	private java.util.UUID categoryId;
         
-        	private Product[] productList; // isn't really logical, these are the products where it belongs to this category.
+        	private Product[] productList; 
     	
     		//setters and getters
             .....
@@ -224,7 +221,7 @@ In your controller, you can use the generated classes like this:
 	}
 ```
 
-Generated SQL:
+Generated SQL which will be executed:
 
 ```sql
 
@@ -240,7 +237,7 @@ If you prefer to use the fluentsql API, you can do so by:
 ```java  
 
 	public UUID getUserId(EntityManager em, String usernameOrEmail) throws DatabaseException{
-		//use import static com.ivanceras.fluent.sql.SQL.*;
+		//use import static com.ivanceras.fluent.sql.SQL.Statics.*;
 		SQL sql = SELECT(users.username, users.user_id, users.email)
 					.FROM(Table.users)
 					.WHERE(users.username).EQUAL(userNameOrEmail)
@@ -270,6 +267,8 @@ OR users.email = ?
 
 Note: Though writing in fluentsql API is a lot more readable and flexible, this should be used sparingly in order not to loose portability of your app to any other database platform that is very different from traditional RDBMS database (such as Google BigTable, DynamoDB)
 
+
+More on FluentSQL: https://github.com/ivanceras/fluentsql
 
 
 ```java    
@@ -308,33 +307,33 @@ Note: Though writing in fluentsql API is a lot more readable and flexible, this 
 
 ```
 
- * EntityManager takes care of the inserting, updating and retrieving of records.
+ * [EntityManager](https://github.com/ivanceras/orm/blob/master/src/main/java/com/ivanceras/db/api/EntityManager.java) takes care of the inserting, updating and retrieving of records.
  * Most commonly used methods are:
-     * em.getOne
-     * em.getAll
-     * em.insert
-     * em.update
-     * em.retrieveRecords(Query)
- * Query class is used to cleanly express a more complex arguments for retrieving records which would pollute EntityManager API when using an exhausetive list of comma seperated method arguments
+     * `em.getOne(..)`
+     * `em.getAll(..)`
+     * `em.insert(..)`
+     * `em.update(..)`
+     * `em.retrieveRecords(Query)`
+ * `Query` class is used to cleanly express a more complex arguments for retrieving records which would pollute `EntityManager` API when using an exhausetive list of comma seperated method arguments
 
 ##### Note
 
-   * DAO_Product.class is a generated class based on table product
-   * product.createdby -> is a generated field, of generated class product(meta classes) which contains field createdby = "product.createdby", so you won't be able to misspell tables and column names
+   * `DAO_Product.class` is a generated class based on table product
+   * product.createdby -> is a generated field, of generated class `product`(meta classes) which contains field `createdby` = "product.createdby", so you won't be able to misspell tables and column names
   
 #### How many classes are generated?
 
    * There are 4 generates sources for each table
-      * DAO_Product.java   (com.company.dao)
-      * Product.java       (com.company.model)
-      * ProductMapper.java (com.company.mapper)
-      * product.java       (com.company.meta)
-   * Then there is ModelMetaData which contains the definition of each DAO classes
-   * There is also Column.java (in com.company.meta) which list down all the column names(distinct) used in your database tables, very useful for autotyping in the IDE and also compile time error checking.
-   * There is also Table.java (in com.company.meta) which list down the table names in your database. 
+      * `DAO_Product.java`   `(com.company.dao)`
+      * `Product.java`       `(com.company.model)`
+      * `ProductMapper.java` `(com.company.mapper)`
+      * `product.java`       `(com.company.meta)`
+   * Then there is `ModelMetaData` which contains the definition of each `DAO` classes
+   * There is also `Column.java` (in `com.company.meta`) which list down all the column names(distinct) used in your database tables, very useful for autotyping in the IDE and also compile time error checking.
+   * There is also `Table.java` (in `com.company.meta`) which list down the table names in your database. 
 
 Using as a service.
-Exposing the Product to API/services, you need to map the DAO to the model
+Exposing the `Product` to API/services, you need to map the `DAO` to the model
 
 ```java
 
@@ -358,10 +357,10 @@ Exposing the Product to API/services, you need to map the DAO to the model
 ```
 ##### Note
 
-  * ProductMapper converts DAO_Product to and fro Product. 
-  * DAO_Product is a direct mapping to the database, and is regenerated when database schema changes
-  * Product is the models to used when exposing API/services in your application, this corresponds exactly to the DAO_Product at version 1.0 of your application.
-  * When you release version 2.0, Pretty sure a lot of database table schema already has changed, while you still need to support version 1.0 while using the new updated database, you will only have to change the ProductMapper of version 1.0 to map the model representation of Product version 1.0 to convert to and for DAO_Product 2.0. 
+  * `ProductMapper` converts `DAO_Product` to and fro `Product`. 
+  * `DAO_Product` is a direct mapping to the database, and is regenerated when database schema changes
+  * `Product` is the models to used when exposing API/services in your application, this corresponds exactly to the `DAO_Product` at version 1.0 of your application.
+  * When you release version 2.0, Pretty sure a lot of database table schema already has changed, while you still need to support version 1.0 while using the new updated database, you will only have to change the `ProductMapper` of version 1.0 to map the model representation of `Product` version 1.0 to convert to and for `DAO_Product` 2.0. 
    
 
 ### Supported Platforms:
@@ -387,7 +386,11 @@ If the platform won't be able to support anything in PostgreSQL, make a workarou
 
 
 ### Quickstart Guide
-TODO: make a quick start guide, using the library, create a boilerplate project
+
+Follow the README in the boilerplate sample code.
+
+https://github.com/ivanceras/boilerplate
+
 
 
 ### You may Ask
@@ -412,9 +415,13 @@ I don't want to maintain different code base that has the same logic.
 email: ivanceras[at]gmail.com
 
 
-### Support:
+### Want to contribute:
 
-Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
+* Fork this project
+
+* [Submit issues!] (https://github.com/ivanceras/orm/issues)
+
+* I accept Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
 
 
 [![Click here to lend your support to: Ivanceras ORM and make a donation at pledgie.com !](https://pledgie.com/campaigns/26665.png?skin_name=chrome)](https://pledgie.com/campaigns/26665)
