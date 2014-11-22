@@ -123,8 +123,8 @@ public class ModelMetaDataGenerator {
 			sw.lnTabPrint("            ");
 			sw.lnTabPrint("    modelDef.setPolymorphic("+modeldef.isPolymorphic()+");");
 			sw.lnTabPrint("    modelDef.setTableName(\""+modeldef.getTableName()+"\");");
-			sw.lnTabPrint("    modelDef.setDescription(\""+StringEscapeUtils.escapeJava(modeldef.getDescription())+"\");");
-			//			buff.lnprint("        modelDef.setAttributeComments(attributeComments);");
+			sw.lnTabPrint("    modelDef.setDescription("+ (modeldef.getDescription() != null ? ("\""+StringEscapeUtils.escapeJava(modeldef.getDescription())+"\"") : "null")+");");
+			sw.lnTabPrint("    modelDef.setAttributeComments(new String[]"+getEscapedListRepresentation(modeldef.getAttributeComments())+");");
 			if(modeldef.getOwners() != null){
 				sw.lnTabPrint("    modelDef.setOwners(owners);");
 			}
@@ -171,6 +171,20 @@ public class ModelMetaDataGenerator {
 		for(String l : list){
 			if(doComma){buff.append(", ");}else{doComma=true;}
 			buff.append("\""+l+"\"");
+		}
+		buff.append("}");
+		return buff.toString();
+	}
+	private String getEscapedListRepresentation(String[] list){
+		if(list == null){
+			return null;
+		}
+		StringBuffer buff = new StringBuffer();
+		buff.append("{");
+		boolean doComma = false;
+		for(String l : list){
+			if(doComma){buff.append(", ");}else{doComma=true;}
+			buff.append(l != null ? ("\""+StringEscapeUtils.escapeJava(l)+"\"") : null);
 		}
 		buff.append("}");
 		return buff.toString();

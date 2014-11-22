@@ -65,14 +65,14 @@ public class MapperGenerator {
 			fieldList.add(att);
 		}
 		
-		for(String obj : hasOne){
-			obj = CStringUtils.toVariableName(obj.toLowerCase(), useCamelCase);
-			tableList.add(obj);
+		for(String ho : hasOne){
+			String obj = CStringUtils.toVariableName(ho.toLowerCase(), useCamelCase);
+			tableList.add(ho);
 			objectList.add(obj);
 		}
-		for(String obj : hasMany){
-			obj = CStringUtils.toVariableName(obj.toLowerCase(), useCamelCase);
-			tableList.add(obj);
+		for(String hm : hasMany){
+			String obj = CStringUtils.toVariableName(hm.toLowerCase(), useCamelCase);
+			tableList.add(hm);
 			objectList.add(obj);
 		}
 		

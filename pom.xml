@@ -5,12 +5,11 @@
 	<parent>
 		<groupId>com.ivanceras</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.6</version>
+		<version>0.0.7-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>orm</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
 	<name>orm</name>
 	<description>ORM - Core Library for Database</description>
 	<url>https://github.com/ivanceras/orm</url>

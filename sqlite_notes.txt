@@ -1,0 +1,7 @@
+Return the total number of pages in the database file.
+PRAGMA page_count;
+
+
+size of pages
+
+PRAGMA page_size; 
