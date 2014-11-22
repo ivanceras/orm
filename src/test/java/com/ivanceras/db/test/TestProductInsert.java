@@ -16,7 +16,7 @@ import org.mockito.stubbing.Answer;
 import com.ivanceras.db.api.EntityManager;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.SynchronousEntityManager;
-import com.ivanceras.db.sample.BazaarModelMetaData;
+import com.ivanceras.db.sample.SampleModelMetaData;
 import com.ivanceras.db.sample.DAO_Product;
 import com.ivanceras.db.sample.DAO_Users;
 import com.ivanceras.db.sample.Table;
@@ -57,7 +57,7 @@ public class TestProductInsert {
 		jdbc.init();
 		
 		EntityManager em = new SynchronousEntityManager(jdbc);
-		when(jdbc.getModelMetaDataDefinition()).thenReturn(new BazaarModelMetaData());
+		when(jdbc.getModelMetaDataDefinition()).thenReturn(new SampleModelMetaData());
 		
 		DAO_Product daoProduct = new DAO_Product();
 		daoProduct.setName("iphone3gs");

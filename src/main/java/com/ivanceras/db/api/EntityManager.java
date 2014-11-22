@@ -96,6 +96,8 @@ public interface EntityManager{
 
 	public <T extends DAO > T[]  execute(SQL sql) throws DatabaseException;
 
+	public DAO[]  execute(String sql, Object[] parameters) throws DatabaseException;
+
 	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns)
 			throws DatabaseException;
 
@@ -123,6 +125,8 @@ public interface EntityManager{
 	public Map<String, Object> getContext();
 	
 	public Object getContext(String key);
+
+	public boolean setPrimaryConstraint(ModelDef model) throws DatabaseException;
 
 	
 }

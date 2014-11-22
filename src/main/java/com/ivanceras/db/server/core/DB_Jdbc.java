@@ -57,7 +57,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		 * to
 		 */
 	}
-	private static Logger log = LogManager.getLogger(DB_Jdbc.class.getSimpleName());
+	protected static Logger log = LogManager.getLogger(DB_Jdbc.class.getSimpleName());
 
 	private static HashMap<String, String> propToHash(Properties prop) {
 		HashMap<String, String> hash = new HashMap<String, String>();
@@ -178,7 +178,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		}
 		return correctedParameters;
 	}
-	
+
 	@Override
 	public boolean createModel(ModelDef model) throws DatabaseException {
 		return createModel(model,true);
@@ -310,7 +310,11 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	}
 
-
+	@Override
+	public DAO[] select(String sql, Object[] parameters)
+			throws DatabaseException {
+		return executeSelect(sql, parameters);
+	}
 
 	/**
 	 * Execute generic SQL statement
@@ -371,17 +375,21 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	public int executeUpdateSQL(SQL sql)
 			throws DatabaseException {
-		Breakdown bk = sql.build();
-		Statement pstmt = null;
-		try {
-			pstmt = getPreparedStatement(bk.getSql(), bk.getParameters(), false);
-			int ret = ((PreparedStatement)pstmt).executeUpdate();
-			logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
-			return ret;
-		} catch (SQLException e) {
-			logSQL(pstmt, bk.getSql(), bk.getParameters(), true);
-			e.printStackTrace();
-			throw new DataUpdateException(e.getMessage());
+		if(sql != null){
+			Breakdown bk = sql.build();
+			Statement pstmt = null;
+			try {
+				pstmt = getPreparedStatement(bk.getSql(), bk.getParameters(), false);
+				int ret = ((PreparedStatement)pstmt).executeUpdate();
+				logSQL(pstmt, bk.getSql(), bk.getParameters(), false);
+				return ret;
+			} catch (SQLException e) {
+				logSQL(pstmt, bk.getSql(), bk.getParameters(), true);
+				e.printStackTrace();
+				throw new DataUpdateException(e.getMessage());
+			}
+		}else{
+			return -1;
 		}
 	}
 
@@ -552,7 +560,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		SQL sql = buildInsertStatement(dao, meta, model, query);
 		Object ret = executeInsertSQL(sql, true);
 		if(ret != null){
-			
+
 			dao.set_Value(IDatabase.RETURN_FROM_INSERT, ret);
 		}
 		return dao;
@@ -673,9 +681,9 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 							String columnName = md.getColumnName(i + 1).replace("\"", "").toLowerCase();
 							Object dbRecord = rs.getObject(i + 1);
 							Object record = getEquivalentJavaObject(dbRecord);
-//							if(record != null && dbRecord!=null){
-//								System.out.println("No conversion needed for: "+columnName+" = "+ record +" from "+dbRecord.getClass()+" to "+record.getClass());
-//							}
+							//							if(record != null && dbRecord!=null){
+							//								System.out.println("No conversion needed for: "+columnName+" = "+ record +" from "+dbRecord.getClass()+" to "+record.getClass());
+							//							}
 							row.put(columnName, record);
 						}
 					}
@@ -712,8 +720,8 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	@Override
 	public void search(Query query, String keyword) {
-//		SearchBuilder sb = new SearchBuilder(query);
-//		sb.keyword(keyword);
+		//		SearchBuilder sb = new SearchBuilder(query);
+		//		sb.keyword(keyword);
 
 	}
 
@@ -729,6 +737,13 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	public <T extends DAO> T[] select(SQL sql, Map<String, ColumnPair> renamedColumns)
 			throws DatabaseException {
 		return (T[]) executeSelectAll(sql, renamedColumns);
+	}
+
+	@Override
+	public boolean setPrimaryConstraint(ModelDef model)
+			throws DatabaseException {
+		SQL sql = buildPrimaryContraintStatement(model);
+		return executeUpdateSQL(sql) > 0;
 	}
 
 	@Override
@@ -779,7 +794,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 			return null;
 		}
 	}
-	
+
 	@Override
 	protected boolean useTableKeyWord() {
 		return true;

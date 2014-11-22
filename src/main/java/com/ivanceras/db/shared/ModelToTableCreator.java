@@ -13,16 +13,25 @@ public class ModelToTableCreator {
 	public ModelToTableCreator(EntityManager em, ModelDef[] modelList){
 		this.em = em;
 		this.modelList = modelList;
+		System.out.println("Creating tables for "+modelList.length);
 	}
 	
 	public void start() throws DatabaseException{
 		for(ModelDef model : modelList){
 			em.createModel(model);
 		}
-		setConstraints();
+		setPrimaryConstraints();
+		setForeignConstraints();
 	}
 	
-	private void setConstraints() throws DatabaseException{
+	private void setPrimaryConstraints() throws DatabaseException{
+		for(ModelDef model : modelList){
+			System.err.println("primary for: "+model.getTableName()+" "+modelList.length);
+			em.setPrimaryConstraint(model);
+		}
+	}
+	
+	private void setForeignConstraints() throws DatabaseException{
 		for(ModelDef model : modelList){
 			em.setForeignConstraint(model);
 		}

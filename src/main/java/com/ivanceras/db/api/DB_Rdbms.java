@@ -225,6 +225,30 @@ public abstract class DB_Rdbms{
 		return sql1;
 	}
 
+	protected SQL buildPrimaryContraintStatement(ModelDef model) throws DatabaseException{
+		String schema = model.getNamespace();
+		schema = getDBElementName(model,schema);
+		String[] primaryAttributes = model.getPrimaryAttributes();
+		SQL sql1 = null;
+		if(primaryAttributes != null && primaryAttributes.length > 0){
+			String table = getDBTableName(model);
+			if(table==null) throw new DatabaseException("No table indicated");
+			StringBuilder tableName = new StringBuilder();
+			if(schema != null){
+				tableName.append(schema+".");
+			}
+			tableName.append(model.getTableName());
+			sql1 = ALTER_TABLE(tableName.toString());
+
+			String constraintName = table+"_pkey";
+			sql1.ADD().CONSTRAINT(constraintName);
+			sql1.PRIMARY_KEY(primaryAttributes);
+		}else{
+			System.err.println("No primary key for: "+model.getTableName());
+		}
+		return sql1;
+	}
+
 	protected SQL buildForeignContraintStatement(ModelDef model) throws DatabaseException{
 		String schema = model.getNamespace();
 		schema = getDBElementName(model,schema);
@@ -238,6 +262,7 @@ public abstract class DB_Rdbms{
 				if(schema != null){
 					tableName.append(schema+".");
 				}
+				tableName.append(model.getTableName());
 				sql1 = ALTER_TABLE(tableName.toString());
 				String hasOneSchema = getDBElementName(model, getTableSchema(hasOne[i]));
 
@@ -248,7 +273,9 @@ public abstract class DB_Rdbms{
 				if(hasOneSchema != null && useSchema()){
 					referencedTable.append(hasOneSchema+".");
 				}
+				referencedTable.append(hasOne[i]);
 				sql1.REFERENCES(referencedTable.toString(), model.getHasOneReferencedColumn()[i]);
+				sql1.DEFERRABLE().INITIALLY_DEFERRED();
 			}
 
 		}
@@ -406,7 +433,7 @@ public abstract class DB_Rdbms{
 								if(query.hasConflictedColumn(columns[i]) ||  prependTableName()){
 									columnName = invTable+"."+columnName;
 								}
-								
+
 							}
 							String asColumn = query.getRenamed(inv, columns[i]);
 							sql1.FIELD(columnName);

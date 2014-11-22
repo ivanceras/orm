@@ -77,6 +77,15 @@ public interface IDatabase{
 	 * @throws DatabaseException
 	 */
 	public DAO[] select(ModelMetaData meta, Query query) throws DatabaseException;
+	
+	/**
+	 * Do a select operation in the database
+	 * @param meta
+	 * @param query
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public DAO[] select(String sql, Object[] parameters) throws DatabaseException;
 
 	/**
 	 * Each database has its own way of executing stuffs, creating a model may differ a lot from each other
@@ -263,6 +272,8 @@ public interface IDatabase{
 	 * @param model
 	 */
 	public void correctDataTypes(DAO[] daoList, ModelDef model);
+
+	boolean setPrimaryConstraint(ModelDef model) throws DatabaseException;
 	
 
 }

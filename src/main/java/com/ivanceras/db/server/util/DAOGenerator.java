@@ -53,7 +53,32 @@ public class DAOGenerator{
 		this.cleanupDirectory = cleanupDirectory;
 		this.explicitMeta = explicitMeta;
 	}
+	
+	/**
+	 * Curated will correct The ModelDef
+	 * @param curated
+	 * @throws Exception
+	 */
+	public void startUncurated(Configuration conf) throws Exception{
+		IDatabaseDev db = (IDatabaseDev) em.getDB();//TODO make sure DB platform can be used for development
+		ModelDefinitionProvider provider = new ModelDefinitionProvider(db, conf.dbUser, null, conf.includeSchema);
+		ModelDef[] origModelList = provider.getTableDefinitions();
+		
+		//TODO: proper support for explicit ModelDefinitions
+		ModelDef[] withExplecitList = overrideModelDefFromExplicit(origModelList, explicitMeta);
+		ModelDef[] modelList = withExplecitList;
+		
+		ModelDef[] modelListOwned = setModelOwners(modelList, tableGroups);
+		ModelDef[] modelListChilded = setDirectChildren(modelListOwned);
 
+		new ModelMetaDataGenerator().start(modelListChilded, conf);
+	}
+	
+	/**
+	 * Curated will correct The ModelDef
+	 * @param curated
+	 * @throws Exception
+	 */
 	public void start() throws Exception{
 		if(cleanupDirectory){
 			CleanUp.start(conf);
@@ -62,6 +87,7 @@ public class DAOGenerator{
 		ModelDefinitionProvider provider = new ModelDefinitionProvider(db, conf.dbUser, null, conf.includeSchema);
 		ModelDef[] origModelList = provider.getTableDefinitions();
 		
+		new ModelMetaDataGenerator().start(origModelList, conf);
 		//TODO: proper support for explicit ModelDefinitions
 		ModelDef[] withExplecitList = overrideModelDefFromExplicit(origModelList, explicitMeta);
 		ModelDef[] modelList = correctModelList(withExplecitList);
@@ -77,7 +103,8 @@ public class DAOGenerator{
 		new TableNameGenerator().start(modelListChilded, conf);
 		new SchemaTableGenerator().start(modelListChilded, conf);
 		new TableColumnGenerator().start(modelListChilded, conf);
-		new ModelMetaDataGenerator().start(modelListChilded, conf);
+		//new ModelMetaDataGenerator().start(modelListChilded, conf);
+		
 		new DAOInstanceFactoryGenerator().start(modelListChilded, conf);
 		new ModelToDAOConversionGenerator().start(modelListChilded, conf);
 	}

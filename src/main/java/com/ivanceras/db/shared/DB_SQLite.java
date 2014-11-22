@@ -441,5 +441,19 @@ public class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabaseDev {
 
 	}
 
+	@Override
+	public boolean setPrimaryConstraint(ModelDef model)
+			throws DatabaseException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public DAO[] select(String sql, Object[] parameters)
+			throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

@@ -469,6 +469,11 @@ public class SynchronousEntityManager implements EntityManager{
 	}
 
 	@Override
+	public DAO[] execute(String sql, Object[] parameters) throws DatabaseException {
+		return db.select(sql, parameters);
+	}
+	
+	@Override
 	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns) throws DatabaseException {
 		return db.select(sql, renamedColumns);
 	}
@@ -478,6 +483,11 @@ public class SynchronousEntityManager implements EntityManager{
 //		this.contextProvider = context;
 //	}
 
+	@Override
+	public boolean setPrimaryConstraint(ModelDef model)
+			throws DatabaseException {
+		return db.setPrimaryConstraint(model);
+	}
 	@Override
 	public boolean setForeignConstraint(ModelDef model)
 			throws DatabaseException {

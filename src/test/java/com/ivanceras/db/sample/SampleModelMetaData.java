@@ -6,7 +6,7 @@ import com.ivanceras.db.shared.DAO;
 
 import com.ivanceras.db.api.ModelDef;
 
-public class BazaarModelMetaData extends com.ivanceras.db.model.ModelMetaData{
+public class SampleModelMetaData extends com.ivanceras.db.model.ModelMetaData{
 
 
 	public static Map<Class<? extends DAO>, ModelDef> modelDefList = new LinkedHashMap<Class<? extends DAO>, ModelDef>();
@@ -225,7 +225,7 @@ public class BazaarModelMetaData extends com.ivanceras.db.model.ModelMetaData{
 
 
 
-	public BazaarModelMetaData(){
+	public SampleModelMetaData(){
 		super(modelDefList, namedModelDefList, modelNameListNdx, classListNdx);
 		init4();
 		init11();
