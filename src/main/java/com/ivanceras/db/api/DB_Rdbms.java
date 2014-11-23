@@ -21,7 +21,6 @@ import com.ivanceras.db.shared.datatype.DataTypeDB;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.SpecialCase;
-import com.ivanceras.fluent.sql.Breakdown;
 import com.ivanceras.fluent.sql.SQL;
 
 public abstract class DB_Rdbms{
@@ -234,7 +233,7 @@ public abstract class DB_Rdbms{
 			String table = getDBTableName(model);
 			if(table==null) throw new DatabaseException("No table indicated");
 			StringBuilder tableName = new StringBuilder();
-			if(schema != null){
+			if(schema != null && useSchema()){
 				tableName.append(schema+".");
 			}
 			tableName.append(model.getTableName());
@@ -259,7 +258,7 @@ public abstract class DB_Rdbms{
 		if(hasOne != null && hasOne.length > 0){
 			for(int i = 0; i < hasOne.length; i++){
 				StringBuilder tableName = new StringBuilder();
-				if(schema != null){
+				if(schema != null && useSchema()){
 					tableName.append(schema+".");
 				}
 				tableName.append(model.getTableName());
@@ -275,7 +274,9 @@ public abstract class DB_Rdbms{
 				}
 				referencedTable.append(hasOne[i]);
 				sql1.REFERENCES(referencedTable.toString(), model.getHasOneReferencedColumn()[i]);
-				sql1.DEFERRABLE().INITIALLY_DEFERRED();
+				sql1.ON_UPDATE().CASCADE()
+				.ON_DELETE().RESTRICT()
+				.DEFERRABLE().INITIALLY_DEFERRED();
 			}
 
 		}
@@ -676,7 +677,7 @@ public abstract class DB_Rdbms{
 		return ApiUtils.getDBElementName(model, element);
 	}
 
-	private String getDBTableName(ModelDef model) {
+	protected String getDBTableName(ModelDef model) {
 		if(model==null) return null;
 		String tableName = model.getTableName();
 		if(caseSensitive()){//if database implementation is case sensitive;

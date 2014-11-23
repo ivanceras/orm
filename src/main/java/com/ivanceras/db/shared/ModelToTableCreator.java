@@ -1,5 +1,6 @@
 package com.ivanceras.db.shared;
 
+import com.ivanceras.commons.client.Console;
 import com.ivanceras.db.api.EntityManager;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.shared.exception.DatabaseException;
@@ -13,7 +14,7 @@ public class ModelToTableCreator {
 	public ModelToTableCreator(EntityManager em, ModelDef[] modelList){
 		this.em = em;
 		this.modelList = modelList;
-		System.out.println("Creating tables for "+modelList.length);
+		Console.log("Creating tables for "+modelList.length);
 	}
 	
 	public void start() throws DatabaseException{
@@ -26,7 +27,7 @@ public class ModelToTableCreator {
 	
 	private void setPrimaryConstraints() throws DatabaseException{
 		for(ModelDef model : modelList){
-			System.err.println("primary for: "+model.getTableName()+" "+modelList.length);
+			Console.log("primary for: "+model.getTableName()+" "+modelList.length);
 			em.setPrimaryConstraint(model);
 		}
 	}
