@@ -26,8 +26,10 @@ public class SchemaTableGenerator {
 		sw.lnprint();
 		for(Entry<String, List<ModelDef>> entry : schemaModels.entrySet()){
 			String schemaName = entry.getKey();
-			if(schemaName.equals("public")){
+			if(schemaName.equals("public")){//TODO:refactor out when list gets soo many
 				schemaName = "public_";
+			}else if(schemaName.equals("import")){
+				schemaName = "import_";
 			}
 			sw.lnTabPrint("public class "+schemaName+"{");
 			sw.lnTabPrint("");
