@@ -24,12 +24,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>commons</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>fluentsql</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
