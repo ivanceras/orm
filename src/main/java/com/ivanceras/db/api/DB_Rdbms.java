@@ -300,7 +300,7 @@ public abstract class DB_Rdbms{
 		String[] columns = model.getAttributes();
 		String[] correctedColumns = new String[columns.length];
 		String[] ignoredColumns = dao.get_IgnoreColumn();
-		System.out.println("ignored columns: "+Arrays.asList(ignoredColumns));
+		String[] curatedIgnoredColumns = curateIgnoredColumns(ignoredColumns);
 		String[] defaultedColumValues = dao.get_DefaultedColumnValues();
 		for(int i = 0; i < columns.length; i++){
 			correctedColumns[i] = getDBElementName(model,columns[i]);
@@ -314,7 +314,7 @@ public abstract class DB_Rdbms{
 		if(columns != null){
 			List<String> finalColumns = new ArrayList<String>();
 			for(int c = 0; c < columns.length; c++){
-				if(!CStringUtils.inArray(ignoredColumns, columns[c])){
+				if(!CStringUtils.inArray(curatedIgnoredColumns, columns[c])){
 					finalColumns.add(columns[c]);
 				}
 				if(CStringUtils.inArray(defaultedColumValues, columns[c])){
@@ -332,7 +332,7 @@ public abstract class DB_Rdbms{
 			sql1.VALUES().openParen();
 			boolean doComma = false;
 			for(int i = 0; i < columns.length; i++){
-				if(!CStringUtils.inArray(ignoredColumns, columns[i])){
+				if(!CStringUtils.inArray(curatedIgnoredColumns, columns[i])){
 					Object value = null;
 					if(dao != null) {
 						value = dao.get_Value(columns[i]);
@@ -351,6 +351,30 @@ public abstract class DB_Rdbms{
 		}
 		return sql1;
 	}
+
+	
+	//TODO: may include columns that are meant from other tables, needs improvement for identifying which table to correct from, this will introduce bug when joining multiple tables 
+	//while ignoring specific table
+	private String[] curateIgnoredColumns(String[] ignoredColumns) {
+		if(ignoredColumns == null){
+			return null;
+		}else{
+			System.out.println("ignored columns: "+Arrays.asList(ignoredColumns));
+			String[] curated = new String[ignoredColumns.length];
+			for(int i = 0; i < ignoredColumns.length; i++){
+				if(ignoredColumns[i] != null){
+					String[] splinters = ignoredColumns[i].split("\\.");
+					if(splinters != null && splinters.length > 0){
+						String last = splinters[splinters.length - 1];
+						curated[i] = last;
+					}
+				}
+			}
+			System.out.println("curated: "+Arrays.asList(curated));
+			return curated;
+		}
+	}
+
 
 	public SQL buildRenameModel(ModelDef model, String newName) {
 		String schema = model.getNamespace();
@@ -541,6 +565,7 @@ public abstract class DB_Rdbms{
 		String table = getDBTableName(model);
 		String[] columns = model.getAttributes();
 		String[] ignoreColumns = dao.get_IgnoreColumn();
+		String[] curatedIgnoredColumns = curateIgnoredColumns(ignoreColumns);
 		String[] defaultedColumnValues = dao.get_DefaultedColumnValues();
 
 		for(int i = 0; i < columns.length; i++){
@@ -559,7 +584,7 @@ public abstract class DB_Rdbms{
 		boolean doComma = false;
 		sql1.SET();
 		for(int i = 0; i < columns.length; i++){
-			if(ignoreColumns != null && CStringUtils.inArray(ignoreColumns, columns[i])){
+			if(curatedIgnoredColumns != null && CStringUtils.inArray(curatedIgnoredColumns, columns[i])){
 				;
 			}
 			else{
