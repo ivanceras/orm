@@ -625,7 +625,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		try {
 			rs = executeSelectSQL(sql, parameters);
 			Statement stm = rs.getStatement();
-//			System.out.println("SQL: "+stm.toString());
+			//			System.out.println("SQL: "+stm.toString());
 			if(rs.next()){
 				String comment = rs.getString("comment");
 				return comment;
@@ -833,22 +833,22 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 
 	@Override
 	protected ForeignKey getImportedKeys(String schema, String tablename) throws DatabaseException{
-//		String sql = 
-//				"select " +
-//						"\n 	distinct on (ccu.table_name) ccu.table_name as foreigntable, " +
-//						"\n 	ccu.column_name as referedcolumn, " +
-//						"\n 	kcu.column_name as localcolumn " +
-//						"\n from information_schema.key_column_usage kcu" +
-//						"\n left join information_schema.constraint_column_usage ccu" +
-//						"\n 	on ccu.constraint_name = kcu.constraint_name" +
-//						"\n where kcu.table_name = '"+tablename+"'" +
-//						"\n 	and kcu.table_schema = '"+schema+"'"+
-//						"\n		and (ccu.table_name != '"+tablename+"'"+
-//						"\n		or (ccu.table_name = '"+tablename+"' and ccu.column_name != '"+tablename+"_id'))";
+		//		String sql = 
+		//				"select " +
+		//						"\n 	distinct on (ccu.table_name) ccu.table_name as foreigntable, " +
+		//						"\n 	ccu.column_name as referedcolumn, " +
+		//						"\n 	kcu.column_name as localcolumn " +
+		//						"\n from information_schema.key_column_usage kcu" +
+		//						"\n left join information_schema.constraint_column_usage ccu" +
+		//						"\n 	on ccu.constraint_name = kcu.constraint_name" +
+		//						"\n where kcu.table_name = '"+tablename+"'" +
+		//						"\n 	and kcu.table_schema = '"+schema+"'"+
+		//						"\n		and (ccu.table_name != '"+tablename+"'"+
+		//						"\n		or (ccu.table_name = '"+tablename+"' and ccu.column_name != '"+tablename+"_id'))";
 
-/**
- * from 	http://stackoverflow.com/questions/1152260/postgres-sql-to-list-table-foreign-keys		
- */
+		/**
+		 * from 	http://stackoverflow.com/questions/1152260/postgres-sql-to-list-table-foreign-keys		
+		 */
 
 		String sql = 
 				"SELECT " +
@@ -890,18 +890,18 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 
 	@Override
 	protected ForeignKey getExportedKeys(String schema, String tablename) throws DatabaseException{
-//		String sql = "select " +
-//				"\n 	distinct on(kcu.table_name) kcu.table_name as foreigntable,"+
-//				"\n 	kcu.column_name as referedcolumn, " +
-//				"\n 	ccu.column_name as localcolumn " +
-//				"\n from information_schema.key_column_usage kcu " +
-//				"\n left join information_schema.constraint_column_usage ccu " +
-//				"\n 	on ccu.constraint_name = kcu.constraint_name " +
-//				"\n where ccu.table_name = '"+tablename+"' " +
-//				"\n 	and ccu.table_schema = '"+schema+"'" +
-//				"\n and (kcu.table_name != '"+tablename+"' "+
-//				"\n or (kcu.table_name = '"+tablename+"'  and kcu.column_name != '"+tablename+"_id'))";
-		
+		//		String sql = "select " +
+		//				"\n 	distinct on(kcu.table_name) kcu.table_name as foreigntable,"+
+		//				"\n 	kcu.column_name as referedcolumn, " +
+		//				"\n 	ccu.column_name as localcolumn " +
+		//				"\n from information_schema.key_column_usage kcu " +
+		//				"\n left join information_schema.constraint_column_usage ccu " +
+		//				"\n 	on ccu.constraint_name = kcu.constraint_name " +
+		//				"\n where ccu.table_name = '"+tablename+"' " +
+		//				"\n 	and ccu.table_schema = '"+schema+"'" +
+		//				"\n and (kcu.table_name != '"+tablename+"' "+
+		//				"\n or (kcu.table_name = '"+tablename+"'  and kcu.column_name != '"+tablename+"_id'))";
+
 		String sql = "SELECT " +
 				"\n 	DISTINCT ON(kcu.table_name) kcu.table_name AS foreigntable,"+
 				"\n 	kcu.column_name AS referedcolumn, " +
@@ -916,7 +916,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 				"\n AND (kcu.table_name != '"+tablename+"' "+
 				"\n OR (kcu.table_name = '"+tablename+"'  AND kcu.column_name != '"+tablename+"_id'))"+
 				"\n 	AND tc.constraint_type = 'FOREIGN KEY'";
-		
+
 		try {
 			System.err.println("exported key: "+sql);
 			ResultSet rs = executeSelectSQL(sql, null);
@@ -1103,11 +1103,13 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	}
 
 	public void correctDataTypes(DAO dao, ModelDef model) {
-		String[] dataTypes = model.getDataTypes();
-		String[] attributes = model.getAttributes();
-		for(int i = 0 ; i < attributes.length; i++){
-			Object value = dao.get_Value(attributes[i]);
-			correctDataType(value, dataTypes[i]);
+		if(model != null){
+			String[] dataTypes = model.getDataTypes();
+			String[] attributes = model.getAttributes();
+			for(int i = 0 ; i < attributes.length; i++){
+				Object value = dao.get_Value(attributes[i]);
+				correctDataType(value, dataTypes[i]);
+			}
 		}
 
 	}

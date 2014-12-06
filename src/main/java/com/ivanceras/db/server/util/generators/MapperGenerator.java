@@ -13,6 +13,18 @@ import com.ivanceras.commons.writer.StringSourceWriter;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.shared.util.SpecialCase;
 
+
+/**
+ * Generates the source code for the mappers
+ * @author lee
+ *
+ */
+//TODO: generate mapper .map(HashMap map) to get values from HashMap
+//TODO: generate mapper .toMap() to convert the value back to HashMap
+//this is for conversion to json back and fort
+//TODO: need to have seperate useCamelCase for Classes classUseCamelCase and fieldsUseCamelCase
+
+
 public class MapperGenerator {
 	
 	

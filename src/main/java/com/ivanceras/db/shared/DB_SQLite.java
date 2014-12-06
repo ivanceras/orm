@@ -1,8 +1,6 @@
 package com.ivanceras.db.shared;
 
 import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +22,7 @@ import com.ivanceras.fluent.sql.SQL;
 
 
 /**
+ * Generic Queries in SQLite, should work for DB_SQLiteJdbc, DB_WebSQL, DB_SQL.js
  * This should work on SQLite server side and websql browsers and sql.js(javascript compiled sqlite3.c)
  *  Get the foreing keys
  *  https://www.sqlite.org/pragma.html#pragma_foreign_key_list
@@ -35,21 +34,9 @@ import com.ivanceras.fluent.sql.SQL;
  * @author lee
  *
  */
-public class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabaseDev {
-	Connection connection = null;
+public abstract class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabaseDev {
 	
-	public DB_SQLite(DBConfig config){
-		String dbName = config.getDbName();
-		
-		try {
-			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:"+dbName);
-			System.out.println("Opened database successfully");
-		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
-		}
-	}
+	
 
 	@Override
 	public void beginTransaction() throws DatabaseException {

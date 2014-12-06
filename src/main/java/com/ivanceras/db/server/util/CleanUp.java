@@ -4,6 +4,7 @@
 package com.ivanceras.db.server.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.ivanceras.commons.conf.Configuration;
 
@@ -13,12 +14,19 @@ public class CleanUp{
 		File directory = new File(directoryName);
 
 		File[] files = directory.listFiles();
-		if(files != null){
-			for (File file : files){
-				if (!file.delete()){
-					System.out.println("Failed to delete "+file);
+		try{
+			if(files != null){
+				for (File file : files){
+					if (!file.delete()){
+						System.out.println("Failed to delete "+file);
+					}else{
+						System.out.println("Deleting "+file+" ...");
+					}
 				}
 			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 

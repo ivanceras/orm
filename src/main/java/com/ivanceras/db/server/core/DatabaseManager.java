@@ -5,7 +5,6 @@ package com.ivanceras.db.server.core;
 
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.db.api.IDatabase;
-import com.ivanceras.db.shared.DB_SQLite;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 
@@ -31,10 +30,10 @@ public class DatabaseManager {
 			System.out.println("connecting using postgresql");
 			return db;
 		}
-		else if(dbType.equals(SQLITE )){ /** sqlite */
-				db = new DB_SQLite(config); 
-				return db;
-		}
+//		else if(dbType.equals(SQLITE )){ /** sqlite */
+//				db = new DB_SQLite_Jdbc(config); 
+//				return db;
+//		}
 		//		else if(dbType.equals(HIVE )){ /** hive support */
 		//			db = new DB_Hive(config); 
 		//			return db;

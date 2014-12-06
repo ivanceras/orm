@@ -12,6 +12,7 @@ import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DatabaseException;
+import com.ivanceras.fluent.sql.SQL;
 
 /**
  * 
@@ -45,8 +46,10 @@ public class Query {
 	private List<CombinedQuery> combinedQuery = new ArrayList<CombinedQuery>();
 	private String baseQueryName;
 	private Map<String, DeclaredQuery> declaredQuery = new LinkedHashMap<String, DeclaredQuery>();
+	private Map<String, SQL> declaredSQL = new LinkedHashMap<String, SQL>();
 	private List<WindowFunction> windowFunctions = new ArrayList<WindowFunction>();
 	private QueryAnalysis analyzer;
+	private String selectTable;
 
 	public Query(EntityManager em, Class<? extends DAO> daoClass) throws DatabaseException{
 		this.em = em;
@@ -54,6 +57,12 @@ public class Query {
 		meta = em.getDB().getModelMetaDataDefinition();
 		analyzer = new QueryAnalysis(this); 
 		involve(model);
+	}
+	
+	public Query(EntityManager em, String selectTable) throws DatabaseException{
+		this.em = em;
+		analyzer = new QueryAnalysis(this); 
+		this.selectTable = selectTable;
 	}
 
 	public Query(ModelDef model){
@@ -67,6 +76,8 @@ public class Query {
 		ModelDef model = meta.getDefinition(daoClass);
 		involve(model);
 	}
+	
+
 
 	public Query(String queryString){
 		this.setQueryString(queryString);
@@ -93,37 +104,12 @@ public class Query {
 		columnSubQuery.put(column, subquery);
 		return this;
 	}
+	
+	
+	public String getSelectTable(){
+		return selectTable;
+	}
 
-
-	//	public Query(ModelMetaData meta, Class<? extends DAO> daoClass, TreeRecursion tree) throws DatabaseException{
-	//		this.meta = meta;
-	//		ModelDef model = meta.getDefinition(daoClass);
-	//		analyzer = new QueryAnalysis(this); 
-	//
-	//		String declaration = "child";
-	//		Query query1 = new Query(meta, daoClass);
-	//		Filter[] startingFilter = tree.getFilters();
-	//		query1.addFilter(startingFilter);
-	//		Query query2 = new Query(meta, daoClass);
-	//		ModelDef childModel = new ModelDef();
-	//
-	//		childModel.setModelName(declaration);
-	//		involve(childModel);//First Involved Model is the Table to be Queried, So child is the first involved Model
-	//		involve(model);//Then put in the rest
-	//
-	//		query2.addJoinPair(new JoinPair(meta.getDefinition(daoClass), childModel, new ColumnPair(tree.parentColumn, tree.column), Join.INNER));
-	//		query1.combine(query2, Combine.UNION, false);
-	//
-	//		declare(declaration, null, query1, true);
-	//		setSelectAllColumns();
-	//
-	//	}
-
-	//	public Query(EntityManager em, Class<? extends DAO> daoClass, TreeRecursion tree) throws DatabaseException{
-	//		this(em.getDB().getModelMetaDataDefinition(), daoClass, tree);
-	//		this.em = em;
-	//		analyzer = new QueryAnalysis(this); 
-	//}
 
 	public Query addFilter(Filter... filters) {
 		if(filters != null){
@@ -251,6 +237,11 @@ public class Query {
 			query.setSelectAllColumns();
 		}
 		declaredQuery.put(name, new DeclaredQuery(name, columns, query, recursive));
+		return this;
+	}
+	
+	public Query declare(String name, SQL sql){
+		declaredSQL.put(name, sql);
 		return this;
 	}
 
@@ -516,6 +507,10 @@ public class Query {
 
 	public <T extends DAO> T[] execute() throws DatabaseException {
 		return em.retrieveRecords(this);
+	}
+
+	public Map<String, SQL> getDeclaredSQL() {
+		return this.declaredSQL;
 	}
 
 

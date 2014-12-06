@@ -352,7 +352,7 @@ public abstract class DB_Rdbms{
 		return sql1;
 	}
 
-	
+
 	//TODO: may include columns that are meant from other tables, needs improvement for identifying which table to correct from, this will introduce bug when joining multiple tables 
 	//while ignoring specific table
 	private String[] curateIgnoredColumns(String[] ignoredColumns) {
@@ -401,18 +401,21 @@ public abstract class DB_Rdbms{
 		String[] distinctColumns = query.getDistinctColumns();
 		String[] groupedColumns = query.getGroupedColumns();
 
-		String[] subClasses = model.getSubClass();
-		if(subClasses != null && subClasses.length > 0){
-			Query subClassQuery = buildSubClassTableQuery(model);
-			SQL sql2 = buildSQL(meta, subClassQuery, false);
-			sql1.FIELD(sql2).AS("subclasstable");
+		String table = null;
+		String schema = null;
+		if(model != null){
+			String[] subClasses = model.getSubClass();
+			if(subClasses != null && subClasses.length > 0){
+				Query subClassQuery = buildSubClassTableQuery(model);
+				SQL sql2 = buildSQL(meta, subClassQuery, false);
+				sql1.FIELD(sql2).AS("subclasstable");
+			}
+	
+			schema = model.getNamespace();
+			schema = getDBElementName(model,schema);
+			table = getDBTableName(model);
 		}
-
-
-
-		String schema = model.getNamespace();
-		schema = getDBElementName(model,schema);
-		String table = getDBTableName(model);
+		String selectTable = query.getSelectTable();
 		ModelDef[] involvedModels = query.getInvolvedModels();
 
 
@@ -423,7 +426,6 @@ public abstract class DB_Rdbms{
 			declaredEntry = buildDeclaredQuery(meta, declaredQueries);
 			sql1.FIELD(declaredEntry);
 		}
-		sql1 = SELECT();
 		if(distinctColumns != null && distinctColumns.length > 0){//custom distinct columns
 			String[] distinctColumns1 = new String[distinctColumns.length];
 			for(int i = 0; i < distinctColumns.length; i++){
@@ -435,9 +437,21 @@ public abstract class DB_Rdbms{
 			sql1.DISTINCT_ON(distinctColumns1);
 		}
 
+		Map<String, SQL> declaredSQL = query.getDeclaredSQL();
+		if(declaredSQL != null){
+			sql1.WITH();
+			for(Entry<String, SQL> entry : declaredSQL.entrySet()){
+				String name = entry.getKey();
+				sql1.FIELD(name);
+				SQL dsql = entry.getValue();
+				sql1.AS(dsql);
+			}
+		}
+		
+
 		Boolean selectAllColumns = query.getSelectAllColumns();
 		if(selectAllColumns != null &&selectAllColumns){
-			sql1 = SELECT("*");
+			sql1.SELECT("*");
 			query.setEnumerateColumns(false);
 			for(Entry<String, ColumnPair> entry: query.getRenamedColumnPairs().entrySet()){
 				String tableName = getDBTableName(entry.getKey());
@@ -445,6 +459,9 @@ public abstract class DB_Rdbms{
 				String newName = entry.getValue().getColumn2();
 				sql1.FIELD(tableName+"."+original).AS(newName);
 			}
+		}
+		else{
+			sql1.append(SELECT());
 		}
 		if(query.isEnumerateColumns()){
 			for(ModelDef inv : involvedModels){
@@ -470,15 +487,20 @@ public abstract class DB_Rdbms{
 				}
 			}
 		}
-		String fromTable = null;
-		if(table != null){
-			fromTable = table;
+		if(selectTable != null){
+			sql1.FROM(selectTable);
 		}
-		if(schema != null && useSchema()){
-			fromTable = schema+"."+fromTable;
-		}
-		if(fromTable != null){
-			sql1.FROM(fromTable);
+		else{
+			String fromTable = null;
+			if(table != null){
+				fromTable = table;
+			}
+			if(schema != null && useSchema()){
+				fromTable = schema+"."+fromTable;
+			}
+			if(fromTable != null){
+				sql1.FROM(fromTable);
+			}
 		}
 		if(query.getBaseQuery() != null){
 			String baseQueryName = query.getBaseQueryName();
