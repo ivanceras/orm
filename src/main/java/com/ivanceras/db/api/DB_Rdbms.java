@@ -19,8 +19,9 @@ import com.ivanceras.db.shared.datatype.DataTypeDB;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.SpecialCase;
-import com.ivanceras.fluent.SQL;
-import static com.ivanceras.fluent.SQLStatics.*;
+import com.ivanceras.keyword.sql.SQL;
+
+import static com.ivanceras.keyword.sql.SQLStatics.*;
 
 public abstract class DB_Rdbms{
 

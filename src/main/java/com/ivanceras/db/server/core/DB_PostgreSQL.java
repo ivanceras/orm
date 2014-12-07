@@ -51,8 +51,9 @@ import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.SQL;
-import static com.ivanceras.fluent.SQLStatics.*;
+import com.ivanceras.keyword.sql.SQL;
+
+import static com.ivanceras.keyword.sql.SQLStatics.*;
 
 public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 

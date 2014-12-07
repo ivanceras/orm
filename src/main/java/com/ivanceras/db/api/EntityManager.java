@@ -7,7 +7,7 @@ import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.SQL;
+import com.ivanceras.keyword.sql.SQL;
 public interface EntityManager{
 
 

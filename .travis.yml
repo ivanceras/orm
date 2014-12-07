@@ -10,8 +10,8 @@ before_install:
  - cd commons
  - mvn clean install -Dgpg.skip=true
  - cd ../
- - git clone https://github.com/ivanceras/fluentsql.git
- - cd fluentsql
+ - git clone https://github.com/ivanceras/keywordSQL.git
+ - cd keywordSQL
  - mvn clean install -Dgpg.skip=true
  - cd ../
  

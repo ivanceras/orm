@@ -12,8 +12,9 @@ import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.SQL;
-import static com.ivanceras.fluent.SQLStatics.*;
+import com.ivanceras.keyword.sql.SQL;
+
+import static com.ivanceras.keyword.sql.SQLStatics.*;
 /**
  * 
  * @author lee

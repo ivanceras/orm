@@ -14,8 +14,9 @@ import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DAOInstanceFactoryException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.DAOUtils;
-import com.ivanceras.fluent.SQL;
-import static com.ivanceras.fluent.SQLStatics.*;
+import com.ivanceras.keyword.sql.SQL;
+
+import static com.ivanceras.keyword.sql.SQLStatics.*;
 
 public class SynchronousEntityManager implements EntityManager{
 
