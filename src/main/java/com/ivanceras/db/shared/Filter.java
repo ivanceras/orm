@@ -8,8 +8,7 @@ import java.util.List;
 
 import com.ivanceras.db.api.LiteralString;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.fluent.sql.SQL;
-
+import com.ivanceras.fluent.SQL;
 public class Filter {
 	public static final String LESS_THAN = "<";
 	public static final String LESS_THAN_OR_EQUAL = "<=";

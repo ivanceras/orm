@@ -11,8 +11,7 @@ import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.sql.SQL;
-
+import com.ivanceras.fluent.SQL;
 
 /**
  * This is the database interface which will should be implemented to you the specifics of each database platform

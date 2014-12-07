@@ -3,8 +3,6 @@
  ******************************************************************************/
 package com.ivanceras.db.server.core;
 
-import static com.ivanceras.fluent.sql.SQL.Statics.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,7 +51,8 @@ import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.sql.SQL;
+import com.ivanceras.fluent.SQL;
+import static com.ivanceras.fluent.SQLStatics.*;
 
 public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 

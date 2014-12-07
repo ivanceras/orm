@@ -41,8 +41,10 @@ import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DataEntryException;
 import com.ivanceras.db.shared.exception.DataUpdateException;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.sql.Breakdown;
-import com.ivanceras.fluent.sql.SQL;
+import com.ivanceras.fluent.Breakdown;
+import com.ivanceras.fluent.SQL;
+
+import static com.ivanceras.fluent.SQLStatics.*;
 
 public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 

@@ -3,8 +3,6 @@
  ******************************************************************************/
 package com.ivanceras.db.api;
 
-import static com.ivanceras.fluent.sql.SQL.Statics.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +19,8 @@ import com.ivanceras.db.shared.datatype.DataTypeDB;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.db.shared.util.SpecialCase;
-import com.ivanceras.fluent.sql.SQL;
+import com.ivanceras.fluent.SQL;
+import static com.ivanceras.fluent.SQLStatics.*;
 
 public abstract class DB_Rdbms{
 
@@ -440,8 +439,10 @@ public abstract class DB_Rdbms{
 		Map<String, SQL> declaredSQL = query.getDeclaredSQL();
 		if(declaredSQL != null){
 			sql1.WITH();
+			boolean doDeclaredComma = false;
 			for(Entry<String, SQL> entry : declaredSQL.entrySet()){
 				String name = entry.getKey();
+				if(doDeclaredComma){sql1.ln();sql1.comma();}else{doDeclaredComma=true;}
 				sql1.FIELD(name);
 				SQL dsql = entry.getValue();
 				sql1.AS(dsql);

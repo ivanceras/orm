@@ -1,16 +1,13 @@
 package com.ivanceras.db.api;
 
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.sql.SQL;
-
+import com.ivanceras.fluent.SQL;
 public interface EntityManager{
 
 

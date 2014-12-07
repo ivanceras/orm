@@ -24,9 +24,8 @@ import com.ivanceras.db.sample.TableColumns.users;
 import com.ivanceras.db.server.core.DB_PostgreSQL;
 import com.ivanceras.db.shared.exception.DBConnectionException;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.sql.SQL;
-import static com.ivanceras.fluent.sql.SQL.Statics.*;
-
+import com.ivanceras.fluent.SQL;
+import static com.ivanceras.fluent.SQLStatics.*;
 public class TestProductInsert {
 	
 	

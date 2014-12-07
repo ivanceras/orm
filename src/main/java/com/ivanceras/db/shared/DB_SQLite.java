@@ -18,8 +18,7 @@ import com.ivanceras.db.api.WindowFunction;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.fluent.sql.SQL;
-
+import com.ivanceras.fluent.SQL;
 
 /**
  * Generic Queries in SQLite, should work for DB_SQLiteJdbc, DB_WebSQL, DB_SQL.js

@@ -28,7 +28,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>fluentsql</artifactId>
+			<artifactId>keywordSQL</artifactId>
 			<version>0.0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
