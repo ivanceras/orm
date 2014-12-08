@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.api;
 
 import java.io.OutputStream;
@@ -235,7 +232,7 @@ public interface IDatabase{
 	 * @return
 	 * @throws DatabaseException
 	 */
-	public <T extends DAO > T[] select(SQL sql, Map<String, ColumnPair> renamedColumns) throws DatabaseException;
+	public <T extends DAO > T[] select(SQL sql, Map<String, Pair[]> renamedColumns) throws DatabaseException;
 	
 //	/**
 //	 * Get the comments of this table

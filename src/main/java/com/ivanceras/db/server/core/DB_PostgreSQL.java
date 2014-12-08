@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.server.core;
 
 import java.io.File;
@@ -33,18 +30,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.commons.strings.CStringUtils;
-import com.ivanceras.db.api.Aggregate;
+//import com.ivanceras.db.api.Aggregate;
 import com.ivanceras.db.api.ColumnDataType;
-import com.ivanceras.db.api.DeclaredQuery;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.IDatabaseDev;
 import com.ivanceras.db.api.LiteralString;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.db.api.SchemaTable;
-import com.ivanceras.db.api.WindowFunction;
+import com.ivanceras.db.api.Pair;
 import com.ivanceras.db.model.ModelMetaData;
-import com.ivanceras.db.server.core.DB_Jdbc.ForeignKey;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
@@ -315,24 +309,8 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	}
 
 	@Override
-	public SchemaTable[] getTableNames(String owner, String tablePattern, String[] includedSchema) throws DatabaseException{
+	public Pair[] getTableNames(String owner, String tablePattern, String[] includedSchema) throws DatabaseException{
 		System.out.println("Extracting table names which woud match ["+tablePattern+"]");
-		//		ModelDef model = new ModelDef();
-		//		model.setNamespace("information_schema");
-		//		model.setModelName("tables");
-		//		model.setTableName("tables");
-		//		String[] columns = {"table_name", "table_schema"};
-		//		model.setAttributes(columns);
-		//		Order[] orders = new Order[1];
-		//		orders[0] = new Order("table_name",true);
-		//		debugSql(true);
-		//		Query query = new Query(model);
-		//		query.addFilter(new Filter("table_schema", Filter.NOT_IN, new LiteralString("('pg_catalog', 'information_schema')")));
-		//		query.addOrder(orders);
-		//
-		//		DAO[] daoList = select(null, query);
-		//		debugSql(false);
-
 		SQL sql1 = SELECT("table_name", "table_schema")
 				.FROM("information_schema.tables")
 				.WHERE("table_schema").NOT_IN("pg_catalog", "information_schema")
@@ -340,12 +318,12 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 
 		DAO[] daoList =  select(sql1, null);
 
-		SchemaTable[] schema_tableNames = new SchemaTable[daoList.length];
+		Pair[] schema_tableNames = new Pair[daoList.length];
 		for(int i = 0; i < schema_tableNames.length; i++){
 			DAO dao = daoList[i];
 			String schema = (String) dao.get_Value("table_schema");
 			String tableName = (String) dao.get_Value("table_name");
-			schema_tableNames[i] = new SchemaTable(schema, tableName);
+			schema_tableNames[i] = new Pair(schema, tableName);
 		}
 		return schema_tableNames;	
 	}
@@ -644,134 +622,96 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		subclassModel.setModelName("pg_class");
 		String[] subclassColumn = {"relname"};
 		subclassModel.setAttributes(subclassColumn);
-		Query subclassQuery = new Query(subclassModel);
+		Query subclassQuery = new Query();
+		subclassQuery.setSelectModel(subclassModel);
 		Filter subclassFilter = new Filter("oid", Filter.EQUAL, new LiteralString(model.getModelName()+"."+"tableoid"));
 		subclassQuery.addFilter(subclassFilter);
 		return subclassQuery;
 	}
 
-	@Override
-	protected SQL buildDeclaredQuery(ModelMetaData meta, Map<String, DeclaredQuery> declaredQueries) {
-		List<Object> parameters = new ArrayList<Object>();
-		SQL_Postgres sql = new SQL_Postgres();
-		sql.WITH();
-		boolean doCommaDeclaredQuery = false;
-		Map<String, String[]> mentionedDeclaredColumns = new HashMap<String, String[]>();
-		for(Map.Entry<String, DeclaredQuery> entry : declaredQueries.entrySet()){
-			DeclaredQuery dq = entry.getValue();
-			SQL sql1 = buildDeclaredQuery(meta, dq, doCommaDeclaredQuery);
-			sql.FIELD(sql1);
-		}
-		return sql;
-	}
 
-	protected SQL buildDeclaredQuery(ModelMetaData meta, DeclaredQuery declaredQuery, boolean doCommaDeclaredQuery) {
-		SQL_Postgres sql = new SQL_Postgres();
-		if(doCommaDeclaredQuery){sql.comma();}
-		DeclaredQuery dq = declaredQuery;
-		if(dq.isRecursive()){
-			sql.RECURSIVE();
-		}
-		sql.keyword(""+dq.getDeclaredName());
-		String[] dqColumns = dq.getColumns();
-		boolean doComma = false;
-		if(dqColumns != null){
-			sql.keyword("(");
-			for(String col : dqColumns){
-				if(doComma){sql.comma();}else{doComma = true;}
-				sql.FIELD(col);
-			}
-			sql.keyword(")");
-		}
-		sql.AS();
-		boolean useCursor = false;
-		SQL sql1 = buildSQL(meta, dq.getQuery(), useCursor);
-		sql.FIELD(sql1);
-		return sql;
-	}
+//	@Override
+//	protected SQL buildWindowFunctions(ModelMetaData meta, List<WindowFunction> windowFunctions, boolean doComma) {
+//		SQL_Postgres sql = new SQL_Postgres();
+//		for(WindowFunction wf : windowFunctions){
+//			if(doComma) sql.comma(); else doComma = true;
+//			String[] partitions = wf.getPartitionColumns();
+//			Order[] windowOrder = wf.getOrder();
+//			Aggregate waggregate= wf.getAggregate();
+//			String[] function = waggregate.getFunctions();
+//			String column = waggregate.getColumn();
+//			StringBuffer aggrColumn = new StringBuffer();
+//			Class<? extends DAO> modelClass = waggregate.getModelClass();
+//			if(modelClass != null && waggregate.preppendModelName()){
+//				ModelDef aggModel = meta.getDefinition(modelClass);
+//				aggrColumn.append(aggModel.getModelName()+".");
+//			}
+//			aggrColumn.append(column);
+//			StringBuffer fnames_1 = new StringBuffer();
+//			StringBuffer fnames_2 = new StringBuffer();
+//			for(int i = function.length -1 ; i >= 0; i--){
+//				fnames_1.append(function[i]+"(");
+//				fnames_2.append(")");
+//			}
+//			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
+//			sql.OVER();
+//			if(partitions != null && partitions.length > 0 ){
+//				sql.PARTITION_BY();
+//				boolean doCommaPartition = false;
+//				for(String part : partitions){
+//					if(doCommaPartition)sql.comma();else doCommaPartition=true;
+//					sql.keyword(part);
+//				}
+//			}
+//			if(windowOrder != null && windowOrder.length > 0){
+//				sql.ORDER_BY();
+//				boolean doCommaWindowOrder = false;
+//				for(Order wor : windowOrder){
+//					if(wor != null){
+//						if(doCommaWindowOrder) sql.comma(); else doCommaWindowOrder = true;
+//						sql.FIELD(wor.getColumn());
+//						if(wor.isAscending()){
+//							sql.ASC();
+//						}else{
+//							sql.DESC();
+//						}
+//					}
+//				}
+//			}
+//			sql.AS(wf.getWindowAlias());
+//		}
+//		return sql;
+//	}
 
-	@Override
-	protected SQL buildWindowFunctions(ModelMetaData meta, List<WindowFunction> windowFunctions, boolean doComma) {
-		SQL_Postgres sql = new SQL_Postgres();
-		for(WindowFunction wf : windowFunctions){
-			if(doComma) sql.comma(); else doComma = true;
-			String[] partitions = wf.getPartitionColumns();
-			Order[] windowOrder = wf.getOrder();
-			Aggregate waggregate= wf.getAggregate();
-			String[] function = waggregate.getFunctions();
-			String column = waggregate.getColumn();
-			StringBuffer aggrColumn = new StringBuffer();
-			Class<? extends DAO> modelClass = waggregate.getModelClass();
-			if(modelClass != null && waggregate.preppendModelName()){
-				ModelDef aggModel = meta.getDefinition(modelClass);
-				aggrColumn.append(aggModel.getModelName()+".");
-			}
-			aggrColumn.append(column);
-			StringBuffer fnames_1 = new StringBuffer();
-			StringBuffer fnames_2 = new StringBuffer();
-			for(int i = function.length -1 ; i >= 0; i--){
-				fnames_1.append(function[i]+"(");
-				fnames_2.append(")");
-			}
-			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
-			sql.OVER();
-			if(partitions != null && partitions.length > 0 ){
-				sql.PARTITION_BY();
-				boolean doCommaPartition = false;
-				for(String part : partitions){
-					if(doCommaPartition)sql.comma();else doCommaPartition=true;
-					sql.keyword(part);
-				}
-			}
-			if(windowOrder != null && windowOrder.length > 0){
-				sql.ORDER_BY();
-				boolean doCommaWindowOrder = false;
-				for(Order wor : windowOrder){
-					if(wor != null){
-						if(doCommaWindowOrder) sql.comma(); else doCommaWindowOrder = true;
-						sql.FIELD(wor.getColumn());
-						if(wor.isAscending()){
-							sql.ASC();
-						}else{
-							sql.DESC();
-						}
-					}
-				}
-			}
-			sql.AS(wf.getWindowAlias());
-		}
-		return sql;
-	}
-
-	@Override
-	protected SQL buildAggregateQuery(ModelMetaData meta,
-			Aggregate[] aggregates, boolean doComma) {
-		//		StringBuffer sql = new StringBuffer();
-		SQL sql = new SQL();
-		List<String> mentionedColumns = new ArrayList<String>();
-		for(Aggregate agg : aggregates){
-			if(doComma) sql.comma(); else doComma = true;
-			String[] function = agg.getFunctions();
-			String column = agg.getColumn();
-			StringBuffer aggrColumn = new StringBuffer();
-			Class<? extends DAO> modelClass = agg.getModelClass();
-			if(modelClass != null && agg.preppendModelName()){
-				ModelDef aggModel = meta.getDefinition(modelClass);
-				aggrColumn.append(aggModel.getModelName()+".");
-			}
-			aggrColumn.append(column);
-			StringBuffer fnames_1 = new StringBuffer();
-			StringBuffer fnames_2 = new StringBuffer();
-			for(int i = function.length -1 ; i >= 0; i--){
-				fnames_1.append(function[i]+"(");
-				fnames_2.append(")");
-			}
-			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
-			sql.AS(agg.getAsColumn());
-			mentionedColumns.add(agg.getAsColumn());
-		}
-		return sql;
-	}
+//	@Override
+//	protected SQL buildAggregateQuery(ModelMetaData meta,
+//			Aggregate[] aggregates, boolean doComma) {
+//		//		StringBuffer sql = new StringBuffer();
+//		SQL sql = new SQL();
+//		List<String> mentionedColumns = new ArrayList<String>();
+//		for(Aggregate agg : aggregates){
+//			if(doComma) sql.comma(); else doComma = true;
+//			String[] function = agg.getFunctions();
+//			String column = agg.getColumn();
+//			StringBuffer aggrColumn = new StringBuffer();
+//			Class<? extends DAO> modelClass = agg.getModelClass();
+//			if(modelClass != null && agg.preppendModelName()){
+//				ModelDef aggModel = meta.getDefinition(modelClass);
+//				aggrColumn.append(aggModel.getModelName()+".");
+//			}
+//			aggrColumn.append(column);
+//			StringBuffer fnames_1 = new StringBuffer();
+//			StringBuffer fnames_2 = new StringBuffer();
+//			for(int i = function.length -1 ; i >= 0; i--){
+//				fnames_1.append(function[i]+"(");
+//				fnames_2.append(")");
+//			}
+//			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
+//			sql.AS(agg.getAsColumn());
+//			mentionedColumns.add(agg.getAsColumn());
+//		}
+//		return sql;
+//	}
 
 	@Override
 	public boolean prependTableName(){

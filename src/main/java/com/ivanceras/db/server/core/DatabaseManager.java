@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.server.core;
 
 import com.ivanceras.commons.conf.DBConfig;

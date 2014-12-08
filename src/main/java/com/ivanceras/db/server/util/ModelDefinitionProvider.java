@@ -7,7 +7,7 @@ import com.ivanceras.commons.strings.CStringUtils;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.IDatabaseDev;
 import com.ivanceras.db.api.ModelDef;
-import com.ivanceras.db.api.SchemaTable;
+import com.ivanceras.db.api.Pair;
 import com.ivanceras.db.shared.exception.DatabaseException;
 
 /**
@@ -34,12 +34,12 @@ public class ModelDefinitionProvider {
 	public ModelDef[] getTableDefinitions() throws DatabaseException {
 
 		System.out.println("Creating the overall list of ModelDefinitions....");
-		SchemaTable[] sch_tableNames = getTableNames();
+		Pair[] sch_tableNames = getTableNames();
 		List<ModelDef> modelList = new LinkedList<ModelDef>();
-		for(SchemaTable sch_table : sch_tableNames){
-			String table = sch_table.getTableName();
+		for(Pair sch_table : sch_tableNames){
+			String table = sch_table.getRight();
 			System.out.println("\tAdding "+table+"....");
-			String schema = sch_table.getSchema();
+			String schema = sch_table.getLeft();
 			ModelDef modelDef =  null;
 			modelDef =	db.getModelMetaData(schema, table);
 			modelDef.setModelName(CStringUtils.getModelName(table));
@@ -48,7 +48,7 @@ public class ModelDefinitionProvider {
 		return modelList.toArray(new ModelDef[modelList.size()]);
 	}
 
-	private SchemaTable[] getTableNames() throws DatabaseException{
+	private Pair[] getTableNames() throws DatabaseException{
 		return db.getTableNames(user, tablePattern, includeSchema);
 	}
 

@@ -3,6 +3,11 @@ package com.ivanceras.db.api;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.exception.DatabaseException;
 
+/**
+ * EntityManager can hook to listen to data changes
+ * @author lee
+ *
+ */
 public interface ContextProvider {
 
 	public static final String DELETE = "DELETE";

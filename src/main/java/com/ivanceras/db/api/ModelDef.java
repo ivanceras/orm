@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.api;
 
 import java.io.Serializable;
@@ -99,36 +96,6 @@ public class ModelDef implements Serializable{
 		setModelName(modelName);
 	}
 
-
-	public ModelDef copy(){
-		ModelDef modelClone = new ModelDef();
-		modelClone.namespace = namespace;
-		modelClone.modelName = modelName;
-		modelClone.tableName = tableName;
-		modelClone.attributes = nullOrClone(attributes);
-		modelClone.generatedAttribute = generatedAttribute;
-		modelClone.primaryAttributes = nullOrClone(primaryAttributes);
-		modelClone.uniqueAttributes = nullOrClone(uniqueAttributes);
-		modelClone.dataTypes = nullOrClone(dataTypes);
-		modelClone.hasOneLocalColumn = nullOrClone(hasOneLocalColumn); 
-		modelClone.hasOne = nullOrClone(hasOne);
-		modelClone.hasOneReferencedColumn =nullOrClone( hasOneReferencedColumn); 
-		modelClone.hasMany = nullOrClone(hasMany);
-		modelClone.hasManyReferencedColumn = nullOrClone(hasManyReferencedColumn); 
-		modelClone.hasManyLocalColumn = nullOrClone(hasManyLocalColumn);
-		modelClone.owners = nullOrClone(owners); 
-		modelClone.primaryOwner = primaryOwner; 
-		modelClone.caseSensitive = caseSensitive;
-		modelClone.polymorphic = polymorphic;
-		modelClone.directChildren = nullOrClone(directChildren);
-		modelClone.parentClass = parentClass;
-		modelClone.subClass = nullOrClone(subClass);
-		return modelClone;
-	}
-
-	private String[] nullOrClone(String[] str){
-		return str!=null?str:null;
-	}
 
 	public String getNamespace() {
 		return namespace;
@@ -332,29 +299,7 @@ public class ModelDef implements Serializable{
 
 	@Override
 	public String toString(){
-		StringBuffer sb = new StringBuffer();
-		sb.append("model "+modelName+"{");
-		sb.append("\n\tnamespace: "+namespace);
-		sb.append("\n\ttableName: "+tableName+"");
-		sb.append("\n\tdescription: "+description+"");
-		sb.append("\n\tAttributes: ["+(attributes != null ? Arrays.asList(attributes):null)+"]");
-		sb.append("\n\tdataTypes: "+(dataTypes!= null ? Arrays.asList(dataTypes):null));
-		sb.append("\n\tcomments: "+(attributeComments!= null ? Arrays.asList(attributeComments):null));
-		sb.append("\n\tgenerated: "+generatedAttribute);
-		sb.append("\n\tprimary: "+(primaryAttributes != null? Arrays.asList(primaryAttributes): null));
-		sb.append("\n\tuniques: "+(uniqueAttributes!= null ? Arrays.asList(uniqueAttributes): null));
-		sb.append("\n\thasOne: "+(hasOne != null ? Arrays.asList(hasOne): null));
-		sb.append("\n\thasOneLocalColumn: "+(hasOneLocalColumn!=null? Arrays.asList(hasOneLocalColumn):null));
-		sb.append("\n\thasOneReferencedColumn: "+(hasOneReferencedColumn!=null? Arrays.asList(hasOneReferencedColumn):null));
-		sb.append("\n\thasMany: "+(hasMany!=null?Arrays.asList(hasMany):null));
-		sb.append("\n\thasManyReferencedColumn: "+(hasManyReferencedColumn!=null?Arrays.asList(hasManyReferencedColumn):null));
-		sb.append("\n\thasManyLocalColumn: "+(hasManyLocalColumn!=null?Arrays.asList(hasManyLocalColumn):null));
-		sb.append("\n\towners: "+(owners!=null?Arrays.asList(owners):null));
-		sb.append("\n\tprimaryOwner: "+primaryOwner);
-		sb.append("\n\tdirectChildren: "+(directChildren!=null?Arrays.asList(directChildren):null));
-		sb.append("\n\tcaseSensitive: "+caseSensitive);
-		sb.append("\n}");
-		return sb.toString();
+		return toHashMap().toString();
 	}
 
 
@@ -620,84 +565,6 @@ public class ModelDef implements Serializable{
 			map.put("subClass", subClass);
 		}
 		return map;
-	}
-
-	public ModelDef fromHashMap(Map<String, Object> map){
-		namespace = (String)map.get("namespace");
-		modelName = (String)map.get("modelName");
-		tableName = (String)map.get("tableName");
-		description = (String)map.get("description");
-		attributes = (String[])map.get("attributes");
-		generatedAttribute = (String)map.get("generatedAttribute");
-		primaryAttributes = (String[])map.get("primaryAttributes");
-		uniqueAttributes = (String[])map.get("uniqueAttributes");
-		dataTypes = (String[])map.get("dataTypes");
-		attributeComments = (String[])map.get("attributeComments");
-		hasOneLocalColumn = (String[])map.get("hasOneLocalColumn");
-		hasOne = (String[])map.get("hasOne");
-		hasOneReferencedColumn = (String[])map.get("hasOneReferencedColumn");
-		hasMany= (String[])map.get("hasMany");
-		hasManyReferencedColumn= (String[])map.get("hasManyReferencedColumn");
-		hasManyLocalColumn = (String[])map.get("hasManyLocalColumn");
-		owners= (String[])map.get("owners");
-		primaryOwner = (String)map.get("primaryOwner");
-		caseSensitive= (Boolean)map.get("caseSensitive");
-		polymorphic= (Boolean)map.get("polymorphic");
-		directChildren= (String[])map.get("directChildren");
-		parentClass = (String)map.get("parentClass");
-		subClass= (String[])map.get("subClass");
-		
-		return this;
-	}
-	
-	public boolean modelChanged(ModelDef model){
-		if(model == null){
-			return true;
-		}
-		if(!namespace.equals(model.getNamespace())){
-			return true;
-		}
-		if(!modelName.equals(model.getModelName())){
-			return true;
-		}
-		if(!tableName.equals(model.getTableName())){
-			return true;
-		}
-		String[] m_attributes = model.getAttributes();
-		if(attributes.length != m_attributes.length){
-			return true;
-		}
-		for(String att : attributes){//if any of the columns is gone, that model is changed
-			if(!CStringUtils.inArray(m_attributes, att)){
-				return true;
-			}
-		}
-		String[] m_dataTypes = model.getDataTypes();
-		if(dataTypes.length != m_dataTypes.length){
-			return true;
-		}
-		for(String dt : dataTypes){//if any of the datatype is gone, that model is changed
-			if(!CStringUtils.inArray(m_dataTypes, dt)){
-				return true;
-			}
-		}
-		//check for the arrangement of the columns
-		for(int i = 0; i < attributes.length; i++){
-			if(!attributes[i].equals(m_attributes[i])){
-				return true;
-			}
-		}
-		//check for the arrangement of the datatypes
-		for(int i = 0; i < dataTypes.length; i++){
-			if(!dataTypes[i].equals(m_dataTypes[i])){
-				return true;
-			}
-		}
-		if(!generatedAttribute.equals(model.getGeneratedAttribute())){
-			return true;
-		}
-		
-		return false;
 	}
 
 

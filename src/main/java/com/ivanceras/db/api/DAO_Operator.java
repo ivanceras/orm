@@ -12,19 +12,18 @@ public class DAO_Operator {
 			return null;
 		}
 		copyProperties(instance, dao);
-		ColumnPair pair = dao.getRenamedColumns(modelName);//This is the name of the model to cast the dao to
+		Pair[] pairs = dao.getRenamedFields(modelName);//This is the name of the model to cast the dao to
 		
-		if(pair != null){
-			ColumnPair[] pairs = pair.getPairs();
-			for(ColumnPair p : pairs){
-				if(dao.getProperties().containsKey(p.getColumn2())){
-					String key = p.getColumn1();
-					Object value = dao.get_Value(p.getColumn2());
-					instance.set_Value(key, value);
+		if(pairs != null){
+			for(Pair pair : pairs){
+				if(dao.getProperties().containsKey(pair.getRight())){
+					String origColumn = pair.getLeft();
+					Object value = dao.get_Value(pair.getRight());
+					instance.set_Value(origColumn, value);
 				}
 			}
 		}
-		instance.setRenamedColumns(dao.getRenamedColumns());
+		instance.setRenamedFields(dao.getRenamedFields());
 		return instance;
 	}
 

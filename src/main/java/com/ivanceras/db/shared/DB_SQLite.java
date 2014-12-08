@@ -1,20 +1,16 @@
 package com.ivanceras.db.shared;
 
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
 
 import com.ivanceras.commons.conf.DBConfig;
-import com.ivanceras.db.api.Aggregate;
 import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.DB_Rdbms;
-import com.ivanceras.db.api.DeclaredQuery;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.IDatabaseDev;
 import com.ivanceras.db.api.ModelDef;
 import com.ivanceras.db.api.Query;
-import com.ivanceras.db.api.SchemaTable;
-import com.ivanceras.db.api.WindowFunction;
+import com.ivanceras.db.api.Pair;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
@@ -149,7 +145,7 @@ public abstract class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabase
 	}
 
 	@Override
-	public SchemaTable[] getTableNames(String schema, String tablePattern,
+	public Pair[] getTableNames(String schema, String tablePattern,
 			String[] includedSchema) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return null;
@@ -307,12 +303,6 @@ public abstract class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabase
 	}
 
 	@Override
-	protected String getDBElementName(ModelDef model, String schema) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	protected boolean supportExistChecking() {
 		// TODO Auto-generated method stub
 		return false;
@@ -344,27 +334,6 @@ public abstract class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabase
 
 	@Override
 	protected Query buildSubClassTableQuery(ModelDef model) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected SQL buildDeclaredQuery(ModelMetaData meta,
-			Map<String, DeclaredQuery> declaredQueries) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected SQL buildWindowFunctions(ModelMetaData meta,
-			List<WindowFunction> windowFunctions, boolean doComma) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected SQL buildAggregateQuery(ModelMetaData meta,
-			Aggregate[] aggregates, boolean doComma) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -403,7 +372,7 @@ public abstract class DB_SQLite extends DB_Rdbms implements IDatabase, IDatabase
 
 	@Override
 	public <T extends DAO> T[] select(SQL sql,
-			Map<String, ColumnPair> renamedColumns) throws DatabaseException {
+			Map<String, Pair[]> renamedColumns) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return null;
 	}

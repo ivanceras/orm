@@ -135,4 +135,10 @@ public class ModelMetaData{
 	public void setInstanceProvider(DAOFactory ip) {
 		this.instanceProvider = ip;
 	}
+	
+	@Override
+	public String toString(){
+		return namedModelDefList.keySet().toString();
+		
+	}
 }

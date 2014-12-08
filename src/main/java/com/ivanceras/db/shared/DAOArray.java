@@ -7,6 +7,11 @@ import java.util.Map.Entry;
 
 import com.ivanceras.db.shared.exception.DAOArrayException;
 
+/**
+ * This is useful for compressing the resulting DAO
+ * @author lee
+ *
+ */
 public class DAOArray {
 	
 	String modelName;

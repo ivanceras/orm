@@ -32,8 +32,6 @@ public interface EntityManager{
 
 	public int delete(Class<? extends DAO> daoClass, Filter... filters) throws DatabaseException;
 
-	public int delete(DAO dao) throws DatabaseException;
-
 	public boolean drop(Class<? extends DAO> daoClass) throws DatabaseException;
 
 	public boolean drop(Class<? extends DAO> daoClass, boolean forced) throws DatabaseException;
@@ -43,8 +41,6 @@ public interface EntityManager{
 	public int empty(Class<? extends DAO> daoClass) throws DatabaseException;
 
 	public int empty(Class<? extends DAO>daoClass, boolean forced) throws DatabaseException;
-
-	public boolean exist(DAO dao) throws DatabaseException;
 
 	public boolean existModel(ModelDef model) throws DatabaseException;
 
@@ -67,21 +63,15 @@ public interface EntityManager{
 
 	public ModelDef getDefinition(Class<? extends DAO> daoClass) throws DatabaseException;
 
-	public <T extends DAO> T getMatch(DAO dao, Boolean exactMatch)  throws DatabaseException;
-
 	public String getModelName(Class<? extends DAO> daoClass) throws DatabaseException;
 
 	public <T extends DAO> T getOne(Class<? extends T> daoClass, Filter... filters)  throws DatabaseException;
-
-	public <T extends DAO> T getOne(DAO dao) throws DatabaseException;
 
 	public <T extends DAO> T insert(DAO dao) throws DatabaseException;
 	
 	public <T extends DAO> T insert(DAO dao, boolean excludePrimaryKeys) throws DatabaseException;
 
 	public <T extends DAO> T insertNoChangeLog(DAO dao, ModelDef model) throws DatabaseException;
-
-	public <T extends DAO> T match(DAO dao) throws DatabaseException;
 
 	public void resetDB();
 
@@ -95,10 +85,8 @@ public interface EntityManager{
 
 	public DAO[]  execute(String sql, Object[] parameters) throws DatabaseException;
 
-	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns)
+	public <T extends DAO > T[] execute(SQL sql, Map<String, Pair[]> renamedColumns)
 			throws DatabaseException;
-
-//	void setContextProvider(ContextProvider context);
 
 	public boolean setForeignConstraint(ModelDef model) throws DatabaseException;
 

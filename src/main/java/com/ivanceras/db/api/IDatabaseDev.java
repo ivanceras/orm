@@ -24,7 +24,7 @@ public interface IDatabaseDev {
 	 * @throws DatabaseException
 	 */
 	public ModelDef getModelMetaData(String schema, String tableName) throws DatabaseException;
-	public SchemaTable[] getTableNames(String schema, String tablePattern, String[] includedSchema)
+	public Pair[] getTableNames(String schema, String tablePattern, String[] includedSchema)
 			throws DatabaseException;
 	
 	Map<String, String> getTableColumnComments(String tableName, String schema)

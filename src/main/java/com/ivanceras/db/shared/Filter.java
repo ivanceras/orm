@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.shared;
 
 import java.util.ArrayList;
@@ -31,12 +28,6 @@ public class Filter {
 	public String operator;
 	public Object value;
 	public Query query;
-
-//	public String columnWrapperLeft;
-//	public String columnWrapperRight;
-//
-//	public String valueWrapperLeft;
-//	public String valueWrapperRight;
 
 	public String literalValue;
 

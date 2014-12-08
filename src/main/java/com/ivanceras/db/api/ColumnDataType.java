@@ -1,6 +1,7 @@
 package com.ivanceras.db.api;
 
 public class ColumnDataType{
+	
 	private String[] columns = null;
 	private String[] dataTypes = null;
 	private String[] comments = null;

@@ -1,12 +1,18 @@
 package com.ivanceras.db.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
+import com.ivanceras.db.api.Join.JoinModifier;
+import com.ivanceras.db.api.Join.JoinType;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
@@ -14,7 +20,6 @@ import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.keyword.sql.SQL;
 
-import static com.ivanceras.keyword.sql.SQLStatics.*;
 /**
  * 
  * @author lee
@@ -22,8 +27,8 @@ import static com.ivanceras.keyword.sql.SQLStatics.*;
  */
 public class Query {
 
-	private List<ModelDef> involvedModels = new ArrayList<ModelDef>();
-	private List<JoinPair> joinPairs = new LinkedList<JoinPair>() ;
+	private Set<ModelDef> involvedModels = new HashSet<ModelDef>();
+	private List<Join> joins = new LinkedList<Join>();
 	private List<Order> orders = new LinkedList<Order>();
 	private List<Filter> filters = new LinkedList<Filter>();
 	private Integer page;
@@ -37,76 +42,42 @@ public class Query {
 	 */
 	private List<String> excludedColumns = new ArrayList<String>();
 	private Boolean keysOnly;
-	private List<Aggregate> aggregate = new ArrayList<Aggregate>();
 	private List<String> groupedColumns = new ArrayList<String>();
-	private ModelMetaData meta = null;
 	private EntityManager em = null;
 	private Map<String, Query> columnSubQuery = new HashMap<String, Query>();
 	private Query baseQuery = null;
 	private String queryString = null;
-	private List<CombinedQuery> combinedQuery = new ArrayList<CombinedQuery>();
 	private String baseQueryName;
-	private Map<String, DeclaredQuery> declaredQuery = new LinkedHashMap<String, DeclaredQuery>();
+	private Map<String, Query> declaredQuery = new LinkedHashMap<String, Query>();
 	private Map<String, SQL> declaredSQL = new LinkedHashMap<String, SQL>();
-	private List<WindowFunction> windowFunctions = new ArrayList<WindowFunction>();
-	private QueryAnalysis analyzer;
 	private String selectTable;
+	private ModelDef selectModel;
 
+	
+	public Query(){
+
+	}
+	
+	public Query(EntityManager em) throws DatabaseException{
+		this.em = em;
+	}
+	
 	public Query(EntityManager em, Class<? extends DAO> daoClass) throws DatabaseException{
 		this.em = em;
-		ModelDef model = em.getDefinition(daoClass);
-		meta = em.getDB().getModelMetaDataDefinition();
-		analyzer = new QueryAnalysis(this); 
-		involve(model);
+		involve(daoClass);
 	}
 	
-	public Query(EntityManager em, String selectTable) throws DatabaseException{
-		this.em = em;
-		analyzer = new QueryAnalysis(this); 
-		this.selectTable = selectTable;
-	}
-
-	public Query(ModelDef model){
-		analyzer = new QueryAnalysis(this); 
-		involve(model);
-	}
-
-	public Query(ModelMetaData meta, Class<? extends DAO> daoClass) throws DatabaseException{
-		this.meta = meta;
-		analyzer = new QueryAnalysis(this); 
-		ModelDef model = meta.getDefinition(daoClass);
-		involve(model);
-	}
 	
 
+	
 
-	public Query(String queryString){
-		this.setQueryString(queryString);
-		analyzer = new QueryAnalysis(this); 
-	}
-
-	public Query addAggregate(Aggregate... aggregate) {
-		if(aggregate != null && aggregate.length > 0){
-			this.enumerateColumns = false; // do not enumerate when there is an aggregate
-			String[] column1 = new String[aggregate.length];
-			String[] column2 = new String[aggregate.length];
-			for(int i = 0; i < aggregate.length; i++){
-				Aggregate aggr = aggregate[i];
-				column1[i] = aggr.getColumn();
-				column2[i] = aggr.getAsColumn();
-				this.aggregate.add(aggr);
-
-			}
-		}
-		return this;
-	}
 
 	public Query addColumnSubQuery(String column, Query subquery) {
 		columnSubQuery.put(column, subquery);
 		return this;
 	}
-	
-	
+
+
 	public String getSelectTable(){
 		return selectTable;
 	}
@@ -149,22 +120,6 @@ public class Query {
 		return this;
 	}
 
-	public Query addJoinPair(JoinPair... joinPairs) {
-		if(joinPairs != null && joinPairs.length > 0){
-			for(JoinPair j : joinPairs){
-				this.joinPairs.add(j);
-				ModelDef model1 = j.getModel1();
-				ModelDef model2 = j.getModel2();
-				if(model1 != null){
-					involve(model1);
-				}
-				if(model2 != null){
-					involve(model2);
-				}
-			}
-		}
-		return this;
-	}
 
 	public Query addOrder(Order... orders) {
 		if(orders != null && orders.length > 0){
@@ -175,11 +130,6 @@ public class Query {
 		return this;
 	}
 
-	public Query addWindowFunctions(WindowFunction windowFunctions) {
-		this.windowFunctions.add(windowFunctions);
-		return this;
-	}
-
 	public Query ascending(String... columns) {
 		for(String c : columns){
 			addOrder(new Order(c, Order.ASCENDING));
@@ -187,43 +137,7 @@ public class Query {
 		return this;
 	}
 
-	public Query combine(Query query, String combineType, boolean all){
-		String combineModifier = null;
-		if(all){
-			combineModifier = Combine.ALL;
-		}
-		combinedQuery.add(new CombinedQuery(query, combineType, combineModifier));
-		return this;
-	}
 
-	public Query copy(){
-
-		Query copy = new Query(getModel());
-		copy.involvedModels = involvedModels;
-		copy.joinPairs = joinPairs;
-		copy.orders = orders;
-		copy.filters = filters;
-		copy.page = page;
-		copy.itemsPerPage = itemsPerPage;
-		copy.selectAllColumns = selectAllColumns;
-		copy.enumerateColumns = enumerateColumns;
-		copy.distinct = distinct;
-		copy.distinctColumns = distinctColumns;
-		copy.keysOnly = keysOnly;
-		copy.aggregate = aggregate;
-		copy.groupedColumns = groupedColumns;
-		copy.meta = meta;
-		copy.em = em;
-		copy.columnSubQuery = columnSubQuery;
-		copy.baseQuery = baseQuery;
-		copy.queryString = queryString;
-		copy.combinedQuery = combinedQuery;
-		copy.baseQueryName = baseQueryName;
-		copy.declaredQuery = declaredQuery;
-		copy.windowFunctions = windowFunctions;
-
-		return copy;
-	}
 
 	/**
 	 * When there is a need to have an inner query, 
@@ -233,14 +147,12 @@ public class Query {
 	 * @param query
 	 * @param recursive
 	 */
-	public Query declare(String name, String[] columns, Query query, boolean recursive){
-		if(columns == null){//select all columns when no columns is specified
-			query.setSelectAllColumns();
-		}
-		declaredQuery.put(name, new DeclaredQuery(name, columns, query, recursive));
+	public Query declare(String name, Query query){
+		setSelectAllColumns();
+		declaredQuery.put(name, query);
 		return this;
 	}
-	
+
 	public Query declare(String name, SQL sql){
 		declaredSQL.put(name, sql);
 		return this;
@@ -267,10 +179,6 @@ public class Query {
 		return this;
 	}
 
-	public Aggregate[] getAggregate() {
-		return aggregate.toArray(new Aggregate[aggregate.size()]);
-	}
-
 	public Query getBaseQuery() {
 		return baseQuery;
 	}
@@ -283,19 +191,11 @@ public class Query {
 		return columnSubQuery;
 	}
 
-	public CombinedQuery[] getCombinedQuery(){
-		return combinedQuery.toArray(new CombinedQuery[combinedQuery.size()]);
-	}
-
-	public Map<String, DeclaredQuery> getDeclaredQueries(){
+	public Map<String, Query> getDeclaredQueries(){
 		if(declaredQuery.size() == 0){
 			return null;
 		}
 		return declaredQuery;
-	}
-
-	public DeclaredQuery getDeclaredQuery(String name){
-		return declaredQuery.get(name);
 	}
 
 	public Boolean getDistinct() {
@@ -336,26 +236,12 @@ public class Query {
 		return itemsPerPage;
 	}
 
-	public JoinPair[] getJoinPairs() {
-		if(joinPairs.size() == 0 ){
-			return null;
-		}
-		return joinPairs.toArray(new JoinPair[joinPairs.size()]);
-	}
-
 	public Boolean getKeysOnly() {
 		return keysOnly;
 	}
 
 	public Integer getLimit(){
 		return itemsPerPage;
-	}
-
-	public ModelDef getModel(){
-		if(involvedModels.size() > 0){
-			return involvedModels.get(0);
-		}
-		return null;
 	}
 
 	public Long getOffset(){
@@ -388,36 +274,11 @@ public class Query {
 		return queryString;
 	}
 
-	public String getRenamed(ModelDef model, String column){
-		return analyzer.getRenamed(model, column);
-	}
 
-	public Map<String, ColumnPair> getRenamedColumnPairs(){
-		return analyzer.getRenamedColumnPairs();
-	}
 
-	public Boolean getSelectAllColumns() {
-		return selectAllColumns;
-	}
-
-	public List<WindowFunction> getWindowFunctions() {
-		return windowFunctions;
-	}
-
-	private void involve(ModelDef model){
-		if(!involvedModels.contains(model)){
-			analyzer.determineConflictingColumns(model);
-			involvedModels.add(model);
-		}
-	}
 
 	public boolean isEnumerateColumns() {
 		return enumerateColumns;
-	}
-
-	public void rename(Class<? extends DAO> daoClass, String column, String asColumn){
-		ModelDef model = meta.getDefinition(daoClass);
-		analyzer.rename(model, column, asColumn);
 	}
 
 	public Query setBaseQuery(Query baseQuery, String baseQueryName) {
@@ -477,11 +338,6 @@ public class Query {
 		return this;
 	}
 
-	//	private void setMeta(ModelMetaData meta){
-	//		this.meta = meta;
-	//		analyzer = new QueryAnalysis(this); 
-	//	}
-
 	public Query setPage(Integer page) {
 		this.page = page;
 		return this;
@@ -502,17 +358,161 @@ public class Query {
 		return this;
 	}
 
-	public boolean hasConflictedColumn(String column) {
-		return analyzer.hasConflictedColumn(column);
-	}
 
 	public <T extends DAO> T[] execute() throws DatabaseException {
 		return em.retrieveRecords(this);
 	}
 
 	public Map<String, SQL> getDeclaredSQL() {
-		return this.declaredSQL;
+		if(declaredSQL.size() > 0){
+			return this.declaredSQL;
+		}else{
+			return null;
+		}
 	}
 
+	public void selectFromTable(String selectTable) {
+		this.selectTable = selectTable;
+	}
+
+	private Query join(Join join) throws DatabaseException{
+		this.joins.add(join);
+		involve(join.getDaoClass());
+		return this;
+	}
+
+
+	public Query innerJoin(Class<? extends DAO> daoClass, String onColumn1, String onColumn2) throws DatabaseException{
+		Join join = new Join(daoClass, onColumn1, onColumn2);
+		join.setType(JoinType.INNER);
+		join(join);
+		return this;
+	}
+	public Query leftJoin(Class<? extends DAO> daoClass, String onColumn1, String onColumn2) throws DatabaseException{
+		Join join = new Join(daoClass, onColumn1, onColumn2);
+		join.setModifier(JoinModifier.LEFT);
+		join(join);
+		return this;
+	}
+
+	public Query rightJoin(Class<? extends DAO> daoClass, String onColumn1, String onColumn2) throws DatabaseException{
+		Join join = new Join(daoClass, onColumn1, onColumn2);
+		join.setModifier(JoinModifier.RIGHT);
+		join(join);
+		return this;
+	}
+	public List<Join> getJoins(){
+		if(joins.size() > 0){
+			return this.joins;
+		}
+		else{
+			return null;
+		}
+	}
+
+	private Map<String, Pair[]> renamedColumnPairs = new HashMap<String, Pair[]>();
+	private boolean hasProcessedConflicts = false;;
+
+	public String getRenamed(String tableName, String column){
+		if(renamedColumnPairs.containsKey(tableName)){
+			Pair[] pairs = renamedColumnPairs.get(tableName);
+			if(pairs != null && pairs.length > 0){
+				for(Pair pair : pairs){
+					if(column != null && column.equals(pair.getLeft())){
+						return pair.getRight();
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	public Map<String, Pair[]> getRenamedFields(){
+		if(!hasProcessedConflicts ){
+			processConflicts();
+			hasProcessedConflicts = true;
+		}
+		return renamedColumnPairs;
+	}
+
+	private void involve(Class<? extends DAO> daoClass) throws DatabaseException{
+		if(em == null){
+			throw new DatabaseException("EntityManager should be supplied");
+		}
+		ModelDef model = em.getDefinition(daoClass);
+		involve(model);
+	}
+	
+	private void involve(ModelDef model){
+		involvedModels.add(model);
+	}
+
+	void processConflicts(){
+		System.err.println("Processing conflicts...");
+		ModelDef[] involvedModels = getInvolvedModels();
+		for(ModelDef inv : involvedModels){
+			recordConflicts(inv);
+		}
+	}
+
+	void recordConflicts(ModelDef model){
+		ModelDef[] involvedModels = getInvolvedModels();
+		for(ModelDef inv : involvedModels){
+			if(!inv.equals(model)){//skip comparing to itself
+				System.err.println("Now processing conflicts in "+model.getTableName());
+				String[] sameAttributes = inv.getSameAttributes(model);
+				//put each table to rename
+				if(sameAttributes != null && sameAttributes.length > 0){
+					String tableName = model.getTableName();
+					rename(tableName, sameAttributes);
+					System.err.println("There are the conflicts in "+tableName+" "+Arrays.asList(sameAttributes));
+				}
+			}
+		}
+	}
+
+	private void rename(String tableName, String[] sameAttributes) {
+		if(tableName != null && sameAttributes != null){
+			Pair[] existingPairs = renamedColumnPairs.get(tableName);
+			String[] intersection  = getIntersection(existingPairs, sameAttributes);
+			Pair[] pairs = new Pair[intersection.length];
+			for(int i = 0; i < intersection.length; i++){
+				String column = intersection[i];
+				String asColumn = tableName+"_"+column;
+				pairs[i] = new Pair(column, asColumn);
+			}
+			renamedColumnPairs.put(tableName, pairs);
+		}
+	}
+
+	private String[] getIntersection(Pair[] existingPairs,
+			String[] sameAttributes) {
+		Set<String> intersection = new TreeSet<String>();
+		if(existingPairs != null){
+			for(Pair exp : existingPairs){
+				String column1 = exp.getLeft();
+				intersection.add(column1);
+			}
+		}
+		if(sameAttributes != null ){
+			for(String sa : sameAttributes){
+				intersection.add(sa);
+			}
+		}
+		return intersection.toArray(new String[intersection.size()]);
+	}
+
+	public Boolean getSelectAllColumns() {
+		return selectAllColumns;
+	}
+
+	public ModelDef getSelectModel() {
+		return selectModel;
+	}
+
+	public void setSelectModel(ModelDef selectModel) {
+		this.selectModel = selectModel;
+	}
 
 }

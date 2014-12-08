@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.api;
 
 import java.util.ArrayList;
@@ -10,7 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.ivanceras.commons.strings.CStringUtils;
-import com.ivanceras.db.api.JoinPair.Join;
+import com.ivanceras.db.api.Join.JoinModifier;
+import com.ivanceras.db.api.Join.JoinType;
+//import com.ivanceras.db.api.JoinPair.Join;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
@@ -27,42 +26,40 @@ public abstract class DB_Rdbms{
 
 	public static final String subclasstable = "subclasstable";
 
-	private void addJoins(SQL sql, Query query){
-		JoinPair[] joinPairs = query.getJoinPairs();
-		if(joinPairs != null){
-			for(JoinPair pair : joinPairs){
-				String table2 = getTable(pair.getModel2());
-				if(pair.getJoinType().equals(Join.LEFT)){
-					sql.LEFT_JOIN(table2);
-				}
-				else if(pair.getJoinType().equals(Join.RIGHT)){
-					sql.RIGHT_JOIN(table2);
-				}
-				else if(pair.getJoinType().equals(Join.CROSS)){
-					sql.CROSS_JOIN(table2);
-				}
-				else if(pair.getJoinType().equals(Join.INNER)){
-					sql.INNER_JOIN(table2);
-				}
-				else if(pair.getJoinType().equals(Join.LEFT_OUTER)){
-					sql.LEFT_OUTER_JOIN(table2);
-				}
-				else if(pair.getJoinType().equals(Join.RIGHT_OUTER)){
-					sql.RIGHT_OUTER_JOIN(table2);
-				}
-				ColumnPair[] columnPairs = pair.getColumnPairs();
-				for(ColumnPair cpair : columnPairs){
-					String column1 = cpair.getColumn1();
-					String column2 = cpair.getColumn2();
-					sql.ON(column1, column2);
-				}
-			}
-		}
+//	private void addJoins(SQL sql, Query query){
+//		JoinPair[] joinPairs = query.getJoinPairs();
+//		if(joinPairs != null){
+//			for(JoinPair pair : joinPairs){
+//				String table2 = getTable(pair.getModel2());
+//				if(pair.getJoinType().equals(Join.LEFT)){
+//					sql.LEFT_JOIN(table2);
+//				}
+//				else if(pair.getJoinType().equals(Join.RIGHT)){
+//					sql.RIGHT_JOIN(table2);
+//				}
+//				else if(pair.getJoinType().equals(Join.CROSS)){
+//					sql.CROSS_JOIN(table2);
+//				}
+//				else if(pair.getJoinType().equals(Join.INNER)){
+//					sql.INNER_JOIN(table2);
+//				}
+//				else if(pair.getJoinType().equals(Join.LEFT_OUTER)){
+//					sql.LEFT_OUTER_JOIN(table2);
+//				}
+//				else if(pair.getJoinType().equals(Join.RIGHT_OUTER)){
+//					sql.RIGHT_OUTER_JOIN(table2);
+//				}
+//				ColumnPair[] columnPairs = pair.getColumnPairs();
+//				for(ColumnPair cpair : columnPairs){
+//					String column1 = cpair.getColumn1();
+//					String column2 = cpair.getColumn2();
+//					sql.ON(column1, column2);
+//				}
+//			}
+//		}
+//
+//	}
 
-	}
-
-
-	protected abstract SQL buildAggregateQuery(ModelMetaData meta, Aggregate[] aggregates, boolean doComma);
 
 	public SQL[] buildColumnCommentStatement(ModelDef model) throws DatabaseException{
 
@@ -157,8 +154,6 @@ public abstract class DB_Rdbms{
 		sql1.closeParen();
 		return sql1;
 	}
-
-	protected abstract SQL buildDeclaredQuery(ModelMetaData meta, Map<String, DeclaredQuery> declaredQueries);
 
 	protected SQL buildDeleteStatement(ModelMetaData meta, ModelDef model, Filter[] filters) throws DatabaseException{
 		String schema = model.getNamespace();
@@ -387,11 +382,11 @@ public abstract class DB_Rdbms{
 		return sql1;
 	}
 
-	public SQL buildSQL(ModelMetaData meta,Query query, boolean useCursor) {
+	public SQL buildSQL(ModelMetaData meta, Query query, boolean useCursor) {
 		SQL sql1 = new SQL();
 		List<String> mentionedColumns = new ArrayList<String>();
 
-		ModelDef model = query.getModel();
+//		ModelDef model = query.getModel();
 		Filter[] filters = query.getFilters();
 		Long offset = query.getOffset();
 		Integer limit = query.getLimit();
@@ -403,38 +398,35 @@ public abstract class DB_Rdbms{
 
 		String table = null;
 		String schema = null;
-		if(model != null){
-			String[] subClasses = model.getSubClass();
-			if(subClasses != null && subClasses.length > 0){
-				Query subClassQuery = buildSubClassTableQuery(model);
-				SQL sql2 = buildSQL(meta, subClassQuery, false);
-				sql1.FIELD(sql2).AS("subclasstable");
-			}
-	
-			schema = model.getNamespace();
-			schema = getDBElementName(model,schema);
-			table = getDBTableName(model);
-		}
+//		if(model != null){
+//			String[] subClasses = model.getSubClass();
+//			if(subClasses != null && subClasses.length > 0){
+//				Query subClassQuery = buildSubClassTableQuery(model);
+//				SQL sql2 = buildSQL(meta, subClassQuery, false);
+//				sql1.FIELD(sql2).AS("subclasstable");
+//			}
+//	
+//			schema = model.getNamespace();
+//			schema = getDBElementName(model,schema);
+//			table = getDBTableName(model);
+//		}
 		String selectTable = query.getSelectTable();
 		ModelDef[] involvedModels = query.getInvolvedModels();
 
 
 
-		Map<String, DeclaredQuery> declaredQueries = query.getDeclaredQueries();
-		SQL declaredEntry = null;
+		Map<String, Query> declaredQueries = query.getDeclaredQueries();
 		if(declaredQueries != null){
-			declaredEntry = buildDeclaredQuery(meta, declaredQueries);
-			sql1.FIELD(declaredEntry);
-		}
-		if(distinctColumns != null && distinctColumns.length > 0){//custom distinct columns
-			String[] distinctColumns1 = new String[distinctColumns.length];
-			for(int i = 0; i < distinctColumns.length; i++){
-				distinctColumns1[i] = getDBElementName(model,distinctColumns[i]);
-				if(table!=null && prependTableName()){
-					distinctColumns1[i] = table+"."+distinctColumns1[i];
-				}
+			sql1.WITH();
+			boolean doDeclaredComma = false;
+			for(Entry<String, Query> entry : declaredQueries.entrySet()){
+				if(doDeclaredComma){sql1.ln();sql1.comma();}else{doDeclaredComma=true;}
+				String name = entry.getKey();
+				Query dq = entry.getValue();
+				SQL dqsql = buildSQL(meta,dq, false);
+				sql1.FIELD(name);
+				sql1.AS(dqsql);
 			}
-			sql1.DISTINCT_ON(distinctColumns1);
 		}
 
 		Map<String, SQL> declaredSQL = query.getDeclaredSQL();
@@ -442,10 +434,10 @@ public abstract class DB_Rdbms{
 			sql1.WITH();
 			boolean doDeclaredComma = false;
 			for(Entry<String, SQL> entry : declaredSQL.entrySet()){
-				String name = entry.getKey();
 				if(doDeclaredComma){sql1.ln();sql1.comma();}else{doDeclaredComma=true;}
-				sql1.FIELD(name);
+				String name = entry.getKey();
 				SQL dsql = entry.getValue();
+				sql1.FIELD(name);
 				sql1.AS(dsql);
 			}
 		}
@@ -455,40 +447,50 @@ public abstract class DB_Rdbms{
 		if(selectAllColumns != null &&selectAllColumns){
 			sql1.SELECT("*");
 			query.setEnumerateColumns(false);
-			for(Entry<String, ColumnPair> entry: query.getRenamedColumnPairs().entrySet()){
-				String tableName = getDBTableName(entry.getKey());
-				String original = entry.getValue().getColumn1();
-				String newName = entry.getValue().getColumn2();
-				sql1.FIELD(tableName+"."+original).AS(newName);
+			Map<String, Pair[]> renames = query.getRenamedFields();
+			for(Entry<String, Pair[]> renamedSet : renames.entrySet()){
+				String renTable = renamedSet.getKey();
+				Pair[] renPairs = renamedSet.getValue();
+				if(renTable != null && renPairs != null && renPairs.length > 0){
+					for(Pair renPair : renPairs){
+						String origColumn = renPair.getLeft();
+						String asColumn = renPair.getRight();
+						sql1.FIELD(renTable+"."+origColumn)
+							.AS(asColumn);
+					}
+				}
 			}
 		}
 		else{
 			sql1.append(SELECT());
 		}
+		
+		if(distinctColumns != null && distinctColumns.length > 0){//custom distinct columns
+			String[] distinctColumns1 = new String[distinctColumns.length];
+			for(int i = 0; i < distinctColumns.length; i++){
+//				distinctColumns1[i] = getDBElementName(model,distinctColumns[i]);
+				if(table!=null && prependTableName()){
+					distinctColumns1[i] = table+"."+distinctColumns1[i];
+				}
+			}
+			sql1.DISTINCT_ON(distinctColumns1);
+		}
+		
 		if(query.isEnumerateColumns()){
 			for(ModelDef inv : involvedModels){
 				String[] columns = inv.getAttributes();
-				String invTable = getDBTableName(inv);
 				if(columns != null){
 					for(int i = 0; i < columns.length; i++){
 						if(!CStringUtils.inArray(excludedColumns, columns[i])){
 							String columnName = getDBElementName(inv,columns[i]);
-							if(invTable!=null ){
-								if(query.hasConflictedColumn(columns[i]) ||  prependTableName()){
-									columnName = invTable+"."+columnName;
-								}
-
-							}
-							String asColumn = query.getRenamed(inv, columns[i]);
 							sql1.FIELD(columnName);
-							if(asColumn != null){
-								sql1.AS(asColumn);
-							}
 						}
 					}
 				}
 			}
 		}
+		
+		
 		if(selectTable != null){
 			sql1.FROM(selectTable);
 		}
@@ -511,7 +513,52 @@ public abstract class DB_Rdbms{
 			mentionedColumns.add(baseQueryName);
 		}
 
-		addJoins(sql1, query);
+		List<Join> joins = query.getJoins();
+		if(joins != null){
+			for(Join join : joins){
+				JoinModifier modifier = join.getModifier();
+				if(JoinModifier.LEFT.equals(modifier)){
+					sql1.LEFT();
+				}
+				if(JoinModifier.RIGHT.equals(modifier)){
+					sql1.RIGHT();
+				}
+				if(JoinModifier.FULL.equals(modifier)){
+					sql1.FULL();
+				}
+				JoinType type = join.getType();
+				if(JoinType.CROSS.equals(type)){
+					sql1.CROSS();
+				}
+				if(JoinType.INNER.equals(type)){
+					sql1.INNER();
+				}
+				if(JoinType.OUTER.equals(type)){
+					sql1.OUTER();
+				}
+				if(JoinType.NATURAL.equals(type)){
+					sql1.NATURAL();
+				}
+				
+				
+				
+				ModelDef joinModel = meta.getDefinition(join.getDaoClass());
+				
+				String joinSchema = joinModel.getNamespace();
+				String joinTable = joinModel.getTableName();
+				
+				System.err.println("schema: "+joinSchema+" table: "+joinTable);
+				
+				if(joinSchema != null && useSchema()){
+					joinTable = joinSchema+"."+joinTable;
+				}
+				System.out.println(joinTable+" -->  "+joinModel);
+				sql1.JOIN().FIELD(joinTable);
+				sql1.ON(join.getOnColumn1(), join.getOnColumn2());
+				
+			}
+		}
+		
 		buildWhereClause(sql1, filters);
 
 		if(groupedColumns != null && groupedColumns.length > 0){
@@ -540,18 +587,6 @@ public abstract class DB_Rdbms{
 			}
 			if(offset != null ){
 				sql1.OFFSET(offset.intValue());
-			}
-		}
-		CombinedQuery[] combinedQueries = query.getCombinedQuery();
-		if(combinedQueries != null){
-			for(CombinedQuery cq : combinedQueries){
-				sql1.FIELD(cq.getCombineType());
-				String modifier = cq.getCombineModifier();
-				if(modifier != null){
-					sql1.FIELD(modifier);
-				}
-				SQL sql4 = buildSQL(meta, cq.getQuery(), useCursor);
-				sql1.FIELD(sql4);
 			}
 		}
 
@@ -653,7 +688,7 @@ public abstract class DB_Rdbms{
 		}
 	}
 
-	protected abstract SQL buildWindowFunctions(ModelMetaData meta, List<WindowFunction> windowFunctions, boolean doComma);
+//	protected abstract SQL buildWindowFunctions(ModelMetaData meta, List<WindowFunction> windowFunctions, boolean doComma);
 
 	protected abstract boolean  caseSensitive();
 
@@ -721,10 +756,22 @@ public abstract class DB_Rdbms{
 	 */
 	protected abstract String getAutoIncrementColumnConstraint();
 
-
-	protected String getDBElementName(ModelDef model, String element) {
-		return ApiUtils.getDBElementName(model, element);
+	/**
+	 * applies to tableSchema and elementName
+	 * @param model
+	 * @return
+	 */
+	public static String getDBElementName(ModelDef model, String elementName){
+		return getDBElementName(model, elementName, "\"");
 	}
+
+	public static String getDBElementName(ModelDef model, String elementName, String quote){
+		if(model!=null && model.isCaseSensitive()){
+			return quote+elementName+quote;
+		}
+		return SpecialCase.correctKeyWords(elementName, false, quote);
+	}
+	
 
 	protected String getDBTableName(ModelDef model) {
 		if(model==null) return null;

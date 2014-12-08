@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.shared.exception;
 
 public class PolymorphicTableException extends DatabaseException {

@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.shared;
 
 import java.util.ArrayList;
@@ -10,12 +7,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.ivanceras.db.api.ColumnPair;
+import com.ivanceras.db.api.Pair;
 
 public class DAO{
 
 	protected Map<String, Object> properties = new HashMap<String, Object>();
 	protected DAO[] daoList = null;
-	private Map<String, ColumnPair> renamedColumns;// the query used when this dao is retrieved, used for casting the DAO's when there are conflicting columns in the set of joined tables
+	private Map<String, Pair[]> renamedFields;// the query used when this dao is retrieved, used for casting the DAO's when there are conflicting columns in the set of joined tables
 	
 	private List<String> ignoreColumn = new ArrayList<String>(); //when inserting new records, other columns will be set by the database (i.e created, updated)
 	
@@ -80,14 +78,15 @@ public class DAO{
 		return properties;
 	}
 
-	public Map<String, ColumnPair> getRenamedColumns() {
-		return renamedColumns;
+	public Map<String, Pair[]> getRenamedFields() {
+		return renamedFields;
 	}
-
-	public ColumnPair getRenamedColumns(String modelName) {
-		if(renamedColumns != null){
-			if(renamedColumns.containsKey(modelName)){
-				return renamedColumns.get(modelName);
+	
+	public Pair[] getRenamedFields(String tableName) {
+		if(renamedFields != null){
+			Pair[] pairs = renamedFields.get(tableName);
+			if(pairs != null && pairs.length > 0){
+				return pairs;
 			}
 		}
 		return null;
@@ -122,8 +121,8 @@ public class DAO{
 	 * Renamed columns contains the list of columns that conflicts to other Tables mentioned in the whole query, each casting needs to get those list
 	 * @param renamedColumns
 	 */
-	public void setRenamedColumns(Map<String, ColumnPair> renamedColumns) {
-		this.renamedColumns = renamedColumns;
+	public void setRenamedFields(Map<String, Pair[]> renamedFields) {
+		this.renamedFields = renamedFields;
 	}
 
 	@Override

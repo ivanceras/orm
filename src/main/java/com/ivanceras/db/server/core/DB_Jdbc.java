@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.server.core;
 
 import java.io.FileInputStream;
@@ -32,6 +29,7 @@ import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.DB_Rdbms;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.ModelDef;
+import com.ivanceras.db.api.Pair;
 import com.ivanceras.db.api.Query;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
@@ -44,7 +42,6 @@ import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.keyword.sql.Breakdown;
 import com.ivanceras.keyword.sql.SQL;
 
-import static com.ivanceras.keyword.sql.SQLStatics.*;
 
 public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
@@ -331,7 +328,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		return resultSetToDAO(rs, null);
 	}
 
-	private DAO[] executeSelectAll(SQL sql, Map<String, ColumnPair> renamedColumns)
+	private DAO[] executeSelectAll(SQL sql, Map<String, Pair[]> renamedColumns)
 			throws DatabaseException {
 		Breakdown bk = sql.build();
 		ResultSet rs = executeSelectSQL(bk.getSql(), correctParametersType(bk.getParameters()));
@@ -667,7 +664,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 		return rolledback;
 	}
 
-	private DAO[] resultSetToDAO(ResultSet rs,  Map<String, ColumnPair> renamedColumns) throws DatabaseException{
+	private DAO[] resultSetToDAO(ResultSet rs,  Map<String, Pair[]> renamedColumns) throws DatabaseException{
 		try {
 			if (rs != null) {
 				ResultSetMetaData md = rs.getMetaData();
@@ -677,7 +674,7 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 				while (rs.next()) {
 					HashMap<String, Object> row = new HashMap<String, Object>();
 					DAO dao = new DAO(modelName);
-					dao.setRenamedColumns(renamedColumns);
+					dao.setRenamedFields(renamedColumns);
 					if (supportResultSetMetaData()) {
 						for (int i = 0; i < columnCount; i++) {
 							String columnName = md.getColumnName(i + 1).replace("\"", "").toLowerCase();
@@ -731,12 +728,12 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 	public DAO[] select(ModelMetaData meta, Query query)
 			throws DatabaseException {
 		SQL sql = buildSQL(meta, query, true);
-		return executeSelectAll(sql, query.getRenamedColumnPairs());
+		return executeSelectAll(sql, query.getRenamedFields());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends DAO> T[] select(SQL sql, Map<String, ColumnPair> renamedColumns)
+	public <T extends DAO> T[] select(SQL sql, Map<String, Pair[]> renamedColumns)
 			throws DatabaseException {
 		return (T[]) executeSelectAll(sql, renamedColumns);
 	}

@@ -1,6 +1,3 @@
-/*******************************************************************************
- * Copyright by CMIL
- ******************************************************************************/
 package com.ivanceras.db.api;
 
 import java.io.OutputStream;
@@ -13,7 +10,6 @@ import com.ivanceras.db.shared.Filter;
 import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.exception.DAOInstanceFactoryException;
 import com.ivanceras.db.shared.exception.DatabaseException;
-import com.ivanceras.db.shared.util.DAOUtils;
 import com.ivanceras.keyword.sql.SQL;
 
 import static com.ivanceras.keyword.sql.SQLStatics.*;
@@ -58,14 +54,6 @@ public class SynchronousEntityManager implements EntityManager{
 
 
 
-//	private Filter buildSoundexFilter(String column, String keyword){
-//		String columnWrapper = "soundex(substring("+column+" from 1 for "+keyword.length()+"))";
-//		Filter f = new Filter(columnWrapper, Filter.EQUAL, keyword);
-//		f.valueWrapperLeft = "soundex(";
-//		f.valueWrapperRight = ")";
-//		return f;
-//	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends DAO> T cast(Class<? extends DAO> daoClass, DAO dao) throws DatabaseException{
@@ -75,11 +63,12 @@ public class SynchronousEntityManager implements EntityManager{
 		if(daoClass == null){
 			return (T) dao; //no casting
 		}
-		String modelName = db.getModelMetaDataDefinition().getModelName(daoClass);
+		ModelDef model = getDefinition(daoClass);
+		String tableName = model.getTableName();
 		T instance = null;
 		try {
 			instance = db.getModelMetaDataDefinition().getInstanceProvider().getInstance(daoClass);//Not using reflection, reflection is not supported in GWT, might be used GWT client-side the future
-			return DAO_Operator.cast(instance, modelName, dao);
+			return DAO_Operator.cast(instance, tableName, dao);
 		} catch (DAOInstanceFactoryException e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -115,11 +104,13 @@ public class SynchronousEntityManager implements EntityManager{
 	@Override
 	public int count(Query query) throws DatabaseException {
 		ModelDef model = new ModelDef();
-		Query countQuery = new Query(model);
+		model.setAttributes(new String[]{"count(*)"});
+
+		Query countQuery = new Query(this);
+		countQuery.setSelectModel(model);
 		query.setItemsPerPage(null);//set to null when counting
 		query.setPage(null);//set to null when counting
 		countQuery.setBaseQuery(query, "t1");
-		model.setAttributes(new String[]{"count(*)"});
 		DAO[] daoList = db.select(db.getModelMetaDataDefinition(), countQuery);
 		if(daoList != null && daoList.length > 0){
 			return (int)getCount(daoList[0]);
@@ -146,12 +137,12 @@ public class SynchronousEntityManager implements EntityManager{
 		return deleteRecord(db.getModelMetaDataDefinition().getDefinition(daoClass), filters);
 	}
 
-	@Override
-	public int delete(DAO dao) throws DatabaseException {
-		//TODO: find the dependent records of this record and delete  it when forced is true
-		Filter[] filters = ApiUtils.getFilters(db.getModelMetaDataDefinition(), dao, db.prependTableName());
-		return deleteRecord(db.getModelMetaDataDefinition().getDefinition(dao.getModelName()), filters);
-	}
+//	@Override
+//	public int delete(DAO dao) throws DatabaseException {
+//		//TODO: find the dependent records of this record and delete  it when forced is true
+//		Filter[] filters = ApiUtils.getFilters(db.getModelMetaDataDefinition(), dao, db.prependTableName());
+//		return deleteRecord(db.getModelMetaDataDefinition().getDefinition(dao.getModelName()), filters);
+//	}
 
 	private int deleteRecord(ModelDef model, Filter... filters) throws DatabaseException{
 //		DAO[] affectedRecords = null;
@@ -191,18 +182,18 @@ public class SynchronousEntityManager implements EntityManager{
 		return db.empty(model, forced);
 	}
 
-	/**
-	 * Use this when checking the record exist in these table while using all the values as the filter
-	 * 
-	 */
-	public boolean exist(DAO dao) throws DatabaseException{
-		ModelDef model = db.getModelMetaDataDefinition().getDefinition((dao.getModelName()));
-		DAO exists = getOne(getDaoClass(dao.getModelName()), ApiUtils.getAllFilters(model,dao, db.prependTableName()));
-		if(exists != null){
-			return true;
-		}
-		return false;
-	}
+//	/**
+//	 * Use this when checking the record exist in these table while using all the values as the filter
+//	 * 
+//	 */
+//	public boolean exist(DAO dao) throws DatabaseException{
+//		ModelDef model = db.getModelMetaDataDefinition().getDefinition((dao.getModelName()));
+//		DAO exists = getOne(getDaoClass(dao.getModelName()), ApiUtils.getAllFilters(model,dao, db.prependTableName()));
+//		if(exists != null){
+//			return true;
+//		}
+//		return false;
+//	}
 
 	@Override
 	public boolean existModel(ModelDef model) throws DatabaseException {
@@ -241,19 +232,19 @@ public class SynchronousEntityManager implements EntityManager{
 
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass) throws DatabaseException{
-		return retrieveRecords(new Query(db.getModelMetaDataDefinition(), daoClass));
+		return retrieveRecords(new Query(this, daoClass));
 	}
 
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass, Boolean distinct) throws DatabaseException{
-		Query query = new Query(db.getModelMetaDataDefinition(), daoClass);
+		Query query = new Query(this, daoClass);
 		query.setDistinct(distinct);
 		return retrieveRecords(query);
 	}
 
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass, Filter... filters) throws DatabaseException{
-		Query query = new Query(db.getModelMetaDataDefinition(), daoClass);
+		Query query = new Query(this, daoClass);
 		query.addFilter(filters);
 		return retrieveRecords(query);
 	}
@@ -262,7 +253,7 @@ public class SynchronousEntityManager implements EntityManager{
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass, Order order,
 			Filter... filters) throws DatabaseException {
-		Query query = new Query(db.getModelMetaDataDefinition(), daoClass);
+		Query query = new Query(this, daoClass);
 		query.addFilter(filters);
 		query.addOrder(order);
 		return retrieveRecords(query);
@@ -297,32 +288,32 @@ public class SynchronousEntityManager implements EntityManager{
 		return db.getModelMetaDataDefinition().getDefinition(daoClass);
 	}
 
-	@Override
-	public <T extends DAO> T getMatch(DAO dao, Boolean exact)  throws DatabaseException{
-		Class<? extends DAO> daoClass = getDaoClass(dao.getModelName());
-		ModelDef modelDef = db.getModelMetaDataDefinition().getDefinition(daoClass);
-		Filter[] filters = null;
-		if(exact){
-			filters = ApiUtils.getFilters(db.getModelMetaDataDefinition(), dao, db.prependTableName());
-		}
-		else{
-			filters = ApiUtils.getFiltersForUnique(modelDef, dao);
-		}
-		if(filters == null){
-			return null;
-		}
-		Query query = new Query(modelDef);
-		query.addFilter(filters);
-		query.setLimit(1);
-
-
-		DAO[] daoList = retrieveRecords(query);
-		if(daoList != null && daoList.length > 0){
-			return cast(daoClass, daoList[0]);
-		}else{
-			return null;
-		}
-	}
+//	@Override
+//	public <T extends DAO> T getMatch(DAO dao, Boolean exact)  throws DatabaseException{
+//		Class<? extends DAO> daoClass = getDaoClass(dao.getModelName());
+//		ModelDef modelDef = db.getModelMetaDataDefinition().getDefinition(daoClass);
+//		Filter[] filters = null;
+//		if(exact){
+//			filters = ApiUtils.getFilters(db.getModelMetaDataDefinition(), dao, db.prependTableName());
+//		}
+//		else{
+//			filters = ApiUtils.getFiltersForUnique(modelDef, dao);
+//		}
+//		if(filters == null){
+//			return null;
+//		}
+//		Query query = new Query(modelDef);
+//		query.addFilter(filters);
+//		query.setLimit(1);
+//
+//
+//		DAO[] daoList = retrieveRecords(query);
+//		if(daoList != null && daoList.length > 0){
+//			return cast(daoClass, daoList[0]);
+//		}else{
+//			return null;
+//		}
+//	}
 
 	@Override
 	public String getModelName(Class<? extends DAO> daoClass) throws DatabaseException {
@@ -331,7 +322,7 @@ public class SynchronousEntityManager implements EntityManager{
 
 	@Override
 	public <T extends DAO> T getOne(Class<? extends T> daoClass, Filter... filters)  throws DatabaseException{
-		Query query = new Query(db.getModelMetaDataDefinition(), daoClass);
+		Query query = new Query(this, daoClass);
 		query.addFilter(filters);
 		query.setLimit(1);
 		DAO[] daoList = retrieveRecords(query);
@@ -346,12 +337,12 @@ public class SynchronousEntityManager implements EntityManager{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends DAO> T getOne(DAO dao) throws DatabaseException{
-		return (T) getOne(getDaoClass(dao.getModelName()),
-				ApiUtils.getFilters(db.getModelMetaDataDefinition(),dao, db.prependTableName()));
-	}
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public <T extends DAO> T getOne(DAO dao) throws DatabaseException{
+//		return (T) getOne(getDaoClass(dao.getModelName()),
+//				ApiUtils.getFilters(db.getModelMetaDataDefinition(),dao, db.prependTableName()));
+//	}
 
 	/**
 	 * The primary keys should have defaults on the database  to make this work
@@ -399,15 +390,15 @@ public class SynchronousEntityManager implements EntityManager{
 		}
 	}
 
-	/**
-	 * Use this when checking the record exist in these table while using all the values as the filter
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends DAO> T match(DAO dao) throws DatabaseException{
-		ModelDef model = db.getModelMetaDataDefinition().getDefinition((dao.getModelName()));
-		return (T) getOne(getDaoClass(dao.getModelName()), ApiUtils.getPrimaryAndUniqueFilters(model,dao, db.prependTableName()));
-	}
+//	/**
+//	 * Use this when checking the record exist in these table while using all the values as the filter
+//	 * 
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public <T extends DAO> T match(DAO dao) throws DatabaseException{
+//		ModelDef model = db.getModelMetaDataDefinition().getDefinition((dao.getModelName()));
+//		return (T) getOne(getDaoClass(dao.getModelName()), ApiUtils.getPrimaryAndUniqueFilters(model,dao, db.prependTableName()));
+//	}
 
 	@Override
 	public void resetDB(){
@@ -423,17 +414,17 @@ public class SynchronousEntityManager implements EntityManager{
 	@SuppressWarnings("unchecked")
 	public <T extends DAO> T[] retrieveRecords(Query query, boolean autoCast) throws DatabaseException {
 		DAO[] daoList = null;
-		SQL sql = db.buildSQL(db.getModelMetaDataDefinition(), query, false);
-		daoList = execute(sql, query.getRenamedColumnPairs());
-		db.correctDataTypes(daoList, query.getModel());
+		SQL sql = db.buildSQL(this.db.getModelMetaDataDefinition(), query, false);
+		daoList = execute(sql, query.getRenamedFields());
+		db.correctDataTypes(daoList, query.getSelectModel());
 		if(daoList != null){
 			for(DAO dao : daoList){
-				dao.setRenamedColumns(query.getRenamedColumnPairs());
+				dao.setRenamedFields(query.getRenamedFields());
 			}
 		}
 
 		if(autoCast){
-			ModelDef model = query.getModel();
+			ModelDef model = query.getSelectModel();
 			Class<? extends DAO> clazz = null;
 			if(model != null){
 				clazz = getDaoClass(model.getModelName());
@@ -475,8 +466,8 @@ public class SynchronousEntityManager implements EntityManager{
 	}
 	
 	@Override
-	public <T extends DAO > T[] execute(SQL sql, Map<String, ColumnPair> renamedColumns) throws DatabaseException {
-		return db.select(sql, renamedColumns);
+	public <T extends DAO > T[] execute(SQL sql, Map<String, Pair[]> renamedFields) throws DatabaseException {
+		return db.select(sql, renamedFields);
 	}
 
 //	@Override

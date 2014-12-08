@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+//TODO:cleanup this one
 public class ColumnPair{
 	
 	private String column1;
