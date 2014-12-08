@@ -46,7 +46,6 @@ public class Query {
 	private EntityManager em = null;
 	private Map<String, Query> columnSubQuery = new HashMap<String, Query>();
 	private Query baseQuery = null;
-	private String queryString = null;
 	private String baseQueryName;
 	private Map<String, Query> declaredQuery = new LinkedHashMap<String, Query>();
 	private Map<String, SQL> declaredSQL = new LinkedHashMap<String, SQL>();
@@ -83,7 +82,7 @@ public class Query {
 	}
 
 
-	public Query addFilter(Filter... filters) {
+	public Query filter(Filter... filters) {
 		if(filters != null){
 			for(Filter f : filters){
 				this.filters.add(f);
@@ -92,7 +91,7 @@ public class Query {
 		return this;
 	}
 
-	public Query addGroupedColumns(String modelName, String groupedColumn, String function) {
+	public Query groupBy(String modelName, String groupedColumn, String function) {
 		StringBuffer colC = new StringBuffer();
 		if(function != null){
 			colC.append(function+"(");
@@ -108,7 +107,7 @@ public class Query {
 		return this;
 	}
 
-	public Query addGroupedColumns(String modelName, String[] groupedColumns) {
+	public Query groupBy(String modelName, String[] groupedColumns) {
 		for(String col : groupedColumns){
 			StringBuffer colC = new StringBuffer();
 			if(modelName != null){
@@ -121,7 +120,7 @@ public class Query {
 	}
 
 
-	public Query addOrder(Order... orders) {
+	public Query order(Order... orders) {
 		if(orders != null && orders.length > 0){
 			for(Order o : orders){
 				this.orders.add(o);
@@ -132,7 +131,7 @@ public class Query {
 
 	public Query ascending(String... columns) {
 		for(String c : columns){
-			addOrder(new Order(c, Order.ASCENDING));
+			order(new Order(c, Order.ASCENDING));
 		}
 		return this;
 	}
@@ -148,7 +147,7 @@ public class Query {
 	 * @param recursive
 	 */
 	public Query declare(String name, Query query){
-		setSelectAllColumns();
+		selectAllColumns();
 		declaredQuery.put(name, query);
 		return this;
 	}
@@ -160,7 +159,7 @@ public class Query {
 
 	public Query descending(String... columns) {
 		for(String c : columns){
-			addOrder(new Order(c, Order.DESCENDING));
+			order(new Order(c, Order.DESCENDING));
 		}
 		return this;
 	}
@@ -270,12 +269,6 @@ public class Query {
 		return page;
 	}
 
-	public String getQueryString() {
-		return queryString;
-	}
-
-
-
 
 	public boolean isEnumerateColumns() {
 		return enumerateColumns;
@@ -291,19 +284,19 @@ public class Query {
 		this.baseQueryName = baseQueryName;
 	}
 
-	public Query setDistinct() {
+	public Query distinct() {
 		this.distinct = true;
 		return this;
 	}
 
 
-	public Query setDistinct(Boolean distinct) {
+	public Query distinct(Boolean distinct) {
 		this.distinct = distinct;
 		return this;
 	}
 
 
-	public Query setDistinctColumns(String... distinctColumns) {
+	public Query distinctColumns(String... distinctColumns) {
 		if(distinctColumns != null && distinctColumns.length > 0){
 			for(String col : distinctColumns){
 				this.distinctColumns.add(col);
@@ -313,47 +306,47 @@ public class Query {
 		return this;
 	}
 
-	public Query setEnumerateColumns(boolean enumerateColumns) {
+	public Query enumerateColumns(boolean enumerateColumns) {
 		this.enumerateColumns = enumerateColumns;
 		return this;
 	}
 
-	public Query setItemsPerPage(Integer itemsPerPage) {
+	public Query itemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
 		return this;
 	}
 
-	public Query setKeysOnly() {
+	public Query keysOnly() {
 		this.keysOnly = true;
 		return this;
 	}
 
-	public Query setKeysOnly(Boolean keysOnly) {
+	public Query keysOnly(Boolean keysOnly) {
 		this.keysOnly = keysOnly;
 		return this;
 	}
 
-	public Query setLimit(Integer limit){
+	public Query limit(Integer limit){
 		itemsPerPage = limit;
 		return this;
 	}
 
-	public Query setPage(Integer page) {
+	public Query page(Integer page) {
 		this.page = page;
 		return this;
 	}
 
-	public void setQueryString(String queryString) {
-		this.queryString = queryString;
-	}
+//	public void setQueryString(String queryString) {
+//		this.queryString = queryString;
+//	}
 
-	public Query setSelectAllColumns() {
+	public Query selectAllColumns() {
 		this.selectAllColumns = true;
 		this.enumerateColumns = false;
 		return this;
 	}
 
-	public Query setSelectAllColumns(Boolean selectAllColumns) {
+	public Query selectAllColumns(Boolean selectAllColumns) {
 		this.selectAllColumns = selectAllColumns;
 		return this;
 	}
@@ -511,7 +504,7 @@ public class Query {
 		return selectModel;
 	}
 
-	public void setSelectModel(ModelDef selectModel) {
+	public void selectModel(ModelDef selectModel) {
 		this.selectModel = selectModel;
 		involve(selectModel);
 	}

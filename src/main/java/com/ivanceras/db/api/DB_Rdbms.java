@@ -407,7 +407,7 @@ public abstract class DB_Rdbms{
 		Boolean selectAllColumns = query.getSelectAllColumns();
 		if(selectAllColumns != null &&selectAllColumns){
 			sql1.SELECT("*");
-			query.setEnumerateColumns(false);
+			query.enumerateColumns(false);
 			Map<String, Pair[]> renames = query.getRenamedFields();
 			for(Entry<String, Pair[]> renamedSet : renames.entrySet()){
 				String renTable = renamedSet.getKey();

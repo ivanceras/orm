@@ -107,9 +107,9 @@ public class SynchronousEntityManager implements EntityManager{
 		model.setAttributes(new String[]{"count(*)"});
 
 		Query countQuery = new Query(this);
-		countQuery.setSelectModel(model);
-		query.setItemsPerPage(null);//set to null when counting
-		query.setPage(null);//set to null when counting
+		countQuery.selectModel(model);
+		query.itemsPerPage(null);//set to null when counting
+		query.page(null);//set to null when counting
 		countQuery.setBaseQuery(query, "t1");
 		DAO[] daoList = db.select(db.getModelMetaDataDefinition(), countQuery);
 		if(daoList != null && daoList.length > 0){
@@ -238,14 +238,14 @@ public class SynchronousEntityManager implements EntityManager{
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass, Boolean distinct) throws DatabaseException{
 		Query query = new Query(this, daoClass);
-		query.setDistinct(distinct);
+		query.distinct(distinct);
 		return retrieveRecords(query);
 	}
 
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass, Filter... filters) throws DatabaseException{
 		Query query = new Query(this, daoClass);
-		query.addFilter(filters);
+		query.filter(filters);
 		return retrieveRecords(query);
 	}
 
@@ -254,8 +254,8 @@ public class SynchronousEntityManager implements EntityManager{
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass, Order order,
 			Filter... filters) throws DatabaseException {
 		Query query = new Query(this, daoClass);
-		query.addFilter(filters);
-		query.addOrder(order);
+		query.filter(filters);
+		query.order(order);
 		return retrieveRecords(query);
 	}
 
@@ -323,8 +323,8 @@ public class SynchronousEntityManager implements EntityManager{
 	@Override
 	public <T extends DAO> T getOne(Class<? extends T> daoClass, Filter... filters)  throws DatabaseException{
 		Query query = new Query(this, daoClass);
-		query.addFilter(filters);
-		query.setLimit(1);
+		query.filter(filters);
+		query.limit(1);
 		DAO[] daoList = retrieveRecords(query);
 
 		if(daoList != null && daoList.length > 0){
