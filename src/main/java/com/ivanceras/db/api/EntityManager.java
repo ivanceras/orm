@@ -24,7 +24,7 @@ public interface EntityManager{
 
 	public void commitTransaction() throws DatabaseException;
 
-	public int count(Query query) throws DatabaseException;
+	public long count(Query query) throws DatabaseException;
 
 	public boolean createModel(ModelDef model) throws DatabaseException;
 

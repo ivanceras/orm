@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.ivanceras.commons.conf.DBConfig;
 import com.ivanceras.db.api.ColumnDataType;
-import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.DB_Rdbms;
 import com.ivanceras.db.api.IDatabase;
 import com.ivanceras.db.api.ModelDef;

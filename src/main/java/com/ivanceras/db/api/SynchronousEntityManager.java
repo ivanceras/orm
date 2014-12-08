@@ -102,7 +102,7 @@ public class SynchronousEntityManager implements EntityManager{
 	}
 
 	@Override
-	public int count(Query query) throws DatabaseException {
+	public long count(Query query) throws DatabaseException {
 		ModelDef model = new ModelDef();
 		model.setAttributes(new String[]{"count(*)"});
 
@@ -113,7 +113,7 @@ public class SynchronousEntityManager implements EntityManager{
 		countQuery.setBaseQuery(query, "t1");
 		DAO[] daoList = db.select(db.getModelMetaDataDefinition(), countQuery);
 		if(daoList != null && daoList.length > 0){
-			return (int)getCount(daoList[0]);
+			return getCount(daoList[0]);
 		}
 		return -1;
 

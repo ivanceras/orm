@@ -19,6 +19,11 @@ import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.datatype.DataTypeJava;
 import com.ivanceras.db.shared.util.SpecialCase;
 
+/**
+ * TODO: Needs to use the local column as the property name of the refered object instead of lowercase of the refered object
+ * @author lee
+ *
+ */
 public class BeanGenerator {
 
 

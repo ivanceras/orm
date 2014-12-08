@@ -26,41 +26,6 @@ public abstract class DB_Rdbms{
 
 	public static final String subclasstable = "subclasstable";
 
-//	private void addJoins(SQL sql, Query query){
-//		JoinPair[] joinPairs = query.getJoinPairs();
-//		if(joinPairs != null){
-//			for(JoinPair pair : joinPairs){
-//				String table2 = getTable(pair.getModel2());
-//				if(pair.getJoinType().equals(Join.LEFT)){
-//					sql.LEFT_JOIN(table2);
-//				}
-//				else if(pair.getJoinType().equals(Join.RIGHT)){
-//					sql.RIGHT_JOIN(table2);
-//				}
-//				else if(pair.getJoinType().equals(Join.CROSS)){
-//					sql.CROSS_JOIN(table2);
-//				}
-//				else if(pair.getJoinType().equals(Join.INNER)){
-//					sql.INNER_JOIN(table2);
-//				}
-//				else if(pair.getJoinType().equals(Join.LEFT_OUTER)){
-//					sql.LEFT_OUTER_JOIN(table2);
-//				}
-//				else if(pair.getJoinType().equals(Join.RIGHT_OUTER)){
-//					sql.RIGHT_OUTER_JOIN(table2);
-//				}
-//				ColumnPair[] columnPairs = pair.getColumnPairs();
-//				for(ColumnPair cpair : columnPairs){
-//					String column1 = cpair.getColumn1();
-//					String column2 = cpair.getColumn2();
-//					sql.ON(column1, column2);
-//				}
-//			}
-//		}
-//
-//	}
-
-
 	public SQL[] buildColumnCommentStatement(ModelDef model) throws DatabaseException{
 
 		String schema = model.getNamespace();
@@ -386,7 +351,6 @@ public abstract class DB_Rdbms{
 		SQL sql1 = new SQL();
 		List<String> mentionedColumns = new ArrayList<String>();
 
-//		ModelDef model = query.getModel();
 		Filter[] filters = query.getFilters();
 		Long offset = query.getOffset();
 		Integer limit = query.getLimit();
@@ -397,7 +361,6 @@ public abstract class DB_Rdbms{
 		String[] groupedColumns = query.getGroupedColumns();
 
 		String table = null;
-		String schema = null;
 //		if(model != null){
 //			String[] subClasses = model.getSubClass();
 //			if(subClasses != null && subClasses.length > 0){
@@ -418,12 +381,11 @@ public abstract class DB_Rdbms{
 		Map<String, Query> declaredQueries = query.getDeclaredQueries();
 		if(declaredQueries != null){
 			sql1.WITH();
-			boolean doDeclaredComma = false;
 			for(Entry<String, Query> entry : declaredQueries.entrySet()){
-				if(doDeclaredComma){sql1.ln();sql1.comma();}else{doDeclaredComma=true;}
 				String name = entry.getKey();
 				Query dq = entry.getValue();
 				SQL dqsql = buildSQL(meta,dq, false);
+				sql1.ln();
 				sql1.FIELD(name);
 				sql1.AS(dqsql);
 			}
@@ -432,11 +394,10 @@ public abstract class DB_Rdbms{
 		Map<String, SQL> declaredSQL = query.getDeclaredSQL();
 		if(declaredSQL != null){
 			sql1.WITH();
-			boolean doDeclaredComma = false;
 			for(Entry<String, SQL> entry : declaredSQL.entrySet()){
-				if(doDeclaredComma){sql1.ln();sql1.comma();}else{doDeclaredComma=true;}
 				String name = entry.getKey();
 				SQL dsql = entry.getValue();
+				sql1.ln();
 				sql1.FIELD(name);
 				sql1.AS(dsql);
 			}
@@ -452,6 +413,7 @@ public abstract class DB_Rdbms{
 				String renTable = renamedSet.getKey();
 				Pair[] renPairs = renamedSet.getValue();
 				if(renTable != null && renPairs != null && renPairs.length > 0){
+					sql1.ln();
 					for(Pair renPair : renPairs){
 						String origColumn = renPair.getLeft();
 						String asColumn = renPair.getRight();
@@ -468,7 +430,6 @@ public abstract class DB_Rdbms{
 		if(distinctColumns != null && distinctColumns.length > 0){//custom distinct columns
 			String[] distinctColumns1 = new String[distinctColumns.length];
 			for(int i = 0; i < distinctColumns.length; i++){
-//				distinctColumns1[i] = getDBElementName(model,distinctColumns[i]);
 				if(table!=null && prependTableName()){
 					distinctColumns1[i] = table+"."+distinctColumns1[i];
 				}
@@ -493,18 +454,6 @@ public abstract class DB_Rdbms{
 		
 		if(selectTable != null){
 			sql1.FROM(selectTable);
-		}
-		else{
-			String fromTable = null;
-			if(table != null){
-				fromTable = table;
-			}
-			if(schema != null && useSchema()){
-				fromTable = schema+"."+fromTable;
-			}
-			if(fromTable != null){
-				sql1.FROM(fromTable);
-			}
 		}
 		if(query.getBaseQuery() != null){
 			String baseQueryName = query.getBaseQueryName();

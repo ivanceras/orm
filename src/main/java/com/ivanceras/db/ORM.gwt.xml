@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='orm'>
-	<inherits name='com.ivanceras.commons.Commons'/>
-	<inherits name='com.ivanceras.fluent.FluentSQL'/>
+	<inherits name='com.ivanceras.commons.Commons' />
+	<inherits name='com.ivanceras.keyword.KeywordSQL' />
 	<source path='shared' />
 	<source path='api' />
 	<source path='model' />

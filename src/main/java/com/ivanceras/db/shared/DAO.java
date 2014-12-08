@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
-import com.ivanceras.db.api.ColumnPair;
 import com.ivanceras.db.api.Pair;
 
 public class DAO{
 
-	protected Map<String, Object> properties = new HashMap<String, Object>();
+	protected Map<String, Object> properties = new TreeMap<String, Object>();
 	protected DAO[] daoList = null;
 	private Map<String, Pair[]> renamedFields;// the query used when this dao is retrieved, used for casting the DAO's when there are conflicting columns in the set of joined tables
 	

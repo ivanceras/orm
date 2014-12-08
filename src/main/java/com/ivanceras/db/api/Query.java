@@ -513,6 +513,7 @@ public class Query {
 
 	public void setSelectModel(ModelDef selectModel) {
 		this.selectModel = selectModel;
+		involve(selectModel);
 	}
 
 }
