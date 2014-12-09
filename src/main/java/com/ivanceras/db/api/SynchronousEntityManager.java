@@ -107,7 +107,7 @@ public class SynchronousEntityManager implements EntityManager{
 		model.setAttributes(new String[]{"count(*)"});
 
 		Query countQuery = new Query(this);
-		countQuery.selectModel(model);
+		countQuery.selectFromModel(model);
 		query.itemsPerPage(null);//set to null when counting
 		query.page(null);//set to null when counting
 		countQuery.setBaseQuery(query, "t1");

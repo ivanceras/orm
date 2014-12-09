@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.ivanceras.commons.types.FieldTypes;
 import com.ivanceras.db.api.Pair;
 
 public class DAO{
@@ -14,11 +15,11 @@ public class DAO{
 	protected Map<String, Object> properties = new TreeMap<String, Object>();
 	protected DAO[] daoList = null;
 	private Map<String, Pair[]> renamedFields;// the query used when this dao is retrieved, used for casting the DAO's when there are conflicting columns in the set of joined tables
-	
+
 	private List<String> ignoreColumn = new ArrayList<String>(); //when inserting new records, other columns will be set by the database (i.e created, updated)
-	
+
 	private String[] defaultColumnValues; //when updating column, some colums will be automatically set by the database (i.e updated)
-	
+
 	private String modelName;
 
 
@@ -81,7 +82,7 @@ public class DAO{
 	public Map<String, Pair[]> getRenamedFields() {
 		return renamedFields;
 	}
-	
+
 	public Pair[] getRenamedFields(String tableName) {
 		if(renamedFields != null){
 			Pair[] pairs = renamedFields.get(tableName);
@@ -108,7 +109,7 @@ public class DAO{
 			this.ignoreColumn.add(igc);
 		}
 	}
-	
+
 	public void clear_IgnoredColumns(){
 		this.ignoreColumn.clear();
 	}
@@ -125,9 +126,26 @@ public class DAO{
 		this.renamedFields = renamedFields;
 	}
 
+	/**
+	 * Do not use properties.toString() to avoid recursive calls of circular referenced DAO
+	 */
 	@Override
 	public String toString(){
-		return modelName+"->"+properties.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		boolean doComma = false;
+		if(properties != null){
+			for(Entry<String, Object> entry : properties.entrySet()){
+				String key = entry.getKey();
+				Object value = entry.getValue();
+				if(value != null && FieldTypes.isSimple(value.getClass())){
+					if(doComma){sb.append(", ");}else{doComma=true;}
+					sb.append(key+"="+value);
+				}
+			}
+		}
+		sb.append("}");
+		return sb.toString();
 	}
-	
+
 }

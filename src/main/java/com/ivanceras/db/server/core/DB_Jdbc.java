@@ -679,9 +679,6 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 							String columnName = md.getColumnName(i + 1).replace("\"", "").toLowerCase();
 							Object dbRecord = rs.getObject(i + 1);
 							Object record = getEquivalentJavaObject(dbRecord);
-							//							if(record != null && dbRecord!=null){
-							//								System.out.println("No conversion needed for: "+columnName+" = "+ record +" from "+dbRecord.getClass()+" to "+record.getClass());
-							//							}
 							row.put(columnName, record);
 						}
 					}

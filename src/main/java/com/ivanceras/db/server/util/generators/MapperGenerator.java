@@ -23,6 +23,7 @@ import com.ivanceras.db.shared.util.SpecialCase;
 //TODO: generate mapper .toMap() to convert the value back to HashMap
 //this is for conversion to json back and fort
 //TODO: need to have seperate useCamelCase for Classes classUseCamelCase and fieldsUseCamelCase
+//TODO: Must be able to intelligently omit mapping when there is cycling redundancy mapping, this will be determined by using Model Importance and heirarchy
 
 
 public class MapperGenerator {

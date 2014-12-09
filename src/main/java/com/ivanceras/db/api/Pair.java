@@ -23,5 +23,10 @@ public class Pair {
 	public String getRight(){
 		return right;
 	}
+	
+	@Override
+	public String toString(){
+		return left+" : "+right;
+	}
 
 }

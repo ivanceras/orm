@@ -623,7 +623,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		String[] subclassColumn = {"relname"};
 		subclassModel.setAttributes(subclassColumn);
 		Query subclassQuery = new Query();
-		subclassQuery.selectModel(subclassModel);
+		subclassQuery.selectFromModel(subclassModel);
 		Filter subclassFilter = new Filter("oid", Filter.EQUAL, new LiteralString(model.getModelName()+"."+"tableoid"));
 		subclassQuery.filter(subclassFilter);
 		return subclassQuery;

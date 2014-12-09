@@ -442,7 +442,6 @@ public class Query {
 	}
 
 	void processConflicts(){
-		System.err.println("Processing conflicts...");
 		ModelDef[] involvedModels = getInvolvedModels();
 		for(ModelDef inv : involvedModels){
 			recordConflicts(inv);
@@ -453,13 +452,10 @@ public class Query {
 		ModelDef[] involvedModels = getInvolvedModels();
 		for(ModelDef inv : involvedModels){
 			if(!inv.equals(model)){//skip comparing to itself
-				System.err.println("Now processing conflicts in "+model.getTableName());
 				String[] sameAttributes = inv.getSameAttributes(model);
-				//put each table to rename
 				if(sameAttributes != null && sameAttributes.length > 0){
 					String tableName = model.getTableName();
 					rename(tableName, sameAttributes);
-					System.err.println("There are the conflicts in "+tableName+" "+Arrays.asList(sameAttributes));
 				}
 			}
 		}
@@ -504,9 +500,14 @@ public class Query {
 		return selectModel;
 	}
 
-	public void selectModel(ModelDef selectModel) {
+	public void selectFromModel(ModelDef selectModel) {
 		this.selectModel = selectModel;
 		involve(selectModel);
+	}
+
+	public void selectFromTable(Class<? extends DAO> daoClass) throws DatabaseException {
+		ModelDef model = em.getDefinition(daoClass);
+		selectFromModel(model);
 	}
 
 }

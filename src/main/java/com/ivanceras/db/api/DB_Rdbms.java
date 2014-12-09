@@ -319,7 +319,6 @@ public abstract class DB_Rdbms{
 		if(ignoredColumns == null){
 			return null;
 		}else{
-			System.out.println("ignored columns: "+Arrays.asList(ignoredColumns));
 			String[] curated = new String[ignoredColumns.length];
 			for(int i = 0; i < ignoredColumns.length; i++){
 				if(ignoredColumns[i] != null){
@@ -330,7 +329,6 @@ public abstract class DB_Rdbms{
 					}
 				}
 			}
-			System.out.println("curated: "+Arrays.asList(curated));
 			return curated;
 		}
 	}
@@ -374,6 +372,12 @@ public abstract class DB_Rdbms{
 //			table = getDBTableName(model);
 //		}
 		String selectTable = query.getSelectTable();
+		if(selectTable == null){
+			ModelDef selectModel = query.getSelectModel();
+			if(selectModel != null){
+				selectTable = selectModel.getTableName();
+			}
+		}
 		ModelDef[] involvedModels = query.getInvolvedModels();
 
 
@@ -385,9 +389,9 @@ public abstract class DB_Rdbms{
 				String name = entry.getKey();
 				Query dq = entry.getValue();
 				SQL dqsql = buildSQL(meta,dq, false);
-				sql1.ln();
 				sql1.FIELD(name);
-				sql1.AS(dqsql);
+				sql1.AS(dqsql)
+				.ln();
 			}
 		}
 
@@ -397,9 +401,9 @@ public abstract class DB_Rdbms{
 			for(Entry<String, SQL> entry : declaredSQL.entrySet()){
 				String name = entry.getKey();
 				SQL dsql = entry.getValue();
-				sql1.ln();
 				sql1.FIELD(name);
-				sql1.AS(dsql);
+				sql1.AS(dsql)
+				.ln();
 			}
 		}
 		
@@ -436,15 +440,26 @@ public abstract class DB_Rdbms{
 			}
 			sql1.DISTINCT_ON(distinctColumns1);
 		}
-		
+		//TODO: refined the logic here similar to select all columns
 		if(query.isEnumerateColumns()){
 			for(ModelDef inv : involvedModels){
 				String[] columns = inv.getAttributes();
 				if(columns != null){
+					Map<String, Pair[]> renamedFields = query.getRenamedFields();
+					System.err.println("renamed fields: "+renamedFields);
 					for(int i = 0; i < columns.length; i++){
 						if(!CStringUtils.inArray(excludedColumns, columns[i])){
 							String columnName = getDBElementName(inv,columns[i]);
+							String tableName = inv.getTableName();
+							if(tableName != null && prependTableName()){
+								columnName = tableName+"."+columnName;
+							}
 							sql1.FIELD(columnName);
+							String asColumn = query.getRenamed(inv.getTableName(), columns[i]);
+							System.err.println("AS column: "+asColumn);
+							if(asColumn != null){
+								sql1.AS(asColumn);
+							}
 						}
 					}
 				}
@@ -466,6 +481,7 @@ public abstract class DB_Rdbms{
 		if(joins != null){
 			for(Join join : joins){
 				JoinModifier modifier = join.getModifier();
+				sql1.ln();
 				if(JoinModifier.LEFT.equals(modifier)){
 					sql1.LEFT();
 				}
@@ -496,12 +512,9 @@ public abstract class DB_Rdbms{
 				String joinSchema = joinModel.getNamespace();
 				String joinTable = joinModel.getTableName();
 				
-				System.err.println("schema: "+joinSchema+" table: "+joinTable);
-				
 				if(joinSchema != null && useSchema()){
 					joinTable = joinSchema+"."+joinTable;
 				}
-				System.out.println(joinTable+" -->  "+joinModel);
 				sql1.JOIN().FIELD(joinTable);
 				sql1.ON(join.getOnColumn1(), join.getOnColumn2());
 				
@@ -626,7 +639,7 @@ public abstract class DB_Rdbms{
 	private void buildWhereClause(SQL sql1,
 			Filter[] filters) {
 		if(filters != null){
-			sql1.WHERE();
+			sql1.ln().WHERE();
 			boolean doAnd = false;
 			for(Filter filter: filters){
 				if(filter != null){
@@ -660,7 +673,7 @@ public abstract class DB_Rdbms{
 					}
 					String con = filter.getConnector();// OR ,AND
 					if(con!=null){
-						sql1.keyword(con);
+						sql1.ln().keyword(con);
 					}
 					if(filter.attribute != null){
 						sql1.FIELD(filter.attribute);
