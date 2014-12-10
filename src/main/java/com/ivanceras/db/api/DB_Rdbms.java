@@ -13,7 +13,10 @@ import com.ivanceras.db.api.Join.JoinType;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
+import com.ivanceras.db.shared.Filter.Connector;
+import com.ivanceras.db.shared.Filter.Equality;
 import com.ivanceras.db.shared.Order;
+import com.ivanceras.db.shared.Order.Direction;
 import com.ivanceras.db.shared.datatype.DataTypeDB;
 import com.ivanceras.db.shared.exception.DataTypeException;
 import com.ivanceras.db.shared.exception.DatabaseException;
@@ -516,7 +519,13 @@ public abstract class DB_Rdbms{
 					joinTable = joinSchema+"."+joinTable;
 				}
 				sql1.JOIN().FIELD(joinTable);
-				sql1.ON(join.getOnColumn1(), join.getOnColumn2());
+				String[] column1List = join.getOnColumn1();
+				String[] column2List = join.getOnColumn2();
+				for(int i = 0; i < column1List.length; i++){
+					String column1 = column1List[i];
+					String column2 = column2List[i];
+					sql1.ON(column1, column2);
+				}
 				
 			}
 		}
@@ -534,8 +543,8 @@ public abstract class DB_Rdbms{
 						sql1.ORDER_BY();
 						doOrderBy = false;
 					}
-					if(orders[i].isAscending()){
-						sql1.FIELD(orders[i].getColumn());
+					if(Direction.ASC.equals(orders[i].getDirection())){
+						sql1.FIELD(orders[i].getColumn()).ASC();
 					}
 					else{
 						sql1.FIELD(orders[i].getColumn()).DESC();
@@ -671,15 +680,60 @@ public abstract class DB_Rdbms{
 					if(childFilters != null && childFilters.length > 0){
 						sql1.openParen();
 					}
-					String con = filter.getConnector();// OR ,AND
+					Connector con = filter.getConnector();// OR ,AND
 					if(con!=null){
-						sql1.ln().keyword(con);
+						if(Connector.AND.equals(con)){
+							sql1.AND();
+						}
+						if(Connector.OR.equals(con)){
+							sql1.OR();
+						}
 					}
 					if(filter.attribute != null){
 						sql1.FIELD(filter.attribute);
 					}
-					if(filter.operator != null){
-						sql1.keyword(filter.operator);
+					if(filter.equalityOperator != null){
+						Equality equality = filter.equalityOperator;
+						switch(equality){
+						case EQUAL:
+							sql1.EQUAL();
+							break;
+						case NOT_EQUAL:
+							sql1.NOT_EQUAL();
+							break;
+						case LESS_THAN:
+							sql1.LESS_THAN();
+						case LESS_THAN_OR_EQUAL:
+							sql1.LESS_THAN_OR_EQUAL();
+							break;
+						case GREATER_THAN:
+							sql1.GREATER_THAN();
+							break;
+						case GREATER_THAN_OR_EQUAL:
+							sql1.GREATER_THAN_OR_EQUAL();
+							break;
+						case IN:
+							sql1.IN();
+							break;
+						case NOT_IN:
+							sql1.NOT().IN();
+							break;
+						case LIKE:
+							sql1.LIKE();
+							break;
+						case NULL:
+							sql1.NULL();
+							break;
+						case NOT_NULL:
+							sql1.NOT_NULL();
+							break;
+						case IS_NULL:
+							sql1.IS_NULL();
+							break;
+						default:
+							break;
+							
+						}
 					}
 					if(filter.value != null){
 						if(supportPreparedStatement()){

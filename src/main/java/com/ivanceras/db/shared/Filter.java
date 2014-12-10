@@ -1,37 +1,66 @@
 package com.ivanceras.db.shared;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import com.ivanceras.db.api.LiteralString;
 import com.ivanceras.db.api.Query;
 import com.ivanceras.keyword.sql.SQL;
-public class Filter {
-	public static final String LESS_THAN = "<";
-	public static final String LESS_THAN_OR_EQUAL = "<=";
-	public static final String EQUAL = "=";
-	public static final String GREATER_THAN = ">";
-	public static final String GREATER_THAN_OR_EQUAL = ">=";
-	public static final String NOT_EQUAL = "!=";
-	public static final String IN = "IN";
-	public static final String NOT_IN = "NOT IN";
-	public static final String LIKE = "LIKE";
-	public static final String NOT_NULL = "NOT NULL";
-	public static final String NULL = "NULL";
-	public static final String IS_NULL = "IS NULL";
 
-	private static final String AND = "AND";
-	private static final String OR = "OR";
-	public static final String NOT_LIKE = "NOT LIKE";
+/**
+ * TODO: change Constant expressions to use enums
+ * @author lee
+ *
+ */
+public class Filter {
+	
+//	public static final String LESS_THAN = "<";
+//	public static final String LESS_THAN_OR_EQUAL = "<=";
+//	public static final String EQUAL = "=";
+//	public static final String GREATER_THAN = ">";
+//	public static final String GREATER_THAN_OR_EQUAL = ">=";
+//	public static final String NOT_EQUAL = "!=";
+//	public static final String IN = "IN";
+//	public static final String NOT_IN = "NOT IN";
+//	public static final String LIKE = "LIKE";
+//	public static final String NOT_NULL = "NOT NULL";
+//	public static final String NULL = "NULL";
+//	public static final String IS_NULL = "IS NULL";
+//
+//	private static final String AND = "AND";
+//	private static final String OR = "OR";
+//	public static final String NOT_LIKE = "NOT LIKE";
+	
+	public enum Connector{
+		AND,
+		OR
+	}
+	
+	public enum Equality{
+		EQUAL,
+		NOT_EQUAL,
+		LESS_THAN,
+		LESS_THAN_OR_EQUAL,
+		GREATER_THAN,
+		GREATER_THAN_OR_EQUAL,
+		IN,
+		NOT_IN,
+		LIKE,
+		NULL,
+		NOT_NULL,
+		IS_NULL,
+	}
+	
 
 	public String attribute;
-	public String operator;
+	public Equality equalityOperator;
 	public Object value;
 	public Query query;
 
 	public String literalValue;
 
-	private String connector;
+	private Connector connector;
 
 	private List<Filter> filterList = new ArrayList<Filter>();
 
@@ -52,47 +81,47 @@ public class Filter {
 	 * @param equality
 	 */
 	public Filter(Filter filter){
-		this(filter.attribute, filter.operator, filter.value);
+		this(filter.attribute, filter.equalityOperator, filter.value);
 		this.literalValue = filter.literalValue;
 		this.query = filter.query;
 	}
 
-	public Filter(String attribute, String operator, Object value){
+	public Filter(String attribute, Equality operator, Object value){
 		this.attribute = attribute;
-		this.operator = operator;
+		this.equalityOperator = operator;
 		this.value = value;
 	}
-	public Filter(String attribute, String operator, SQL sql){
+	public Filter(String attribute, Equality operator, SQL sql){
 		this.attribute = attribute;
-		this.operator = operator;
+		this.equalityOperator = operator;
 		this.filterSql = sql;
 	}
-	public Filter(String attribute, String operator){
+	public Filter(String attribute, Equality operator){
 		this.attribute = attribute;
-		this.operator = operator;
+		this.equalityOperator = operator;
 	}
 
-	public Filter(String attribute, String operator, Query query){
+	public Filter(String attribute, Equality operator, Query query){
 		this.attribute = attribute;
-		this.operator = operator;
+		this.equalityOperator = operator;
 		this.query = query;
 	}
 
-	public Filter(String attribute, String operator, LiteralString value){
+	public Filter(String attribute, Equality operator, LiteralString value){
 		this.attribute = attribute;
-		this.operator = operator;
+		this.equalityOperator = operator;
 		this.literalValue = value!=null ? value.toString() : null;
 	}
 
 	public Filter or(Filter filter){
-		filter.connector = OR;
+		filter.connector = Connector.OR;
 		filterList.add(filter);
 		return this;
 	}
 
 	public Filter and(Filter filter){
 		if(filter != null){
-			filter.connector = AND;
+			filter.connector = Connector.AND;
 			filterList.add(filter);
 		}
 		return this;
@@ -105,26 +134,23 @@ public class Filter {
 		return this;
 	}
 
-	public String getFilterType() {
-		return connector;
-	}
 	public Filter[] getFilterList(){
 		return filterList.toArray(new Filter[filterList.size()]);
 	}
 
-	public String getConnector() {
+	public Connector getConnector() {
 		return connector;
 	}
 
 
-	public void setConnector(String connector) {
+	public void setConnector(Connector connector) {
 		this.connector = connector;
 	}
 
 
 	@Override
 	public String toString(){
-		return this.attribute+" "+this.operator+" "+(this.value!=null?this.value:this.literalValue);
+		return this.attribute+" "+this.equalityOperator+" "+(this.value!=null?this.value:this.literalValue);
 	}
 
 	public SQL getFilterSql() {

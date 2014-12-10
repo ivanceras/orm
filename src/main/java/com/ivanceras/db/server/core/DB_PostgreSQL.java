@@ -41,6 +41,8 @@ import com.ivanceras.db.api.Pair;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
+import com.ivanceras.db.shared.Filter.Connector;
+import com.ivanceras.db.shared.Filter.Equality;
 import com.ivanceras.db.shared.Order;
 import com.ivanceras.db.shared.datatype.DataTypeGeneric;
 import com.ivanceras.db.shared.exception.DBConnectionException;
@@ -624,7 +626,7 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		subclassModel.setAttributes(subclassColumn);
 		Query subclassQuery = new Query();
 		subclassQuery.selectFromModel(subclassModel);
-		Filter subclassFilter = new Filter("oid", Filter.EQUAL, new LiteralString(model.getModelName()+"."+"tableoid"));
+		Filter subclassFilter = new Filter("oid", Equality.EQUAL, new LiteralString(model.getModelName()+"."+"tableoid"));
 		subclassQuery.filter(subclassFilter);
 		return subclassQuery;
 	}

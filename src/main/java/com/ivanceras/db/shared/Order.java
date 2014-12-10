@@ -2,28 +2,38 @@ package com.ivanceras.db.shared;
 
 import java.io.Serializable;
 
+
+/**
+ * TODO: change Constant expressions to use enums
+ * @author lee
+ *
+ */
 public class Order implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9043514286984649403L;
 	private String column;
-	private boolean ascending;
+	private Direction direction;
 	
-	public static boolean ASCENDING = true;
-	public static boolean DESCENDING = false;
+	
+	public enum Direction{
+		ASC,
+		DESC
+	}
+	
 	
 	public Order(){
 		
 	}
 	
-	public Order(String column, boolean ascending){
+	public Order(String column, Direction direction){
 		this.column = column;
-		this.ascending = ascending;
+		this.direction = direction;
 	}
 	
 	public Order(String column){
-		this(column, true);
+		this(column, Direction.ASC);
 	}
 
 	public String getColumn() {
@@ -34,12 +44,8 @@ public class Order implements Serializable {
 		this.column = column;
 	}
 
-	public boolean isAscending() {
-		return ascending;
-	}
-
-	public void setAscending(boolean ascending) {
-		this.ascending = ascending;
+	public Direction getDirection(){
+		return direction;
 	}
 	
 }

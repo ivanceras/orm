@@ -16,7 +16,9 @@ import com.ivanceras.db.api.Join.JoinType;
 import com.ivanceras.db.model.ModelMetaData;
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
+import com.ivanceras.db.shared.Filter.Equality;
 import com.ivanceras.db.shared.Order;
+import com.ivanceras.db.shared.Order.Direction;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.keyword.sql.SQL;
 
@@ -131,7 +133,7 @@ public class Query {
 
 	public Query ascending(String... columns) {
 		for(String c : columns){
-			order(new Order(c, Order.ASCENDING));
+			order(new Order(c, Direction.ASC));
 		}
 		return this;
 	}
@@ -159,7 +161,7 @@ public class Query {
 
 	public Query descending(String... columns) {
 		for(String c : columns){
-			order(new Order(c, Order.DESCENDING));
+			order(new Order(c, Direction.DESC));
 		}
 		return this;
 	}
@@ -173,7 +175,7 @@ public class Query {
 		return this;
 	}
 
-	public Query filter(String column, String operator, Object value) {
+	public Query filter(String column, Equality operator, Object value) {
 		filters.add(new Filter(column, operator, value));
 		return this;
 	}
