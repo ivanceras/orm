@@ -1123,47 +1123,5 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	}
 
 
-	/**
-	 * Manipulation of SQL statements only, pertaining to PostgreSQL, 
-	 * DB_PostgreSQL pertains to connections
-	 * @author lee
-	 *
-	 */
-	public static class SQL_Postgres extends SQL{
-
-		public SQL WITH(){
-			return keyword("WITH");
-		}
-
-		public SQL OVER() {
-			return keyword("OVER");
-		}
-
-		public SQL WITH(String queryName){
-			return WITH().keyword(queryName);
-		}
-		public SQL RECURSIVE(){
-			return keyword("RECURSIVE");
-		}
-
-		public SQL WITH(String queryName, SQL sql){
-			return WITH(queryName).AS().FIELD(sql);
-		}
-
-		public SQL WITH_RECURSIVE(String queryName){
-			return ((SQL_Postgres)WITH()).RECURSIVE().FIELD(queryName);
-		}
-		public SQL WITH_RECURSIVE(String queryName, SQL sql){
-			return WITH_RECURSIVE(queryName).AS().FIELD(sql);
-		}
-
-		public SQL WINDOW(String name, String expression){
-			return keyword("WINDOW");
-		}
-
-
-	}
-
-
 
 }

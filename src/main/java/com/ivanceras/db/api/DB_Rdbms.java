@@ -35,7 +35,7 @@ public abstract class DB_Rdbms{
 		schema = getDBElementName(model,schema);
 		String table = getDBTableName(model);
 		String[] columns = model.getAttributes();
-		SQL[] sql1 = new SQL[columns.length];
+		SQL[] sql = new SQL[columns.length];
 		String[] comments = model.getAttributeComments();
 		if(comments == null){
 			return null;
@@ -55,10 +55,10 @@ public abstract class DB_Rdbms{
 				.keyword("$$")
 				.FIELD(comments[i])
 				.keyword("$$");
-				sql1[i] = ql;
+				sql[i] = ql;
 			}
 		}
-		return sql1;
+		return sql;
 	}
 	protected SQL buildCreateSchemaStatement(String schema){
 		return CREATE().SCHEMA(schema);
@@ -105,22 +105,22 @@ public abstract class DB_Rdbms{
 			tableName.append(schema+".");
 		}
 		tableName.append(table);
-		SQL sql1 = CREATE_TABLE(tableName.toString());
-		sql1.openParen();
+		SQL sql = CREATE_TABLE(tableName.toString());
+		sql.openParen();
 		boolean doComma = false;
 		for(int i = 0; i < columns.length; i++){
-			if(doComma){sql1.comma();}else{doComma=true;}
-			sql1.FIELD(columns[i]);
+			if(doComma){sql.comma();}else{doComma=true;}
+			sql.FIELD(columns[i]);
 			String dbDataType = getEquivalentDBDataType(dataTypes[i]);
 			if(dbDataType != null){
-				sql1.keyword(dbDataType);
+				sql.keyword(dbDataType);
 			}
 		}
 		if(getStorageEngine() != null){
-			sql1.keyword(getStorageEngine());
+			sql.keyword(getStorageEngine());
 		}
-		sql1.closeParen();
-		return sql1;
+		sql.closeParen();
+		return sql;
 	}
 
 	protected SQL buildDeleteStatement(ModelMetaData meta, ModelDef model, Filter[] filters) throws DatabaseException{
@@ -132,10 +132,10 @@ public abstract class DB_Rdbms{
 		if(schema != null && useSchema()){
 			table = schema+"."+table;
 		}
-		SQL sql1= DELETE().FROM(table);
+		SQL sql= DELETE().FROM(table);
 
-		buildWhereClause(sql1, filters);
-		return sql1;
+		buildWhereClause(sql, filters);
+		return sql;
 	}
 
 	public SQL buildDropSchemaStatement(String schema, boolean forced){
@@ -153,20 +153,20 @@ public abstract class DB_Rdbms{
 		schema = getDBElementName(model,schema);
 		String table = getDBTableName(model);
 
-		SQL sql1 = DROP_TABLE();
+		SQL sql = DROP_TABLE();
 		if(supportExistChecking()){
-			sql1.IF_EXISTS();
+			sql.IF_EXISTS();
 		}
 		StringBuilder tableName = new StringBuilder();
 		if(schema != null && useSchema()){
 			tableName.append(schema+".");
 		}
 		tableName.append(table);
-		sql1.FIELD(tableName.toString());
+		sql.FIELD(tableName.toString());
 		if(forced){
-			sql1.keyword(forceKeyword());
+			sql.keyword(forceKeyword());
 		}
-		return sql1;
+		return sql;
 	}
 
 	protected SQL buildEmptyTableStatement(ModelDef model, boolean forced) {
@@ -180,18 +180,18 @@ public abstract class DB_Rdbms{
 			tableName.append(schema+".");
 		}
 		tableName.append(table);
-		SQL sql1 = TRUNCATE_TABLE(tableName.toString());
+		SQL sql = TRUNCATE_TABLE(tableName.toString());
 		if(forced){
-			sql1.keyword(" "+forceKeyword());
+			sql.keyword(" "+forceKeyword());
 		}
-		return sql1;
+		return sql;
 	}
 
 	protected SQL buildPrimaryContraintStatement(ModelDef model) throws DatabaseException{
 		String schema = model.getNamespace();
 		schema = getDBElementName(model,schema);
 		String[] primaryAttributes = model.getPrimaryAttributes();
-		SQL sql1 = null;
+		SQL sql = null;
 		if(primaryAttributes != null && primaryAttributes.length > 0){
 			String table = getDBTableName(model);
 			if(table==null) throw new DatabaseException("No table indicated");
@@ -200,15 +200,15 @@ public abstract class DB_Rdbms{
 				tableName.append(schema+".");
 			}
 			tableName.append(model.getTableName());
-			sql1 = ALTER_TABLE(tableName.toString());
+			sql = ALTER_TABLE(tableName.toString());
 
 			String constraintName = table+"_pkey";
-			sql1.ADD().CONSTRAINT(constraintName);
-			sql1.PRIMARY_KEY(primaryAttributes);
+			sql.ADD().CONSTRAINT(constraintName);
+			sql.PRIMARY_KEY(primaryAttributes);
 		}else{
 			System.err.println("No primary key for: "+model.getTableName());
 		}
-		return sql1;
+		return sql;
 	}
 
 	protected SQL buildForeignContraintStatement(ModelDef model) throws DatabaseException{
@@ -217,7 +217,7 @@ public abstract class DB_Rdbms{
 		String[] hasOne = model.getHasOne();
 		String table = getDBTableName(model);
 		if(table==null) throw new DatabaseException("No table indicated");
-		SQL sql1 = null;
+		SQL sql = null;
 		if(hasOne != null && hasOne.length > 0){
 			for(int i = 0; i < hasOne.length; i++){
 				StringBuilder tableName = new StringBuilder();
@@ -225,25 +225,25 @@ public abstract class DB_Rdbms{
 					tableName.append(schema+".");
 				}
 				tableName.append(model.getTableName());
-				sql1 = ALTER_TABLE(tableName.toString());
+				sql = ALTER_TABLE(tableName.toString());
 				String hasOneSchema = getDBElementName(model, getTableSchema(hasOne[i]));
 
 				String constraintName = table+"_"+CStringUtils.capitalize(model.getHasOneLocalColumn()[i])+"_fkey";
-				sql1.ADD().CONSTRAINT(constraintName);
-				sql1.FOREIGN_KEY(model.getHasOneLocalColumn()[i]);
+				sql.ADD().CONSTRAINT(constraintName);
+				sql.FOREIGN_KEY(model.getHasOneLocalColumn()[i]);
 				StringBuilder referencedTable = new StringBuilder();
 				if(hasOneSchema != null && useSchema()){
 					referencedTable.append(hasOneSchema+".");
 				}
 				referencedTable.append(hasOne[i]);
-				sql1.REFERENCES(referencedTable.toString(), model.getHasOneReferencedColumn()[i]);
-				sql1.ON_UPDATE().CASCADE()
+				sql.REFERENCES(referencedTable.toString(), model.getHasOneReferencedColumn()[i]);
+				sql.ON_UPDATE().CASCADE()
 				.ON_DELETE().RESTRICT()
 				.DEFERRABLE().INITIALLY_DEFERRED();
 			}
 
 		}
-		return sql1;
+		return sql;
 	}
 
 	/**
@@ -272,8 +272,8 @@ public abstract class DB_Rdbms{
 		if(schema != null && useSchema()){
 			table = schema+"."+table;
 		}
-		SQL sql1 = INSERT().INTO(table);
-		sql1.openParen();
+		SQL sql = INSERT().INTO(table);
+		sql.openParen();
 		if(columns != null){
 			List<String> finalColumns = new ArrayList<String>();
 			for(int c = 0; c < columns.length; c++){
@@ -281,18 +281,18 @@ public abstract class DB_Rdbms{
 					finalColumns.add(columns[c]);
 				}
 				if(CStringUtils.inArray(defaultedColumValues, columns[c])){
-					sql1.keyword("DEFAULT");
+					sql.keyword("DEFAULT");
 				}
 			}
-			sql1.FIELD(finalColumns.toArray(new String[finalColumns.size()]));
+			sql.FIELD(finalColumns.toArray(new String[finalColumns.size()]));
 		}
-		sql1.closeParen();
+		sql.closeParen();
 		if(query != null){
 			SQL sql2 = buildSQL(meta, query, false);
-			sql1.FIELD(sql2);
+			sql.FIELD(sql2);
 		}
 		else{
-			sql1.VALUES().openParen();
+			sql.VALUES().openParen();
 			boolean doComma = false;
 			for(int i = 0; i < columns.length; i++){
 				if(!CStringUtils.inArray(curatedIgnoredColumns, columns[i])){
@@ -303,16 +303,16 @@ public abstract class DB_Rdbms{
 					//					value = getEquivalentDBObject(value);
 
 					if(supportPreparedStatement()){
-						if(doComma){sql1.comma();}else{doComma=true;}
-						sql1.VALUE(value);
+						if(doComma){sql.comma();}else{doComma=true;}
+						sql.VALUE(value);
 					}else{
-						sql1.FIELD("'"+(value != null ? value.toString(): null)+"'");
+						sql.FIELD("'"+(value != null ? value.toString(): null)+"'");
 					}
 				}
 			}
-			sql1.closeParen();
+			sql.closeParen();
 		}
-		return sql1;
+		return sql;
 	}
 
 
@@ -343,13 +343,13 @@ public abstract class DB_Rdbms{
 		if(schema != null && useSchema()){
 			tableName.append(schema+".");
 		}
-		SQL sql1 = ALTER_TABLE(tableName.toString())
+		SQL sql = ALTER_TABLE(tableName.toString())
 				.RENAME().TO(newName);
-		return sql1;
+		return sql;
 	}
 
 	public SQL buildSQL(ModelMetaData meta, Query query, boolean useCursor) {
-		SQL sql1 = new SQL();
+		SQL sql = new SQL();
 		List<String> mentionedColumns = new ArrayList<String>();
 
 		Filter[] filters = query.getFilters();
@@ -387,25 +387,25 @@ public abstract class DB_Rdbms{
 
 		Map<String, Query> declaredQueries = query.getDeclaredQueries();
 		if(declaredQueries != null){
-			sql1.WITH();
+			sql.WITH();
 			for(Entry<String, Query> entry : declaredQueries.entrySet()){
 				String name = entry.getKey();
 				Query dq = entry.getValue();
 				SQL dqsql = buildSQL(meta,dq, false);
-				sql1.FIELD(name);
-				sql1.AS(dqsql)
+				sql.FIELD(name);
+				sql.AS(dqsql)
 				.ln();
 			}
 		}
 
 		Map<String, SQL> declaredSQL = query.getDeclaredSQL();
 		if(declaredSQL != null){
-			sql1.WITH();
+			sql.WITH();
 			for(Entry<String, SQL> entry : declaredSQL.entrySet()){
 				String name = entry.getKey();
 				SQL dsql = entry.getValue();
-				sql1.FIELD(name);
-				sql1.AS(dsql)
+				sql.FIELD(name);
+				sql.AS(dsql)
 				.ln();
 			}
 		}
@@ -413,25 +413,25 @@ public abstract class DB_Rdbms{
 
 		Boolean selectAllColumns = query.getSelectAllColumns();
 		if(selectAllColumns != null &&selectAllColumns){
-			sql1.SELECT("*");
+			sql.SELECT("*");
 			query.enumerateColumns(false);
 			Map<String, Pair[]> renames = query.getRenamedFields();
 			for(Entry<String, Pair[]> renamedSet : renames.entrySet()){
 				String renTable = renamedSet.getKey();
 				Pair[] renPairs = renamedSet.getValue();
 				if(renTable != null && renPairs != null && renPairs.length > 0){
-					sql1.ln();
+					sql.ln();
 					for(Pair renPair : renPairs){
 						String origColumn = renPair.getLeft();
 						String asColumn = renPair.getRight();
-						sql1.FIELD(renTable+"."+origColumn)
+						sql.FIELD(renTable+"."+origColumn)
 							.AS(asColumn);
 					}
 				}
 			}
 		}
 		else{
-			sql1.append(SELECT());
+			sql.append(SELECT());
 		}
 		
 		if(distinctColumns != null && distinctColumns.length > 0){//custom distinct columns
@@ -441,7 +441,7 @@ public abstract class DB_Rdbms{
 					distinctColumns1[i] = table+"."+distinctColumns1[i];
 				}
 			}
-			sql1.DISTINCT_ON(distinctColumns1);
+			sql.DISTINCT_ON(distinctColumns1);
 		}
 		//TODO: refined the logic here similar to select all columns
 		if(query.isEnumerateColumns()){
@@ -457,11 +457,11 @@ public abstract class DB_Rdbms{
 							if(tableName != null && prependTableName()){
 								columnName = tableName+"."+columnName;
 							}
-							sql1.FIELD(columnName);
+							sql.FIELD(columnName);
 							String asColumn = query.getRenamed(inv.getTableName(), columns[i]);
 							System.err.println("AS column: "+asColumn);
 							if(asColumn != null){
-								sql1.AS(asColumn);
+								sql.AS(asColumn);
 							}
 						}
 					}
@@ -471,12 +471,12 @@ public abstract class DB_Rdbms{
 		
 		
 		if(selectTable != null){
-			sql1.FROM(selectTable);
+			sql.FROM(selectTable);
 		}
 		if(query.getBaseQuery() != null){
 			String baseQueryName = query.getBaseQueryName();
 			SQL sql3 = buildSQL(meta, query.getBaseQuery(), useCursor);
-			sql1.FROM(sql3).AS(baseQueryName);
+			sql.FROM(sql3).AS(baseQueryName);
 			mentionedColumns.add(baseQueryName);
 		}
 
@@ -484,28 +484,28 @@ public abstract class DB_Rdbms{
 		if(joins != null){
 			for(Join join : joins){
 				JoinModifier modifier = join.getModifier();
-				sql1.ln();
+				sql.ln();
 				if(JoinModifier.LEFT.equals(modifier)){
-					sql1.LEFT();
+					sql.LEFT();
 				}
 				if(JoinModifier.RIGHT.equals(modifier)){
-					sql1.RIGHT();
+					sql.RIGHT();
 				}
 				if(JoinModifier.FULL.equals(modifier)){
-					sql1.FULL();
+					sql.FULL();
 				}
 				JoinType type = join.getType();
 				if(JoinType.CROSS.equals(type)){
-					sql1.CROSS();
+					sql.CROSS();
 				}
 				if(JoinType.INNER.equals(type)){
-					sql1.INNER();
+					sql.INNER();
 				}
 				if(JoinType.OUTER.equals(type)){
-					sql1.OUTER();
+					sql.OUTER();
 				}
 				if(JoinType.NATURAL.equals(type)){
-					sql1.NATURAL();
+					sql.NATURAL();
 				}
 				
 				
@@ -518,50 +518,50 @@ public abstract class DB_Rdbms{
 				if(joinSchema != null && useSchema()){
 					joinTable = joinSchema+"."+joinTable;
 				}
-				sql1.JOIN().FIELD(joinTable);
+				sql.JOIN().FIELD(joinTable);
 				String[] column1List = join.getOnColumn1();
 				String[] column2List = join.getOnColumn2();
 				for(int i = 0; i < column1List.length; i++){
 					String column1 = column1List[i];
 					String column2 = column2List[i];
-					sql1.ON(column1, column2);
+					sql.ON(column1, column2);
 				}
 				
 			}
 		}
 		
-		buildWhereClause(sql1, filters);
+		buildWhereClause(sql, filters);
 
 		if(groupedColumns != null && groupedColumns.length > 0){
-			sql1.GROUP_BY(groupedColumns);
+			sql.GROUP_BY(groupedColumns);
 		}
 		if(orders != null && orders.length > 0){
 			boolean doOrderBy = true;
 			for(int i = 0; i < orders.length; i++){
 				if(orders[i] != null){
 					if(doOrderBy){
-						sql1.ORDER_BY();
+						sql.ORDER_BY();
 						doOrderBy = false;
 					}
 					if(Direction.ASC.equals(orders[i].getDirection())){
-						sql1.FIELD(orders[i].getColumn()).ASC();
+						sql.FIELD(orders[i].getColumn()).ASC();
 					}
 					else{
-						sql1.FIELD(orders[i].getColumn()).DESC();
+						sql.FIELD(orders[i].getColumn()).DESC();
 					}
 				}
 			}
 		}
 		if(!useCursor){
 			if(limit != null){
-				sql1.LIMIT(limit);
+				sql.LIMIT(limit);
 			}
 			if(offset != null ){
-				sql1.OFFSET(offset.intValue());
+				sql.OFFSET(offset.intValue());
 			}
 		}
 
-		return sql1;
+		return sql;
 	}
 
 	protected abstract Query buildSubClassTableQuery(ModelDef model);
@@ -574,19 +574,19 @@ public abstract class DB_Rdbms{
 		if(tableComment == null){
 			return null;
 		}
-		SQL sql1 = new SQL();
-		sql1.keyword("COMMENT").keyword("ON");
+		SQL sql = new SQL();
+		sql.keyword("COMMENT").keyword("ON");
 		StringBuilder tableName = new StringBuilder();
 		if(schema != null && useSchema()){
 			tableName.append(schema+".");
 		}
 		tableName.append(table);
-		sql1.TABLE(tableName.toString());
-		sql1.keyword("IS")
+		sql.TABLE(tableName.toString());
+		sql.keyword("IS")
 		.keyword("$$")
 		.FIELD(tableComment)
 		.keyword("$$");
-		return sql1;
+		return sql;
 	}
 
 	protected SQL buildUpdateStatement(ModelMetaData meta, DAO dao, ModelDef model, Filter[] filters) {
@@ -609,51 +609,51 @@ public abstract class DB_Rdbms{
 			tableName.append(schema+".");
 		}
 		tableName.append(table);
-		SQL sql1 = UPDATE(tableName.toString());
+		SQL sql = UPDATE(tableName.toString());
 
 		boolean doComma = false;
-		sql1.SET();
+		sql.SET();
 		for(int i = 0; i < columns.length; i++){
 			if(curatedIgnoredColumns != null && CStringUtils.inArray(curatedIgnoredColumns, columns[i])){
 				;
 			}
 			else{
-				if(doComma){sql1.comma();}else{doComma = true;}
+				if(doComma){sql.comma();}else{doComma = true;}
 				Object value = null;
 				if(dao != null) {
 					value = dao.get_Value(columns[i]);
 					//					value = getEquivalentDBObject(value);
 				}
 				if(CStringUtils.inArray(defaultedColumnValues, columns[i])){
-					sql1.FIELD(columns[i]);
-					sql1.EQUAL();
-					sql1.FIELD("DEFAULT");
+					sql.FIELD(columns[i]);
+					sql.EQUAL();
+					sql.FIELD("DEFAULT");
 				}else{
-					sql1.FIELD(columns[i]);
-					sql1.EQUAL();
+					sql.FIELD(columns[i]);
+					sql.EQUAL();
 					if(supportPreparedStatement()){
-						sql1.VALUE(value);
+						sql.VALUE(value);
 					}
 					else{
-						sql1.FIELD("'"+( value != null ? value.toString(): null )+"'");
+						sql.FIELD("'"+( value != null ? value.toString(): null )+"'");
 					}
 				}
 			}
 		}
-		buildWhereClause(sql1, filters);
-		return sql1;
+		buildWhereClause(sql, filters);
+		return sql;
 	}
 
 
-	private void buildWhereClause(SQL sql1,
+	private void buildWhereClause(SQL sql,
 			Filter[] filters) {
 		if(filters != null){
-			sql1.ln().WHERE();
+			sql.ln().WHERE();
 			boolean doAnd = false;
 			for(Filter filter: filters){
 				if(filter != null){
-					if(doAnd){sql1.AND();}else{doAnd=true;}
-					extractFilter(sql1, filter);
+					if(doAnd){sql.AND();}else{doAnd=true;}
+					extractFilter(sql, filter);
 				}
 			}
 		}
@@ -672,63 +672,63 @@ public abstract class DB_Rdbms{
 		return true;
 	}
 
-	private void extractFilter(SQL sql1, Filter... filterList) {
+	private void extractFilter(SQL sql, Filter... filterList) {
 		if(filterList != null){
 			for(Filter filter : filterList){
 				if(filter != null){
 					Filter[] childFilters = filter.getFilterList();
 					if(childFilters != null && childFilters.length > 0){
-						sql1.openParen();
+						sql.openParen();
 					}
 					Connector con = filter.getConnector();// OR ,AND
 					if(con!=null){
 						if(Connector.AND.equals(con)){
-							sql1.AND();
+							sql.AND();
 						}
 						if(Connector.OR.equals(con)){
-							sql1.OR();
+							sql.OR();
 						}
 					}
 					if(filter.attribute != null){
-						sql1.FIELD(filter.attribute);
+						sql.FIELD(filter.attribute);
 					}
 					if(filter.equalityOperator != null){
 						Equality equality = filter.equalityOperator;
 						switch(equality){
 						case EQUAL:
-							sql1.EQUAL();
+							sql.EQUAL();
 							break;
 						case NOT_EQUAL:
-							sql1.NOT_EQUAL();
+							sql.NOT_EQUAL();
 							break;
 						case LESS_THAN:
-							sql1.LESS_THAN();
+							sql.LESS_THAN();
 						case LESS_THAN_OR_EQUAL:
-							sql1.LESS_THAN_OR_EQUAL();
+							sql.LESS_THAN_OR_EQUAL();
 							break;
 						case GREATER_THAN:
-							sql1.GREATER_THAN();
+							sql.GREATER_THAN();
 							break;
 						case GREATER_THAN_OR_EQUAL:
-							sql1.GREATER_THAN_OR_EQUAL();
+							sql.GREATER_THAN_OR_EQUAL();
 							break;
 						case IN:
-							sql1.IN();
+							sql.IN();
 							break;
 						case NOT_IN:
-							sql1.NOT().IN();
+							sql.NOT().IN();
 							break;
 						case LIKE:
-							sql1.LIKE();
+							sql.LIKE();
 							break;
 						case NULL:
-							sql1.NULL();
+							sql.NULL();
 							break;
 						case NOT_NULL:
-							sql1.NOT_NULL();
+							sql.NOT_NULL();
 							break;
 						case IS_NULL:
-							sql1.IS_NULL();
+							sql.IS_NULL();
 							break;
 						default:
 							break;
@@ -737,26 +737,26 @@ public abstract class DB_Rdbms{
 					}
 					if(filter.value != null){
 						if(supportPreparedStatement()){
-							sql1.VALUE(filter.value);
+							sql.VALUE(filter.value);
 						}else{
 							//at least do a sql escaping here
 							String value = filter.value != null ? filter.value.toString() : null;
 							value = CStringUtils.escapeSQL(value);
-							sql1.FIELD("'"+value+"'");
+							sql.FIELD("'"+value+"'");
 						}
 					}
 					if(filter.query != null){
 						SQL sql2 = buildSQL(null, filter.query, false);
-						sql1.FIELD(sql2);
+						sql.FIELD(sql2);
 					}
 
 					if(filter.getFilterSql() != null){
-						sql1.FIELD(filter.getFilterSql());
+						sql.FIELD(filter.getFilterSql());
 					}
 
 					if(childFilters != null && childFilters.length > 0){
-						extractFilter(sql1, childFilters);
-						sql1.closeParen();
+						extractFilter(sql, childFilters);
+						sql.closeParen();
 					}
 				}
 			}

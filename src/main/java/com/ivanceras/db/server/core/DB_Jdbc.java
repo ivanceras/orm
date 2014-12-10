@@ -781,8 +781,8 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 
 	@Override
 	public DAO update(DAO dao, ModelDef model, Filter[] filters) throws DatabaseException {
-		SQL sql1 = buildUpdateStatement(meta, dao, model, filters);
-		int ret = executeUpdateSQL(sql1);
+		SQL sql = buildUpdateStatement(meta, dao, model, filters);
+		int ret = executeUpdateSQL(sql);
 		if (ret > 0) {
 			return dao;
 		} else {
