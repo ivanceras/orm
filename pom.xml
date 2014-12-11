@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.ivanceras</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.1.1</version>
+		<version>0.1.2-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -13,23 +13,23 @@
 	<name>orm</name>
 	<description>ORM - Core Library for Database</description>
 	<url>https://github.com/ivanceras/orm</url>
+	
 	<scm>
 		<connection>scm:git:https://github.com/ivanceras/orm.git</connection>
 		<developerConnection>scm:git:https://github.com/ivanceras/orm.git</developerConnection>
 		<url>scm:git:https://github.com/ivanceras/orm.git</url>
-		<tag>orm-0.1.1</tag>
 	</scm>
 
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>commons</artifactId>
-			<version>0.1.1</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>keywordSQL</artifactId>
-			<version>0.1.1</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
