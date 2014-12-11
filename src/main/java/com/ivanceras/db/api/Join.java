@@ -43,9 +43,7 @@ public class Join {
 	}
 
 	public Join(Class<? extends DAO> daoClass, String onColumn1, String onColumn2, String... columnPairs) throws DatabaseException{
-		this.daoClass = daoClass;
-		this.onColumn1.add(onColumn1);
-		this.onColumn2.add(onColumn2);
+		this(daoClass, onColumn1, onColumn2);
 		if(columnPairs != null){
 			if(columnPairs.length % 2 != 0){
 				throw new DatabaseException("column used in joins should have pairs.");
