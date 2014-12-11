@@ -830,6 +830,9 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		} 
 	}
 
+	/**
+	 * TODO: need to be fast, this is very slow. Need to use pg_catalog since information_schema is slow
+	 */
 	@Override
 	protected ForeignKey getExportedKeys(String schema, String tablename) throws DatabaseException{
 		//		String sql = "select " +

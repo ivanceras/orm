@@ -410,10 +410,23 @@ public abstract class DB_Rdbms{
 			}
 		}
 		
+		sql.SELECT();
+		
+		Pair[] pairs = query.getSelectionColumn();
+		for(Pair pair : pairs){
+			String column = pair.getLeft();
+			String asColumn = pair.getRight();
+			if(pair != null ){
+				sql.FIELD(column);
+				if(asColumn != null){
+					sql.AS(asColumn);
+				}
+			}
+		}
 
 		Boolean selectAllColumns = query.getSelectAllColumns();
 		if(selectAllColumns != null &&selectAllColumns){
-			sql.SELECT("*");
+			sql.FIELD("*");
 			query.enumerateColumns(false);
 			Map<String, Pair[]> renames = query.getRenamedFields();
 			for(Entry<String, Pair[]> renamedSet : renames.entrySet()){
@@ -430,9 +443,6 @@ public abstract class DB_Rdbms{
 				}
 			}
 		}
-		else{
-			sql.append(SELECT());
-		}
 		
 		if(distinctColumns != null && distinctColumns.length > 0){//custom distinct columns
 			String[] distinctColumns1 = new String[distinctColumns.length];
@@ -448,8 +458,6 @@ public abstract class DB_Rdbms{
 			for(ModelDef inv : involvedModels){
 				String[] columns = inv.getAttributes();
 				if(columns != null){
-					Map<String, Pair[]> renamedFields = query.getRenamedFields();
-					System.err.println("renamed fields: "+renamedFields);
 					for(int i = 0; i < columns.length; i++){
 						if(!CStringUtils.inArray(excludedColumns, columns[i])){
 							String columnName = getDBElementName(inv,columns[i]);
@@ -459,7 +467,6 @@ public abstract class DB_Rdbms{
 							}
 							sql.FIELD(columnName);
 							String asColumn = query.getRenamed(inv.getTableName(), columns[i]);
-							System.err.println("AS column: "+asColumn);
 							if(asColumn != null){
 								sql.AS(asColumn);
 							}
