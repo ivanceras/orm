@@ -5,7 +5,8 @@ An ORM aimed to be migration and version upgrade friendly.
 
 
 [![Build Status](https://api.travis-ci.org/ivanceras/orm.svg)](https://travis-ci.org/ivanceras/orm)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ivanceras/orm)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.ivanceras/orm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.ivanceras/orm)
+
 
 Yes, I know this is yet another ORM library like many others.
 
