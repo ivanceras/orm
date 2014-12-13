@@ -75,6 +75,7 @@ public class Query {
 	public Query(EntityManager em, Class<? extends DAO> daoClass) throws DatabaseException{
 		this.em = em;
 		involve(daoClass);
+		selectFromTable(daoClass);
 	}
 
 
@@ -307,8 +308,9 @@ public class Query {
 	}
 
 	public String getRenamed(String tableName, String column){
-		if(renamedColumnPairs.containsKey(tableName)){
-			Pair[] pairs = renamedColumnPairs.get(tableName);
+		Map<String, Pair[]> renamedPairs = getRenamedFields();
+		if(renamedPairs.containsKey(tableName)){
+			Pair[] pairs = renamedPairs.get(tableName);
 			if(pairs != null && pairs.length > 0){
 				for(Pair pair : pairs){
 					if(column != null && column.equals(pair.getLeft())){

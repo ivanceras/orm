@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.ivanceras.commons.strings.CStringUtils;
 
@@ -299,7 +301,14 @@ public class ModelDef implements Serializable{
 
 	@Override
 	public String toString(){
-		return toHashMap().toString();
+		StringBuilder sb = new StringBuilder();
+		Map<String, Object> map = toHashMap();
+		sb.append("\n"+getTableName()+": {");
+		for(Entry<String, Object> entry : map.entrySet()){
+			sb.append("\n\t"+entry.getKey() +" : "+entry.getValue());
+		}
+		sb.append("\n}");
+		return sb.toString();
 	}
 
 
@@ -498,7 +507,7 @@ public class ModelDef implements Serializable{
 	}
 
 	public Map<String, Object> toHashMap(){
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new TreeMap<String, Object>();
 		if(namespace != null){
 			map.put("namespace", namespace);
 		}
@@ -508,9 +517,9 @@ public class ModelDef implements Serializable{
 		if(tableName != null){
 			map.put("tableName", tableName);
 		}
-		if(description != null){
-			map.put("description", description);
-		}
+		//if(description != null){
+		//	map.put("description", description);
+		//}
 		if(attributes != null && attributes.length > 0){
 			map.put("attributes", Arrays.asList(attributes));
 		}
@@ -526,9 +535,9 @@ public class ModelDef implements Serializable{
 		if(dataTypes != null && dataTypes.length > 0){
 			map.put("dataTypes", Arrays.asList(dataTypes));
 		}
-		if(attributeComments != null && attributeComments.length > 0){
-			map.put("attributeComments", Arrays.asList(attributeComments));
-		}
+		//if(attributeComments != null && attributeComments.length > 0){
+		//	map.put("attributeComments", Arrays.asList(attributeComments));
+		//}
 		if(hasOneLocalColumn != null && hasOneLocalColumn.length > 0){
 			map.put("hasOneLocalColumn", Arrays.asList(hasOneLocalColumn));
 		}
@@ -561,9 +570,9 @@ public class ModelDef implements Serializable{
 		if(parentClass != null){
 			map.put("parentClass", parentClass);
 		}
-		if(subClass != null){
-			map.put("subClass", subClass);
-		}
+//		if(subClass != null){
+//			map.put("subClass", subClass);
+//		}
 		return map;
 	}
 

@@ -18,15 +18,30 @@ public class ModelCurator {
 		this.modelList = modelList;
 	}
 
+	/**
+	 * Run each one at a time for all models in such a way that it won't disturb the other
+	 * @return
+	 */
 	public ModelDef[] correct(){
 		for(ModelDef m : modelList){
-
 			this.model = m;
 			correct1to1Detail();
+		}
+		for(ModelDef m : modelList){
+			this.model = m;
 			removeUnnecessaryHasOneToSelf();
+		}
+		for(ModelDef m : modelList){
+			this.model = m;
 			removeUnnecessaryHasManyToSelf();
+		}
+		for(ModelDef m : modelList){
+			this.model = m;
 			crossOutLinkerTables();
-
+		}
+		for(ModelDef m : modelList){
+			this.model = m;
+			removeHasOneToBothPrimaryAndForeignKey();
 		}
 		return modelList;
 	}
@@ -34,7 +49,38 @@ public class ModelCurator {
 
 
 	/**
+	 * user_info.user_id is the primary key while it is refering to users.user_id
+	 * user_info.User will create a cyclic recursive mapping to users and user_info and back.
+	 * Remove that hasOne which is both primary and foreign to prevent that.
+	 */
+	private void removeHasOneToBothPrimaryAndForeignKey() {
+		String[] primaryKeys = model.getPrimaryAttributes();
+		String[] hasOne = model.getHasOne();
+		String[] hasOneLocal = model.getHasOneLocalColumn();
+		String[] hasOneReferenced = model.getHasOneReferencedColumn();
+		for(String pk : primaryKeys){
+			int pkIndex = CStringUtils.indexOf(hasOneLocal, pk);
+			if(pkIndex >= 0){
+				System.out.println("\n"+pk+" is a primary key of ["+model.getTableName()+"] ("+hasOneLocal[pkIndex]+")"
+						+ "and foreign key to ["+hasOne[pkIndex]+"]("+hasOneReferenced[pkIndex]+")");
+				System.out.println("removing ["+hasOne[pkIndex]+"] from ["+model.getTableName()+"]");
+				model = removeFromHasOne(model, hasOne[pkIndex]);
+			}
+		}
+	}
+
+	/**
 	 * If the localColum of that hasMany table is the primary attributes AND it refer to the primary column of this table
+	 * 
+	 * users.primaryKey = [user_id]
+	 * users.hasMany = [user_info]
+	 * users.hasManyLocal = [user_id]
+	 * users.hasManyReference = [user_id]
+	 * 
+	 * user_info.primaryKey = [user_id]
+	 * user_info.hasOne = [users]
+	 * user_info.hasOneLocal = [user_id]
+	 * user_info.hasOneReference = [user_id]
 	 * @param model
 	 * @param modelList
 	 * @return
@@ -42,32 +88,46 @@ public class ModelCurator {
 	private void correct1to1Detail(){
 		String[] hasManyTables = model.getHasMany();
 		for(String hasMany : hasManyTables){
-			ModelDef hasManyModel = getModel(hasMany);
-			if(hasManyModel != null  && !hasManyModel.equals(model)){
-				String[] hasManyModelHasOne = hasManyModel.getHasOne();
-				String[] hasManyModelHasOneLocalColumn = hasManyModel.getHasOneLocalColumn();
-				String[] hasManyModelHasOneReferencedColumn = hasManyModel.getHasOneReferencedColumn();
-				for(int i = 0; i < hasManyModelHasOne.length; i++){
-					if(model.getTableName().equals(hasManyModelHasOne[i])){//if this table is being refered by the hasManyTable
-						//check to see if the referenced colum if the primary key of this table
-						boolean inModelsPrimary = CStringUtils.inArray(model.getPrimaryAttributes(), hasManyModelHasOneLocalColumn[i]);
-						boolean inHasManyPrimary = CStringUtils.inArray(hasManyModel.getPrimaryAttributes(), hasManyModelHasOneReferencedColumn[i]);
-
-						if (inModelsPrimary && model.getPrimaryAttributes().length == 1
-								&& inHasManyPrimary && hasManyModel.getPrimaryAttributes().length == 1){
-							System.err.println("Moving "+hasMany+" to has one of "+model.getTableName());
-							System.err.println("before: "+model);
-							model = moveFromHasManyToHasOne(model, hasMany);
-							System.err.println("after: "+model);
-
-						}
-
-					}
-				}
+			if(shouldBeMoved(model, hasMany)){
+				model = moveFromHasManyToHasOne(model, hasMany);
 			}
-
 		}
 
+	}
+
+	private boolean shouldBeMoved(ModelDef model, String hasMany){
+		ModelDef hasManyModel = getModel(hasMany);
+		System.out.println("--->>>Should we move "+hasMany+ " from "+model.getTableName());
+		if(hasManyModel != null  && !hasManyModel.equals(model)){
+			System.out.println("hasMany: "+hasManyModel);
+			String[] hasManyModelHasOne = hasManyModel.getHasOne();
+			String[] hasManyModelHasOneLocalColumn = hasManyModel.getHasOneLocalColumn();
+			String[] hasManyModelHasOneReferencedColumn = hasManyModel.getHasOneReferencedColumn();
+			int modelIndex = CStringUtils.indexOf(hasManyModelHasOne, model.getTableName());
+			System.out.println("-->>Checking if "+model.getTableName()+" is in "+Arrays.asList(hasManyModelHasOne)+" "+(modelIndex >=0 ? "YES" : "NO"));
+
+			if(modelIndex >= 0){//if this table is being refered by the hasManyTable
+				//check to see if the referenced colum if the primary key of this table
+				System.err.println("\n");
+				System.err.println("\n["+model.getTableName()+"] Checking to hasMany: "+hasMany+" ? "+Arrays.asList(hasManyModelHasOne[modelIndex]));
+				boolean inModelsPrimary = CStringUtils.inArray(model.getPrimaryAttributes(), hasManyModelHasOneLocalColumn[modelIndex]);
+				boolean inHasManyPrimary = CStringUtils.inArray(hasManyModel.getPrimaryAttributes(), hasManyModelHasOneReferencedColumn[modelIndex]);
+				System.err.println("checking inModelsPrimary:  inArray "+Arrays.asList(model.getPrimaryAttributes())+" "+hasManyModelHasOneLocalColumn[modelIndex]);
+				System.err.println("checking inHasManyPrimary: inArray "+Arrays.asList(hasManyModel.getPrimaryAttributes())+" "+hasManyModelHasOneReferencedColumn[modelIndex]);
+				System.err.println("["+model.getTableName()+"]."+hasManyModelHasOne[modelIndex]+" --> inModelsPrimary: "+inModelsPrimary+", inHasManyPrimary: "+inHasManyPrimary);
+				if (inModelsPrimary && model.getPrimaryAttributes().length == 1
+						&& inHasManyPrimary && hasManyModel.getPrimaryAttributes().length == 1){
+					System.err.println("Moved from hasMany to hasOne: "+hasMany);
+					System.out.println("--->>YES!!!");
+					return true;
+				}
+			}
+		}
+		else{
+			System.out.println("--->>>>>Skipping comparison..."+hasMany);
+		}
+		System.out.println("---->>>NOOO!!!");
+		return false;
 	}
 
 	private static ModelDef moveFromHasManyToHasOne(ModelDef model, String hasMany) {
@@ -77,7 +137,7 @@ public class ModelCurator {
 		if(index >= 0){// DON'T OVERLOOK, should be >= not just >
 			String addedHasOne = newHasMany.remove(index);
 			List<String> newHasManyLocalColumn = new LinkedList<String>(Arrays.asList(model.getHasManyLocalColumn()));
-			String addedHasOneLocalColumn = newHasManyLocalColumn.remove(index);
+//			String addedHasOneLocalColumn = newHasManyLocalColumn.remove(index);
 
 			List<String> newHasManyReferencedColumn = new LinkedList<String>(Arrays.asList(model.getHasManyReferencedColumn()));
 			String addedHasOneReferencedLocalColumn = newHasManyReferencedColumn.remove(index);
@@ -91,8 +151,9 @@ public class ModelCurator {
 			newHasOne.add(addedHasOne);
 
 			List<String> newHasOneLocalColumn = new ArrayList<String>(Arrays.asList(model.getHasOneLocalColumn()));
-			newHasOneLocalColumn.add(addedHasOneLocalColumn);
-
+			//newHasOneLocalColumn.add(addedHasOneLocalColumn);//TODO: put something so that hasOneLocal wont match
+			newHasOneLocalColumn.add(null);//TODO: put something so that hasOneLocal wont match
+//			System.err.println("putting: "+addedHasOne);
 			List<String> newHasOneReferencedLocalColumn =new ArrayList<String>( Arrays.asList(model.getHasOneReferencedColumn()));
 			newHasOneReferencedLocalColumn.add(addedHasOneReferencedLocalColumn);
 
@@ -134,7 +195,6 @@ public class ModelCurator {
 
 			if(hasOne[i].equals(model.getTableName()) && hasOneLocalColumn[i].equals(hasOneReferencedColumn[i]) &&
 					hasOneLocalInPrimary && hasOneReferencedInPrimary ){
-				//				System.err.println("Removing unneccessary to self: "+model.getTableName()+" -> "+hasOne[i]);
 
 				model = removeFromHasOne(model, hasOne[i]);
 			}
@@ -248,8 +308,6 @@ public class ModelCurator {
 						&& isRef2Primary
 						){
 
-					System.err.println("linker table "+model.getTableName());
-					System.err.println("link directly "+m1.getTableName()+" and "+m2.getTableName());
 
 					removeFromHasMany(m1, model.getTableName());//remove the hasMany of this table
 					removeFromHasMany(m2, model.getTableName());//remove the hasMany of this table

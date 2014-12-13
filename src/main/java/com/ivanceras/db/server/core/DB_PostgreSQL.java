@@ -809,7 +809,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 						"\n 	AND tc.constraint_type = 'FOREIGN KEY'";
 
 		try {
-			System.err.println("imported key: "+sql);
 			ResultSet rs = executeSelectSQL(sql, null);
 			List<String> foreignTables = new ArrayList<String>();
 			List<String> referedColumn = new ArrayList<String>();
@@ -863,7 +862,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 				"\n 	AND tc.constraint_type = 'FOREIGN KEY'";
 
 		try {
-			System.err.println("exported key: "+sql);
 			ResultSet rs = executeSelectSQL(sql, null);
 			List<String> foreignTables = new ArrayList<String>();
 			List<String> referedColumn = new ArrayList<String>();

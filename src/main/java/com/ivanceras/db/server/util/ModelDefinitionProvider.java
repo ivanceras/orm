@@ -1,5 +1,7 @@
 package com.ivanceras.db.server.util;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,6 +47,20 @@ public class ModelDefinitionProvider {
 			modelDef.setModelName(CStringUtils.getModelName(table));
 			modelList.add(modelDef);
 		}
+		Collections.sort(modelList, new Comparator<ModelDef>() {
+
+			@Override
+			public int compare(ModelDef arg0, ModelDef arg1) {
+				if(arg0 != null && arg1 != null){
+					String table0 = arg0.getTableName();
+					String table1 = arg1.getTableName();
+					if(table0 != null && table1 != null){
+						return table0.compareTo(table1);
+					}
+				}
+				return 0;
+			}
+		});
 		return modelList.toArray(new ModelDef[modelList.size()]);
 	}
 

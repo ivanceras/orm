@@ -2,7 +2,7 @@
 <configuration status="WARN">
 	<appenders>
 		<RollingFile name="RollingFile" fileName="dbcore.log"
-			filePattern="logs/$${date:yyyy-MM}/dbcore-%d{MM-dd-yyyy}-%i.log.gz">
+			filePattern="$${date:yyyy-MM}/dbcore-%d{MM-dd-yyyy}-%i.log.gz">
 			<PatternLayout>
 				<pattern>%d %p %c{1.} [%t] %m%n</pattern>
 			</PatternLayout>
