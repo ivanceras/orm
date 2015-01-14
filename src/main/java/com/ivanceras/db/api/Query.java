@@ -444,6 +444,15 @@ public class Query {
 		}
 	}
 
+	
+	public void rename(Class<? extends DAO> daoClass, String columnName, String asColumn) throws DatabaseException{
+		ModelDef model = em.getDefinition(daoClass);
+		String tableName = model.getTableName();
+		Pair[] pairs = new Pair[1];
+		pairs[0] = new Pair(columnName, asColumn);
+		renamedColumnPairs.put(tableName, pairs);
+	}
+	
 	private void rename(String tableName, String[] sameAttributes) {
 		if(tableName != null && sameAttributes != null){
 			Pair[] existingPairs = renamedColumnPairs.get(tableName);

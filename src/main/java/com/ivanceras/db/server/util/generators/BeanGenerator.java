@@ -176,7 +176,7 @@ public class BeanGenerator {
 		sw.lnTabPrint("@Override");
 		sw.lnTabPrint("public String toString(){");
 		sw.lnTabPrint("    StringBuilder sb = new StringBuilder();");
-		sw.lnTabPrint("    sb.append("+className+".class+\"->[\");");
+		sw.lnTabPrint("    sb.append("+className+".class+\"->{\");");
 		for(int i = 0; i < attributes.length; i++){
 			String att = SpecialCase.getEquiv(attributes[i]);
 			att = CStringUtils.capitalize(att.toLowerCase(), useCamelCase);
@@ -194,7 +194,7 @@ public class BeanGenerator {
 			sw.lnTabPrint("    sb.append("+hasManyVar+Array+"!=null ? "+hasManyVar+Array+"+\", \":\"\");");
 		}
 
-		sw.lnTabPrint("    sb.append(\"]\");");
+		sw.lnTabPrint("    sb.append(\"}\");");
 		sw.lnTabPrint("    return sb.toString();");
 		sw.lnTabPrint("}");
 		sw.lnprint("}");

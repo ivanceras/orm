@@ -375,8 +375,10 @@ public abstract class DB_Rdbms{
 //			table = getDBTableName(model);
 //		}
 		String selectTable = query.getSelectTable();
+		String schema = null;
 		if(selectTable == null){
 			ModelDef selectModel = query.getSelectModel();
+			schema = selectModel.getNamespace();
 			if(selectModel != null){
 				selectTable = selectModel.getTableName();
 			}
@@ -478,6 +480,9 @@ public abstract class DB_Rdbms{
 		
 		
 		if(selectTable != null){
+			if(schema != null && useSchema()){
+				selectTable = schema+"."+selectTable;
+			}
 			sql.FROM(selectTable);
 		}
 		if(query.getBaseQuery() != null){
