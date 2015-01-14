@@ -426,7 +426,3 @@ email: ivanceras[at]gmail.com
 
 * [Submit issues](https://github.com/ivanceras/orm/issues)
 
-* I accept Bitcoin: 1CYj1jEjV4eWm5TLPRDD34hQbVuUHcGg9X
-
-
-[![Click here to lend your support to: Ivanceras ORM and make a donation at pledgie.com !](https://pledgie.com/campaigns/26665.png?skin_name=chrome)](https://pledgie.com/campaigns/26665)
