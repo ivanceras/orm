@@ -3,7 +3,6 @@ package com.ivanceras.db.api;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import com.ivanceras.db.shared.DAO;
 import com.ivanceras.db.shared.Filter;
@@ -12,14 +11,9 @@ import com.ivanceras.db.shared.exception.DAOInstanceFactoryException;
 import com.ivanceras.db.shared.exception.DatabaseException;
 import com.ivanceras.keyword.sql.SQL;
 
-import static com.ivanceras.keyword.sql.SQLStatics.*;
 
 public class SynchronousEntityManager implements EntityManager{
 
-	/**
-	 * Globally enable/disable record changelog. Enable by default
-	 */
-//	private ContextProvider contextProvider;
 
 	static SynchronousEntityManager singleton;
 
@@ -137,22 +131,9 @@ public class SynchronousEntityManager implements EntityManager{
 		return deleteRecord(db.getModelMetaDataDefinition().getDefinition(daoClass), filters);
 	}
 
-//	@Override
-//	public int delete(DAO dao) throws DatabaseException {
-//		//TODO: find the dependent records of this record and delete  it when forced is true
-//		Filter[] filters = ApiUtils.getFilters(db.getModelMetaDataDefinition(), dao, db.prependTableName());
-//		return deleteRecord(db.getModelMetaDataDefinition().getDefinition(dao.getModelName()), filters);
-//	}
 
 	private int deleteRecord(ModelDef model, Filter... filters) throws DatabaseException{
-//		DAO[] affectedRecords = null;
-//		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
-//			affectedRecords = getAffectedRecords(model, filters);
-//		}
 		int ret = db.delete(model, filters);
-//		if(contextProvider != null && contextProvider.isEnableRecordChangelog()){
-//			contextProvider.recordDeleteChange(model, affectedRecords);
-//		}
 		return ret;
 	}
 
@@ -182,18 +163,6 @@ public class SynchronousEntityManager implements EntityManager{
 		return db.empty(model, forced);
 	}
 
-//	/**
-//	 * Use this when checking the record exist in these table while using all the values as the filter
-//	 * 
-//	 */
-//	public boolean exist(DAO dao) throws DatabaseException{
-//		ModelDef model = db.getModelMetaDataDefinition().getDefinition((dao.getModelName()));
-//		DAO exists = getOne(getDaoClass(dao.getModelName()), ApiUtils.getAllFilters(model,dao, db.prependTableName()));
-//		if(exists != null){
-//			return true;
-//		}
-//		return false;
-//	}
 
 	@Override
 	public boolean existModel(ModelDef model) throws DatabaseException {
@@ -217,18 +186,6 @@ public class SynchronousEntityManager implements EntityManager{
 		super.finalize();
 	}
 
-//	/**
-//	 * This are the affected records before updating or deleting
-//	 * @param model
-//	 * @param filters
-//	 * @return
-//	 * @throws DatabaseException 
-//	 */
-//	private DAO[] getAffectedRecords(ModelDef model, Filter[] filters) throws DatabaseException{
-//		Class<? extends DAO> clazz = getDaoClass(model.getModelName());
-//		DAO[] daoList = getAll(clazz, filters);
-//		return daoList;
-//	}
 
 	@Override
 	public <T extends DAO> T[] getAll(Class<? extends T> daoClass) throws DatabaseException{
@@ -287,33 +244,6 @@ public class SynchronousEntityManager implements EntityManager{
 	public ModelDef getDefinition(Class<? extends DAO> daoClass) throws DatabaseException {
 		return db.getModelMetaDataDefinition().getDefinition(daoClass);
 	}
-
-//	@Override
-//	public <T extends DAO> T getMatch(DAO dao, Boolean exact)  throws DatabaseException{
-//		Class<? extends DAO> daoClass = getDaoClass(dao.getModelName());
-//		ModelDef modelDef = db.getModelMetaDataDefinition().getDefinition(daoClass);
-//		Filter[] filters = null;
-//		if(exact){
-//			filters = ApiUtils.getFilters(db.getModelMetaDataDefinition(), dao, db.prependTableName());
-//		}
-//		else{
-//			filters = ApiUtils.getFiltersForUnique(modelDef, dao);
-//		}
-//		if(filters == null){
-//			return null;
-//		}
-//		Query query = new Query(modelDef);
-//		query.addFilter(filters);
-//		query.setLimit(1);
-//
-//
-//		DAO[] daoList = retrieveRecords(query);
-//		if(daoList != null && daoList.length > 0){
-//			return cast(daoClass, daoList[0]);
-//		}else{
-//			return null;
-//		}
-//	}
 
 	@Override
 	public String getModelName(Class<? extends DAO> daoClass) throws DatabaseException {

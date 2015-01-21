@@ -88,12 +88,12 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	protected String getRealTableName(String schema, String tableName) throws DatabaseException{
 		StringBuffer sql = new StringBuffer();
 
-		SQL sql1 = SELECT("c.relname")
-				.FROM("pg_catalog.pg_class").AS("c")
-				.FIELD("pg_class.relname")
-				.LEFT_JOIN("pg_catalog.pg_namespace").AS("n")
-				.ON("n.oid","c.relnamespace")
-				.WHERE(LOWER("c.relname")).EQUAL_TO(LOWER(tableName));
+//		SQL sql1 = SELECT("c.relname")
+//				.FROM("pg_catalog.pg_class").AS("c")
+//				.FIELD("pg_class.relname")
+//				.LEFT_JOIN("pg_catalog.pg_namespace").AS("n")
+//				.ON("n.oid","c.relnamespace")
+//				.WHERE(LOWER("c.relname")).EQUAL_TO(LOWER(tableName));
 
 		sql.append("SELECT "+
 				" c.relname as \"Table\""+
@@ -632,89 +632,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	}
 
 
-//	@Override
-//	protected SQL buildWindowFunctions(ModelMetaData meta, List<WindowFunction> windowFunctions, boolean doComma) {
-//		SQL_Postgres sql = new SQL_Postgres();
-//		for(WindowFunction wf : windowFunctions){
-//			if(doComma) sql.comma(); else doComma = true;
-//			String[] partitions = wf.getPartitionColumns();
-//			Order[] windowOrder = wf.getOrder();
-//			Aggregate waggregate= wf.getAggregate();
-//			String[] function = waggregate.getFunctions();
-//			String column = waggregate.getColumn();
-//			StringBuffer aggrColumn = new StringBuffer();
-//			Class<? extends DAO> modelClass = waggregate.getModelClass();
-//			if(modelClass != null && waggregate.preppendModelName()){
-//				ModelDef aggModel = meta.getDefinition(modelClass);
-//				aggrColumn.append(aggModel.getModelName()+".");
-//			}
-//			aggrColumn.append(column);
-//			StringBuffer fnames_1 = new StringBuffer();
-//			StringBuffer fnames_2 = new StringBuffer();
-//			for(int i = function.length -1 ; i >= 0; i--){
-//				fnames_1.append(function[i]+"(");
-//				fnames_2.append(")");
-//			}
-//			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
-//			sql.OVER();
-//			if(partitions != null && partitions.length > 0 ){
-//				sql.PARTITION_BY();
-//				boolean doCommaPartition = false;
-//				for(String part : partitions){
-//					if(doCommaPartition)sql.comma();else doCommaPartition=true;
-//					sql.keyword(part);
-//				}
-//			}
-//			if(windowOrder != null && windowOrder.length > 0){
-//				sql.ORDER_BY();
-//				boolean doCommaWindowOrder = false;
-//				for(Order wor : windowOrder){
-//					if(wor != null){
-//						if(doCommaWindowOrder) sql.comma(); else doCommaWindowOrder = true;
-//						sql.FIELD(wor.getColumn());
-//						if(wor.isAscending()){
-//							sql.ASC();
-//						}else{
-//							sql.DESC();
-//						}
-//					}
-//				}
-//			}
-//			sql.AS(wf.getWindowAlias());
-//		}
-//		return sql;
-//	}
-
-//	@Override
-//	protected SQL buildAggregateQuery(ModelMetaData meta,
-//			Aggregate[] aggregates, boolean doComma) {
-//		//		StringBuffer sql = new StringBuffer();
-//		SQL sql = new SQL();
-//		List<String> mentionedColumns = new ArrayList<String>();
-//		for(Aggregate agg : aggregates){
-//			if(doComma) sql.comma(); else doComma = true;
-//			String[] function = agg.getFunctions();
-//			String column = agg.getColumn();
-//			StringBuffer aggrColumn = new StringBuffer();
-//			Class<? extends DAO> modelClass = agg.getModelClass();
-//			if(modelClass != null && agg.preppendModelName()){
-//				ModelDef aggModel = meta.getDefinition(modelClass);
-//				aggrColumn.append(aggModel.getModelName()+".");
-//			}
-//			aggrColumn.append(column);
-//			StringBuffer fnames_1 = new StringBuffer();
-//			StringBuffer fnames_2 = new StringBuffer();
-//			for(int i = function.length -1 ; i >= 0; i--){
-//				fnames_1.append(function[i]+"(");
-//				fnames_2.append(")");
-//			}
-//			sql.keyword(fnames_1+""+aggrColumn.toString()+""+fnames_2);
-//			sql.AS(agg.getAsColumn());
-//			mentionedColumns.add(agg.getAsColumn());
-//		}
-//		return sql;
-//	}
-
 	@Override
 	public boolean prependTableName(){
 		return true;
@@ -775,18 +692,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 
 	@Override
 	protected ForeignKey getImportedKeys(String schema, String tablename) throws DatabaseException{
-		//		String sql = 
-		//				"select " +
-		//						"\n 	distinct on (ccu.table_name) ccu.table_name as foreigntable, " +
-		//						"\n 	ccu.column_name as referedcolumn, " +
-		//						"\n 	kcu.column_name as localcolumn " +
-		//						"\n from information_schema.key_column_usage kcu" +
-		//						"\n left join information_schema.constraint_column_usage ccu" +
-		//						"\n 	on ccu.constraint_name = kcu.constraint_name" +
-		//						"\n where kcu.table_name = '"+tablename+"'" +
-		//						"\n 	and kcu.table_schema = '"+schema+"'"+
-		//						"\n		and (ccu.table_name != '"+tablename+"'"+
-		//						"\n		or (ccu.table_name = '"+tablename+"' and ccu.column_name != '"+tablename+"_id'))";
 
 		/**
 		 * from 	http://stackoverflow.com/questions/1152260/postgres-sql-to-list-table-foreign-keys		
@@ -834,17 +739,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	 */
 	@Override
 	protected ForeignKey getExportedKeys(String schema, String tablename) throws DatabaseException{
-		//		String sql = "select " +
-		//				"\n 	distinct on(kcu.table_name) kcu.table_name as foreigntable,"+
-		//				"\n 	kcu.column_name as referedcolumn, " +
-		//				"\n 	ccu.column_name as localcolumn " +
-		//				"\n from information_schema.key_column_usage kcu " +
-		//				"\n left join information_schema.constraint_column_usage ccu " +
-		//				"\n 	on ccu.constraint_name = kcu.constraint_name " +
-		//				"\n where ccu.table_name = '"+tablename+"' " +
-		//				"\n 	and ccu.table_schema = '"+schema+"'" +
-		//				"\n and (kcu.table_name != '"+tablename+"' "+
-		//				"\n or (kcu.table_name = '"+tablename+"'  and kcu.column_name != '"+tablename+"_id'))";
 
 		String sql = "SELECT " +
 				"\n 	DISTINCT ON(kcu.table_name) kcu.table_name AS foreigntable,"+
@@ -883,56 +777,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	}
 
 
-	//	private Object jsonNodeToObject(JsonNode node) throws JsonParseException, JsonMappingException, IOException{
-	//		ObjectMapper mapper = new ObjectMapper();
-	//		if(node.isNull()){
-	//			return null;
-	//		}
-	//		else if(node.isShort()){
-	//			return node.shortValue();
-	//		}
-	//		else if(node.isTextual()){
-	//			return node.asText();
-	//		}
-	//		else if(node.isInt()){
-	//			return node.asInt();
-	//		}
-	//		else if(node.isFloat()){
-	//			return node.floatValue();
-	//		}
-	//		else if(node.isBigDecimal()){
-	//			return node.decimalValue();
-	//		}
-	//		else if(node.isBigInteger()){
-	//			return node.bigIntegerValue();
-	//		}
-	//		else if(node.isBoolean()){
-	//			return node.asBoolean();
-	//		}
-	//		else if(node.isArray()){//We wouldn't be able to know if the json will be an array or not so use hashmap here
-	//			String elementString = node.toString();
-	//			ArrayList<Object> list = 
-	//					mapper.readValue(elementString, new TypeReference<ArrayList<Object>>(){});
-	////			Map<Integer, Object> hash = new LinkedHashMap<Integer, Object>();
-	////			int arraySize = list.size();
-	////			for(int i = 0; i < arraySize; i++){
-	////				hash.put(i, list.get(i));
-	////			}
-	////			return hash;
-	//			return list;
-	//		}
-	//		else if(node.isObject()){
-	//			String elementString = node.toString();
-	//			Map<String, Object> hash = 
-	//					mapper.readValue(elementString, new TypeReference<Map<String, Object>>(){});
-	//			return hash;
-	//
-	//		}
-	//		else{
-	//			System.err.println("Unable to convert to correct datatype: "+node.getNodeType()+" in "+DB_PostgreSQL.class+".jsonNodeToObject() ");
-	//			return node;//return as is, shouldn't happend
-	//		}
-	//	}
 
 	/**
 	 * Remapping json directly to object as opposed to traversing the tree
@@ -944,11 +788,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	 */
 	private Object jsonToObject(String recordValue) throws JsonParseException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper();
-		//		Map<String, Object> map = mapper.readValue(recordValue, new TypeReference<Map<String, Object>>(){});
-		//		return map;
-		//		JsonNode node = mapper.readTree(recordValue);
-		//		return jsonNodeToObject(node);
-		//		System.err.println("mapping to Object.class right away");
 		Object json = mapper.readValue(recordValue, Object.class);	
 		return json;
 	}
@@ -980,30 +819,6 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 		return record;
 	}
 
-	//	@SuppressWarnings("unchecked")
-	//	private String hashMapToJson(Object record) throws JsonProcessingException {
-	//		HashMap<Object, Object> hash = (HashMap<Object, Object>)record;
-	//		ArrayList<Object> list = new ArrayList<Object>();
-	//		boolean useList = true;
-	//		for(Entry<Object, Object> entry : hash.entrySet()){
-	//			Object key = entry.getKey();
-	//			Object value = entry.getValue();
-	//			if(key.getClass().equals(Integer.class)){
-	//				list.add(value);
-	//			}else{
-	//				useList = false;//if any of the keys is not integer use the hashMap
-	//			}
-	//		}
-	//		ObjectMapper mapper = new ObjectMapper();
-	//		
-	//		String json = null;
-	//		if(useList){
-	//			json = mapper.writeValueAsString(list);
-	//		}else{
-	//			json = mapper.writeValueAsString(hash);
-	//		}
-	//		return json;
-	//	}
 
 
 	@Override
