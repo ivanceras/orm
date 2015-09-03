@@ -272,6 +272,12 @@ public abstract class DB_Jdbc extends DB_Rdbms implements IDatabase {
 			return true;
 		}
 	}
+	
+	@Override
+	public int execute(SQL sql) throws DatabaseException {
+		return executeUpdateSQL(sql);
+	}
+
 
 	public Object executeInsertSQL(SQL sql, boolean returnValues) throws DatabaseException {
 		Breakdown bk = sql.build();

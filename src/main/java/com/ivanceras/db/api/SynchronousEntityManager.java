@@ -386,8 +386,8 @@ public class SynchronousEntityManager implements EntityManager{
 
 
 	@Override
-	public <T extends DAO > T[] execute(SQL sql) throws DatabaseException {
-		return db.select(sql, null);
+	public int executeUpdate(SQL sql) throws DatabaseException {
+		return db.execute(sql);
 	}
 
 	@Override

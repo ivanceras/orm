@@ -270,6 +270,8 @@ public interface IDatabase{
 	public void correctDataTypes(DAO[] daoList, ModelDef model);
 
 	boolean setPrimaryConstraint(ModelDef model) throws DatabaseException;
+
+	public int execute(SQL sql) throws DatabaseException;
 	
 
 }

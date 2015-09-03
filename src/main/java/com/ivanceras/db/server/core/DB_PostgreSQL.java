@@ -939,5 +939,4 @@ public class DB_PostgreSQL extends DB_Jdbc implements IDatabase, IDatabaseDev{
 	}
 
 
-
 }

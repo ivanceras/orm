@@ -81,8 +81,21 @@ public interface EntityManager{
 
 	public void rollbackTransaction() throws DatabaseException;
 
-	public <T extends DAO > T[]  execute(SQL sql) throws DatabaseException;
+	/**
+	 * INSERT, DELETE, UPDATE
+	 * @param sql
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public int  executeUpdate(SQL sql) throws DatabaseException;
 
+	/**
+	 * SELECT statement
+	 * @param sql
+	 * @param parameters
+	 * @return
+	 * @throws DatabaseException
+	 */
 	public DAO[]  execute(String sql, Object[] parameters) throws DatabaseException;
 
 	public <T extends DAO > T[] execute(SQL sql, Map<String, Pair[]> renamedColumns)
